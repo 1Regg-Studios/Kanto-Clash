@@ -70,18 +70,26 @@ func index_of(id: String) -> int:
 
 
 func name_of(id: String) -> String:
-	for game in GAMES:
-		if game["id"] == id:
-			return game["name"]
-	return id
+	var game := _find(id)
+	if game.is_empty():
+		return id
+	var name: String = game["name"]
+	return name
 
 
 func scene_path_for(id: String) -> String:
+	var game := _find(id)
+	if game.is_empty():
+		return ""
+	var path: String = game["scene"]
+	return path if ResourceLoader.exists(path) else ""
+
+
+func _find(id: String) -> Dictionary:
 	for game in GAMES:
 		if game["id"] == id:
-			var path: String = game["scene"]
-			return path if ResourceLoader.exists(path) else ""
-	return ""
+			return game
+	return {}
 
 
 func first_scene_path() -> String:

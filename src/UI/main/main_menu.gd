@@ -12,6 +12,12 @@ var _transitioning := false
 var _options_screen: Node = null
 
 
+func _ready() -> void:
+	AudioManager.start_menu_music()
+	for button in [_start, _options, _quit]:
+		button.pressed.connect(AudioManager.play_click)
+
+
 func _on_start_pressed() -> void:
 	if _transitioning:
 		return
@@ -48,7 +54,5 @@ func _on_quit_pressed() -> void:
 
 
 func _set_buttons_disabled(disabled: bool) -> void:
-	_start.disabled = disabled
-	_options.disabled = disabled
-	_quit.disabled = disabled
-	_mute.disabled = disabled
+	for button in [_start, _options, _quit, _mute]:
+		button.disabled = disabled

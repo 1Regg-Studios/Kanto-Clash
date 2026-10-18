@@ -6,10 +6,7 @@ var is_fullscreen := false
 
 
 func _ready() -> void:
-	if "--windowed" in OS.get_cmdline_user_args():
-		set_fullscreen(false)
-	else:
-		set_fullscreen(true)
+	set_fullscreen("--windowed" not in OS.get_cmdline_user_args())
 
 
 func _unhandled_input(event: InputEvent) -> void:

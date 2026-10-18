@@ -16,21 +16,22 @@ var _transitioning := false
 
 
 func _ready() -> void:
-	_master_slider.set_value_no_signal(AudioManager.master_volume)
-	_sfx_slider.set_value_no_signal(AudioManager.sfx_volume)
-	_music_slider.set_value_no_signal(AudioManager.music_volume)
-	_master_slider.value_changed.connect(AudioManager.set_master_volume)
-	_sfx_slider.value_changed.connect(AudioManager.set_sfx_volume)
-	_music_slider.value_changed.connect(AudioManager.set_music_volume)
+	_bind_slider(_master_slider, AudioManager.master_volume, AudioManager.set_master_volume)
+	_bind_slider(_sfx_slider, AudioManager.sfx_volume, AudioManager.set_sfx_volume)
+	_bind_slider(_music_slider, AudioManager.music_volume, AudioManager.set_music_volume)
+	_back_button.pressed.connect(AudioManager.play_click)
 	_slide_in()
 
 
+func _bind_slider(slider: HSlider, value: float, setter: Callable) -> void:
+	slider.set_value_no_signal(value)
+	slider.value_changed.connect(setter)
+
+
 func _slide_in() -> void:
-	var final_position := _panel.position
-	_panel.position = final_position + Vector2(0.0, get_viewport_rect().size.y)
-	var tween := create_tween()
-	tween.tween_property(_panel, "position", final_position, SLIDE_TIME).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(_dim, "color:a", DIM_ALPHA, SLIDE_TIME)
+	var end := _panel.position
+	_panel.position += Vector2(0.0, get_viewport_rect().size.y)
+	_slide(end, DIM_ALPHA, Tween.EASE_OUT)
 
 
 func _on_back_pressed() -> void:
@@ -38,8 +39,12 @@ func _on_back_pressed() -> void:
 		return
 	_transitioning = true
 	_back_button.disabled = true
-	var tween := create_tween()
-	tween.tween_property(_panel, "position", _panel.position + Vector2(0.0, get_viewport_rect().size.y), SLIDE_TIME).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	tween.parallel().tween_property(_dim, "color:a", 0.0, SLIDE_TIME)
-	await tween.finished
+	await _slide(_panel.position + Vector2(0.0, get_viewport_rect().size.y), 0.0, Tween.EASE_IN).finished
 	closed.emit()
+
+
+func _slide(end: Vector2, dim_alpha: float, ease: Tween.EaseType) -> Tween:
+	var tween := create_tween()
+	tween.tween_property(_panel, "position", end, SLIDE_TIME).set_trans(Tween.TRANS_CUBIC).set_ease(ease)
+	tween.parallel().tween_property(_dim, "color:a", dim_alpha, SLIDE_TIME)
+	return tween
