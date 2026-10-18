@@ -1,0 +1,464 @@
+[gd_scene format=3 uid="uid://b5tur5htv1vq1"]
+
+[ext_resource type="Texture2D" uid="uid://dpyh58wdmfars" path="res://Sprites/PATINTERO-20261016T040509Z-1-001/PATINTERO/Patintero BG changed.png" id="1_8gbba"]
+[ext_resource type="PackedScene" uid="uid://dd72e4b6ehom5" path="res://Scenes/player.tscn" id="1_jjgbg"]
+[ext_resource type="PackedScene" uid="uid://bo4eqgb4i2kko" path="res://Scenes/platform.tscn" id="3_8gbba"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_h1bgf"]
+a = Vector2(-179, -97)
+b = Vector2(1085, -93)
+
+[sub_resource type="Animation" id="Animation_jjvhh"]
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(263, 276), Vector2(263, 89)]
+}
+
+[sub_resource type="Animation" id="Animation_kry3j"]
+resource_name = "move"
+length = 1.0333333
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.0333333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(291, 276), Vector2(291, 88)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_21xkr"]
+_data = {
+&"RESET": SubResource("Animation_jjvhh"),
+&"move": SubResource("Animation_kry3j")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_u63d8"]
+
+[sub_resource type="Animation" id="Animation_8gbba"]
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(264, 347), Vector2(264, 566)]
+}
+
+[sub_resource type="Animation" id="Animation_21xkr"]
+resource_name = "TOGGLE"
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(293, 349), Vector2(293, 554)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6bp64"]
+_data = {
+&"RESET": SubResource("Animation_8gbba"),
+&"TOGGLE": SubResource("Animation_21xkr")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jvale"]
+
+[sub_resource type="Animation" id="Animation_ynf5e"]
+length = 0.7
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(529, 89), Vector2(529, 282)]
+}
+
+[sub_resource type="Animation" id="Animation_hptm8"]
+resource_name = "new_animation"
+length = 0.5
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0009999999, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(580, 92), Vector2(580, 284)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_d1ilt"]
+_data = {
+&"RESET": SubResource("Animation_ynf5e"),
+&"new_animation": SubResource("Animation_hptm8")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tgrbk"]
+
+[sub_resource type="Animation" id="Animation_6iyac"]
+length = 0.7
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(530, 558), Vector2(530, 337)]
+}
+
+[sub_resource type="Animation" id="Animation_fdnlq"]
+resource_name = "move"
+length = 0.5
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(582, 558), Vector2(582, 349)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jkdf5"]
+_data = {
+&"RESET": SubResource("Animation_6iyac"),
+&"move": SubResource("Animation_fdnlq")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_iskls"]
+
+[sub_resource type="Animation" id="Animation_b3802"]
+length = 0.5
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(803, 88), Vector2(803, 277)]
+}
+
+[sub_resource type="Animation" id="Animation_fevyy"]
+resource_name = "move"
+length = 0.3
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(865, 95), Vector2(865, 284)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hibaj"]
+_data = {
+&"RESET": SubResource("Animation_b3802"),
+&"move": SubResource("Animation_fevyy")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0kpcp"]
+
+[sub_resource type="Animation" id="Animation_pdsj5"]
+length = 0.5
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(800, 557), Vector2(800, 348)]
+}
+
+[sub_resource type="Animation" id="Animation_ee4r6"]
+resource_name = "move"
+length = 0.3
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(874, 557), Vector2(874, 337)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gt3je"]
+_data = {
+&"RESET": SubResource("Animation_pdsj5"),
+&"move": SubResource("Animation_ee4r6")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_5uvbj"]
+
+[sub_resource type="Animation" id="Animation_6bp64"]
+length = 0.3
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(972, 557), Vector2(972, 351)]
+}
+
+[sub_resource type="Animation" id="Animation_344ge"]
+resource_name = "move"
+length = 0.2
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1150, 569), Vector2(1150, 337)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ynf5e"]
+_data = {
+&"RESET": SubResource("Animation_6bp64"),
+&"move": SubResource("Animation_344ge")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_r64df"]
+
+[sub_resource type="Animation" id="Animation_d1ilt"]
+length = 0.3
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(971, 90), Vector2(971, 277)]
+}
+
+[sub_resource type="Animation" id="Animation_jkdf5"]
+resource_name = "move"
+length = 0.2
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1152, 90), Vector2(1152, 282)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wsu2k"]
+_data = {
+&"RESET": SubResource("Animation_d1ilt"),
+&"move": SubResource("Animation_jkdf5")
+}
+
+[sub_resource type="GDScript" id="GDScript_8gbba"]
+script/source = "extends Node2D
+
+signal lane_advanced(lane_index: int)
+
+@export var player: Node2D
+# X position of each vertical line, left to right. Adjust to match your court.
+@export var lane_xs: Array[float] = [247.0, 512.0, 778.0, 1046.0]
+
+var current_lane: int = -1
+
+func _process(_delta: float) -> void:
+	if player == null:
+		return
+	var lane := _get_lane(player.global_position.x)
+	# Only fire when the player moves forward to a new line
+	if lane > current_lane:
+		current_lane = lane
+		lane_advanced.emit(lane)
+
+func _get_lane(x: float) -> int:
+	var lane := -1
+	for i in lane_xs.size():
+		if x >= lane_xs[i]:
+			lane = i
+	return lane
+"
+
+[node name="Main" type="Node2D" unique_id=1357374264]
+
+[node name="PatinteroBgChanged" type="Sprite2D" parent="." unique_id=1281965597]
+position = Vector2(572, 326)
+scale = Vector2(0.59999996, 0.6037038)
+texture = ExtResource("1_8gbba")
+
+[node name="Player" parent="." unique_id=1710869111 instance=ExtResource("1_jjgbg")]
+position = Vector2(177, 119)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=676751117]
+position = Vector2(16, 203)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1796975274]
+position = Vector2(159, 94)
+shape = SubResource("SegmentShape2D_h1bgf")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="StaticBody2D" unique_id=584876229]
+position = Vector2(1028.0001, -78.000015)
+rotation = 1.5683389
+shape = SubResource("SegmentShape2D_h1bgf")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D" unique_id=1147969199]
+position = Vector2(153, 209)
+shape = SubResource("SegmentShape2D_h1bgf")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D" unique_id=1618012095]
+position = Vector2(151, 353)
+shape = SubResource("SegmentShape2D_h1bgf")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="StaticBody2D" unique_id=1348380434]
+position = Vector2(153, 489)
+shape = SubResource("SegmentShape2D_h1bgf")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=1649178554]
+position = Vector2(163, -46)
+shape = SubResource("SegmentShape2D_h1bgf")
+
+[node name="Platform" parent="." unique_id=511646536 instance=ExtResource("3_8gbba")]
+position = Vector2(263, 276)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform" unique_id=621476291]
+libraries/ = SubResource("AnimationLibrary_21xkr")
+autoplay = &"RESET"
+
+[node name="Platform2" parent="." unique_id=1658240543 instance=ExtResource("3_8gbba")]
+position = Vector2(264, 347)
+physics_material_override = SubResource("PhysicsMaterial_u63d8")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform2" unique_id=1769025560]
+libraries/ = SubResource("AnimationLibrary_6bp64")
+autoplay = &"RESET"
+
+[node name="Platform4" parent="." unique_id=2021917411 instance=ExtResource("3_8gbba")]
+position = Vector2(529, 89)
+physics_material_override = SubResource("PhysicsMaterial_jvale")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform4" unique_id=821802827]
+libraries/ = SubResource("AnimationLibrary_d1ilt")
+autoplay = &"RESET"
+
+[node name="Platform5" parent="." unique_id=111700494 instance=ExtResource("3_8gbba")]
+position = Vector2(530, 558)
+physics_material_override = SubResource("PhysicsMaterial_tgrbk")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform5" unique_id=1750889981]
+libraries/ = SubResource("AnimationLibrary_jkdf5")
+autoplay = &"RESET"
+
+[node name="Platform7" parent="." unique_id=1519968955 instance=ExtResource("3_8gbba")]
+position = Vector2(803, 88)
+physics_material_override = SubResource("PhysicsMaterial_iskls")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform7" unique_id=68123416]
+libraries/ = SubResource("AnimationLibrary_hibaj")
+autoplay = &"RESET"
+
+[node name="Platform8" parent="." unique_id=1006740153 instance=ExtResource("3_8gbba")]
+position = Vector2(800, 557)
+physics_material_override = SubResource("PhysicsMaterial_0kpcp")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform8" unique_id=1370973868]
+libraries/ = SubResource("AnimationLibrary_gt3je")
+autoplay = &"RESET"
+
+[node name="Platform3" parent="." unique_id=1906017742 instance=ExtResource("3_8gbba")]
+position = Vector2(972, 557)
+physics_material_override = SubResource("PhysicsMaterial_5uvbj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform3" unique_id=1544251729]
+libraries/ = SubResource("AnimationLibrary_ynf5e")
+autoplay = &"RESET"
+
+[node name="Platform6" parent="." unique_id=1862187163 instance=ExtResource("3_8gbba")]
+position = Vector2(971, 90)
+physics_material_override = SubResource("PhysicsMaterial_r64df")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform6" unique_id=1185800907]
+libraries/ = SubResource("AnimationLibrary_wsu2k")
+autoplay = &"RESET"
+
+[node name="LaneManager" type="Node" parent="." unique_id=212895003]
+script = SubResource("GDScript_8gbba")
