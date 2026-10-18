@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ds6axdvyuvpng"
-path="res://.godot/imported/placeholder.png-9d7fc04ac12e90a862b62528e92a234a.ctex"
+uid="uid://p3x0jc24j4ve"
+path="res://.godot/imported/MUSIC VOLUmE.png-4d527dd42a06e9d53c0e006f986b7290.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Character Select/placeholder.png"
-dest_files=["res://.godot/imported/placeholder.png-9d7fc04ac12e90a862b62528e92a234a.ctex"]
+source_file="res://assets/Options/MUSIC VOLUmE.png"
+dest_files=["res://.godot/imported/MUSIC VOLUmE.png-4d527dd42a06e9d53c0e006f986b7290.ctex"]
 
 [params]
 

@@ -1,0 +1,190 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://src/UI/options/options.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://062qc47gehpw" path="res://assets/Options/Rounded Rectangle 1.png" id="3_panel"]
+[ext_resource type="Texture2D" uid="uid://b1h67xmh8ue1f" path="res://assets/Options/OPTIONS.png" id="4_title"]
+[ext_resource type="Texture2D" uid="uid://dqvtotttnj1j6" path="res://assets/Options/SOUND.png" id="5_sound"]
+[ext_resource type="Texture2D" uid="uid://csmxhtsn3dwj1" path="res://assets/Options/MASTER VOLUmE.png" id="6_master_label"]
+[ext_resource type="Texture2D" uid="uid://5u5rri7twh2o" path="res://assets/Options/Master Line.png" id="7_master_line"]
+[ext_resource type="Texture2D" uid="uid://dg28mygs67ylk" path="res://assets/Options/Master Bar.png" id="8_master_bar"]
+[ext_resource type="Texture2D" uid="uid://cxaxx8nclcr8o" path="res://assets/Options/SFX VOLUmE.png" id="9_sfx_label"]
+[ext_resource type="Texture2D" uid="uid://d1so4cehban5o" path="res://assets/Options/Sfx Line.png" id="10_sfx_line"]
+[ext_resource type="Texture2D" uid="uid://y2emdnxlcpcg" path="res://assets/Options/Sfx Bar.png" id="11_sfx_bar"]
+[ext_resource type="Texture2D" uid="uid://p3x0jc24j4ve" path="res://assets/Options/MUSIC VOLUmE.png" id="12_music_label"]
+[ext_resource type="Texture2D" uid="uid://d0r56u07wp8va" path="res://assets/Options/Music Line.png" id="13_music_line"]
+[ext_resource type="Texture2D" uid="uid://8cfkhwch003" path="res://assets/Options/MUSIC Bar.png" id="14_music_bar"]
+[ext_resource type="Texture2D" uid="uid://blrvq64eiyy1f" path="res://assets/Options/BACK.png" id="15_back"]
+[ext_resource type="Texture2D" uid="uid://d4hw4df4o0d7e" path="res://assets/Options/BACK Yellow.png" id="16_back_yellow"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_master"]
+content_margin_top = 5.5
+content_margin_bottom = 5.5
+texture = ExtResource("7_master_line")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sfx"]
+content_margin_top = 5.5
+content_margin_bottom = 5.5
+texture = ExtResource("10_sfx_line")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_music"]
+content_margin_top = 5.5
+content_margin_bottom = 5.5
+texture = ExtResource("13_music_line")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_empty"]
+
+[node name="Options" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Panel" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -614.0
+offset_top = -537.5
+offset_right = 614.0
+offset_bottom = 537.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_panel")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Title" type="TextureRect" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 259.0
+offset_top = 135.0
+offset_right = 969.0
+offset_bottom = 223.0
+mouse_filter = 2
+texture = ExtResource("4_title")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="SoundLabel" type="TextureRect" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 435.0
+offset_top = 332.0
+offset_right = 793.0
+offset_bottom = 394.0
+mouse_filter = 2
+texture = ExtResource("5_sound")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="MasterLabel" type="TextureRect" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 433.0
+offset_top = 458.0
+offset_right = 795.0
+offset_bottom = 482.0
+mouse_filter = 2
+texture = ExtResource("6_master_label")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="MasterSlider" type="HSlider" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 358.0
+offset_top = 498.0
+offset_right = 869.0
+offset_bottom = 557.0
+theme_override_icons/grabber = ExtResource("8_master_bar")
+theme_override_icons/grabber_disabled = ExtResource("8_master_bar")
+theme_override_icons/grabber_highlight = ExtResource("8_master_bar")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/slider = SubResource("StyleBoxTexture_master")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="SfxLabel" type="TextureRect" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 477.0
+offset_top = 602.0
+offset_right = 751.0
+offset_bottom = 626.0
+mouse_filter = 2
+texture = ExtResource("9_sfx_label")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="SfxSlider" type="HSlider" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 358.0
+offset_top = 644.0
+offset_right = 869.0
+offset_bottom = 703.0
+theme_override_icons/grabber = ExtResource("11_sfx_bar")
+theme_override_icons/grabber_disabled = ExtResource("11_sfx_bar")
+theme_override_icons/grabber_highlight = ExtResource("11_sfx_bar")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/slider = SubResource("StyleBoxTexture_sfx")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="MusicLabel" type="TextureRect" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 447.0
+offset_top = 746.0
+offset_right = 781.0
+offset_bottom = 770.0
+mouse_filter = 2
+texture = ExtResource("12_music_label")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="MusicSlider" type="HSlider" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 358.0
+offset_top = 787.0
+offset_right = 869.0
+offset_bottom = 846.0
+theme_override_icons/grabber = ExtResource("14_music_bar")
+theme_override_icons/grabber_disabled = ExtResource("14_music_bar")
+theme_override_icons/grabber_highlight = ExtResource("14_music_bar")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_empty")
+theme_override_styles/slider = SubResource("StyleBoxTexture_music")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="BackButton" type="TextureButton" parent="Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 512.0
+offset_top = 894.0
+offset_right = 716.0
+offset_bottom = 937.0
+ignore_texture_size = true
+texture_normal = ExtResource("15_back")
+texture_hover = ExtResource("16_back_yellow")
+stretch_mode = 0
+
+[connection signal="pressed" from="Panel/BackButton" to="." method="_on_back_pressed"]

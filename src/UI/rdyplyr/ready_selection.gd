@@ -1,9 +1,8 @@
 extends Control
 
-const FADE_TIME := 0.5
-const LOADING_SCREEN := "res://src/UI/ldscrn/ldscrn.tscn"
+const RANDOMIZER_SCENE := "res://src/UI/randomizer/minigame_randomizer.tscn"
 
-const READY_ACTIONS: Array[StringName] = [&"P1_Ready", &"P2_Ready", &"P3_Ready", &"P4_Ready"]
+const READY_ACTIONS := ["P1_Ready", "P2_Ready", "P3_Ready", "P4_Ready"]
 
 const BOX_TEXTURE := preload("res://assets/Character Select/BOX.png")
 const BOX_CHECK_TEXTURE := preload("res://assets/Character Select/BOX CHECK.png")
@@ -15,7 +14,6 @@ const TOGGLE_TIME := 0.15
 const BLINK_MIN_ALPHA := 0.4
 const BLINK_HALF_PERIOD := 0.5
 
-@onready var _fade: ColorRect = $Fade
 @onready var _prompt: TextureRect = $Prompt
 @onready var _portraits: Array[Control] = [
 	$Player1/Portrait,
@@ -35,8 +33,6 @@ var _transitioning := false
 
 
 func _ready() -> void:
-	_fade.visible = true
-	create_tween().tween_property(_fade, "modulate:a", 0.0, FADE_TIME)
 	for portrait in _portraits:
 		portrait.modulate = NOT_READY_MODULATE
 	var blink := create_tween().set_loops()
@@ -47,7 +43,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if _transitioning:
 		return
-	for i in READY_ACTIONS.size():
+	for i in range(READY_ACTIONS.size()):
 		if event.is_action_pressed(READY_ACTIONS[i]):
 			_set_ready(i, not _ready_states[i])
 			get_viewport().set_input_as_handled()
@@ -56,20 +52,29 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _set_ready(index: int, ready: bool) -> void:
 	_ready_states[index] = ready
-	_boxes[index].texture = BOX_CHECK_TEXTURE if ready else BOX_TEXTURE
-	create_tween().tween_property(
-		_portraits[index],
-		"modulate",
-		READY_MODULATE if ready else NOT_READY_MODULATE,
-		TOGGLE_TIME
-	)
-	if ready and not _ready_states.has(false):
+	if ready:
+		_boxes[index].texture = BOX_CHECK_TEXTURE
+		_tween_portrait(index, READY_MODULATE)
+	else:
+		_boxes[index].texture = BOX_TEXTURE
+		_tween_portrait(index, NOT_READY_MODULATE)
+
+	if _all_players_ready():
 		_start_game()
+
+
+func _tween_portrait(index: int, color: Color) -> void:
+	var tween := create_tween()
+	tween.tween_property(_portraits[index], "modulate", color, TOGGLE_TIME)
+
+
+func _all_players_ready() -> bool:
+	for state in _ready_states:
+		if not state:
+			return false
+	return true
 
 
 func _start_game() -> void:
 	_transitioning = true
-	var tween := create_tween()
-	tween.tween_property(_fade, "modulate:a", 1.0, FADE_TIME)
-	await tween.finished
-	get_tree().change_scene_to_file(LOADING_SCREEN)
+	await SceneFader.change_scene(RANDOMIZER_SCENE)
