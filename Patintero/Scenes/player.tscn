@@ -142,7 +142,7 @@ position = Vector2(1.3999994, -0.7999997)
 scale = Vector2(0.5, 0.5165289)
 sprite_frames = SubResource("SpriteFrames_kwao7")
 animation = &"move"
-frame_progress = 0.96034217
+frame_progress = 0.08000342
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1568619728]
 position = Vector2(1.1999997, -0.8)

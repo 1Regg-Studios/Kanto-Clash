@@ -20,7 +20,11 @@ var _boost_timer: float = 0.0
 var _press_time: float = 0.0
 var _stun_timer: float = 0.0
 
+var _flash_tween: Tween
+
+
 func _ready() -> void:
+	_setup_flash()
 	_action = "p%d_move" % player_id
 	sprite.animation = "move"
 	sprite.frame = 0
@@ -69,6 +73,8 @@ func _physics_process(delta: float) -> void:
 
 # Called by the platform's Hitbox
 func _get_hit() -> void:
+	print("player _get_hit called")
+	hit_flash()
 	if _stun_timer > 0.0:
 		return
 	_stun_timer = stun_duration
@@ -88,3 +94,41 @@ func _update_animation() -> void:
 	else:
 		sprite.stop()
 		sprite.frame = 0
+
+
+const FLASH_SHADER := """
+shader_type canvas_item;
+uniform vec4 flash_color : source_color = vec4(1.0);
+uniform float flash_amount : hint_range(0.0, 1.0) = 0.0;
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	COLOR = vec4(mix(tex.rgb, flash_color.rgb, flash_amount), tex.a * COLOR.a);
+}
+"""
+
+var _flash_mats: Array[ShaderMaterial] = []
+
+func _setup_flash() -> void:
+	var shader := Shader.new()
+	shader.code = FLASH_SHADER
+	for s in find_children("*", "AnimatedSprite2D", true, false):
+		var mat := ShaderMaterial.new()
+		mat.shader = shader
+		s.material = mat
+		_flash_mats.append(mat)
+
+func _set_flash(color: Color, amount: float) -> void:
+	for m in _flash_mats:
+		m.set_shader_parameter("flash_color", color)
+		m.set_shader_parameter("flash_amount", amount)
+
+func hit_flash(flashes: int = 3, step: float = 0.06) -> void:
+	if _flash_tween:
+		_flash_tween.kill()
+	_flash_tween = create_tween()
+	for i in flashes:
+		_flash_tween.tween_callback(_set_flash.bind(Color.RED, 1.0))
+		_flash_tween.tween_interval(step)
+		_flash_tween.tween_callback(_set_flash.bind(Color.WHITE, 1.0))
+		_flash_tween.tween_interval(step)
+	_flash_tween.tween_callback(_set_flash.bind(Color.WHITE, 0.0))  # back to normal

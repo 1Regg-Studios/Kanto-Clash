@@ -332,7 +332,7 @@ _data = {
 }
 
 [sub_resource type="GDScript" id="GDScript_8gbba"]
-script/source = "extends Node2D
+script/source = "extends Node
 
 signal lane_advanced(lane_index: int)
 
