@@ -1,0 +1,206 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://bg8knodswev6e" path="res://src/UI/overallleaderboard/overall_leaderboard.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bue37fpsuj37i" path="res://assets/Main Menu UI/Main Menu BG.jpg" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://cg60aofk2exe7" path="res://assets/Overall LeaderBoard/Overall.png" id="3_board"]
+[ext_resource type="Texture2D" uid="uid://dca2gt0in0g1v" path="res://assets/Overall LeaderBoard/PLAYER 1.png" id="4_p1"]
+[ext_resource type="Texture2D" uid="uid://d36esmy3pbum7" path="res://assets/Overall LeaderBoard/PLAYER 2.png" id="5_p2"]
+[ext_resource type="Texture2D" uid="uid://df6ac758j1qpp" path="res://assets/Overall LeaderBoard/PLAYER 3.png" id="6_p3"]
+[ext_resource type="Texture2D" uid="uid://b15v43b2uh5pe" path="res://assets/Overall LeaderBoard/PLAYER 4.png" id="7_p4"]
+[ext_resource type="FontFile" uid="uid://vc8p13pqqln6" path="res://assets/Fonts/UpheavalPro.ttf" id="8_font"]
+[ext_resource type="Texture2D" uid="uid://nq4clckbktra" path="res://assets/Overall LeaderBoard/CLICK ANY KEY TO PROCEED.png" id="9_prompt"]
+
+[node name="OverallLeaderboard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+modulate = Color(0.4, 0.4, 0.4, 1)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Board" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -441.0
+offset_top = -308.0
+offset_right = 441.0
+offset_bottom = 307.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_board")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Row1" type="Control" parent="Board"]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 137.0
+offset_right = 744.0
+offset_bottom = 207.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row1"]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("4_p1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Row2" type="Control" parent="Board"]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 248.0
+offset_right = 744.0
+offset_bottom = 318.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row2"]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("5_p2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Row3" type="Control" parent="Board"]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 359.0
+offset_right = 744.0
+offset_bottom = 429.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row3"]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("6_p3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Row4" type="Control" parent="Board"]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 470.0
+offset_right = 744.0
+offset_bottom = 540.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row4"]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("7_p4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Prompt" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -557.0
+offset_top = 355.0
+offset_right = 557.0
+offset_bottom = 414.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_prompt")
+expand_mode = 1
+stretch_mode = 5

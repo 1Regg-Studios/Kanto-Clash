@@ -1,0 +1,185 @@
+[gd_scene format=3 uid="uid://bw0cobbym33d3"]
+
+[ext_resource type="Script" uid="uid://8x0eoyi1hars" path="res://src/UI/roundleaderboard/roundleaderboard.gd" id="1_0rjpb"]
+[ext_resource type="Texture2D" uid="uid://bue37fpsuj37i" path="res://assets/Main Menu UI/Main Menu BG.jpg" id="2_uxq7d"]
+[ext_resource type="Texture2D" uid="uid://hdq24xg2f0nl" path="res://assets/Round LeaderBoard/Leader Board.png" id="3_ha24m"]
+[ext_resource type="Texture2D" uid="uid://boxb4do1m8gyn" path="res://assets/Round LeaderBoard/PLAYER 1.png" id="4_hwep7"]
+[ext_resource type="FontFile" uid="uid://vc8p13pqqln6" path="res://assets/Fonts/UpheavalPro.ttf" id="5_tyrjg"]
+[ext_resource type="Texture2D" uid="uid://csxosdwnannap" path="res://assets/Round LeaderBoard/PLAYER 2.png" id="6_ythmh"]
+[ext_resource type="Texture2D" uid="uid://ctq2crlv0e80j" path="res://assets/Round LeaderBoard/PLAYER 3.png" id="7_o3qcs"]
+[ext_resource type="Texture2D" uid="uid://cfx3tl03vgu26" path="res://assets/Round LeaderBoard/PLAYER 4.png" id="8_a0wfw"]
+
+[node name="Leaderboard" type="Control" unique_id=1735244505]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_0rjpb")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1257186682]
+modulate = Color(0.4, 0.4, 0.4, 1)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_uxq7d")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Board" type="TextureRect" parent="." unique_id=2108544036]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -441.0
+offset_top = -311.0
+offset_right = 441.0
+offset_bottom = 311.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_ha24m")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Row1" type="Control" parent="Board" unique_id=707345060]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 125.0
+offset_right = 744.0
+offset_bottom = 195.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row1" unique_id=1683297099]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("4_hwep7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row1" unique_id=345007653]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_tyrjg")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Row2" type="Control" parent="Board" unique_id=1326197837]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 236.0
+offset_right = 744.0
+offset_bottom = 306.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row2" unique_id=553225047]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("6_ythmh")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row2" unique_id=621269132]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_tyrjg")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Row3" type="Control" parent="Board" unique_id=1910507704]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 347.0
+offset_right = 744.0
+offset_bottom = 417.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row3" unique_id=1131314076]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("7_o3qcs")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row3" unique_id=1696536789]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_tyrjg")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Row4" type="Control" parent="Board" unique_id=1669707123]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 458.0
+offset_right = 744.0
+offset_bottom = 528.0
+mouse_filter = 2
+
+[node name="PlayerLabel" type="TextureRect" parent="Board/Row4" unique_id=1885126560]
+texture_filter = 1
+layout_mode = 0
+offset_top = 14.0
+offset_right = 376.0
+offset_bottom = 56.0
+mouse_filter = 2
+texture = ExtResource("8_a0wfw")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Score" type="Label" parent="Board/Row4" unique_id=1761875890]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_tyrjg")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1

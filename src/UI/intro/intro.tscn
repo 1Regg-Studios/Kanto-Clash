@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://crep1xmicql72"]
+
+[ext_resource type="Script" uid="uid://qlt8knw8kwio" path="res://src/UI/intro/intro.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://0srdecjg4r4e" path="res://assets/Intro/1Regg LOGO.png" id="2_logo"]
+[ext_resource type="AudioStream" uid="uid://bcg6gdtsbq3g6" path="res://assets/Intro/1 Regg Studios Intro.wav" id="3_audio"]
+
+[node name="Intro" type="Control" unique_id=1669210507]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1646851858]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Logo" type="TextureRect" parent="." unique_id=364257883]
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -244.0
+offset_top = -244.0
+offset_right = 244.0
+offset_bottom = 244.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IntroAudio" type="AudioStreamPlayer" parent="." unique_id=444205289]
+stream = ExtResource("3_audio")

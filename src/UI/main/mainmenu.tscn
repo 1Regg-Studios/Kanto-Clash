@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://byvswrsch5mks" path="res://assets/Main Menu UI/QUIT.png" id="6_rtqnl"]
 [ext_resource type="Texture2D" uid="uid://fdk7xbqhv3ek" path="res://assets/Main Menu UI/QUIT White.png" id="7_cdi1a"]
 [ext_resource type="PackedScene" uid="uid://1wbul62s3wc4" path="res://src/UI/sound_button/sound_button.tscn" id="8_soundbtn"]
+[ext_resource type="Texture2D" uid="uid://cpsl8m37o2anb" path="res://assets/Main Menu UI/Options.png" id="9_options"]
+[ext_resource type="Texture2D" uid="uid://dsr0b0u8jccro" path="res://assets/Main Menu UI/Options White.png" id="10_options_white"]
 
 [node name="Control" type="Control" unique_id=783738536]
 layout_mode = 3
@@ -40,10 +42,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -259.0
-offset_top = -210.0
-offset_right = 259.0
-offset_bottom = 14.0
+offset_left = -300.0
+offset_top = -336.0
+offset_right = 300.0
+offset_bottom = -76.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -60,15 +62,36 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -118.0
-offset_top = 64.5
-offset_right = 68.0
-offset_bottom = 115.5
+offset_left = -213.0
+offset_top = -16.0
+offset_right = 213.0
+offset_bottom = 98.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1.2, 1.2)
+ignore_texture_size = true
 texture_normal = ExtResource("4_2nle4")
 texture_hover = ExtResource("5_50o3v")
+stretch_mode = 0
+
+[node name="OPTIONS" type="TextureButton" parent="." unique_id=2040471901]
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -213.0
+offset_top = 133.0
+offset_right = 213.0
+offset_bottom = 247.0
+grow_horizontal = 2
+grow_vertical = 2
+ignore_texture_size = true
+texture_normal = ExtResource("9_options")
+texture_hover = ExtResource("10_options_white")
+stretch_mode = 0
 
 [node name="QUIT" type="TextureButton" parent="." unique_id=448398820]
 texture_filter = 1
@@ -78,32 +101,24 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -118.0
-offset_top = 155.5
-offset_right = 68.0
-offset_bottom = 206.5
+offset_left = -213.0
+offset_top = 282.0
+offset_right = 213.0
+offset_bottom = 396.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1.2, 1.2)
+ignore_texture_size = true
 texture_normal = ExtResource("6_rtqnl")
 texture_hover = ExtResource("7_cdi1a")
+stretch_mode = 0
 
 [node name="MuteButton" parent="." unique_id=1018241314 instance=ExtResource("8_soundbtn")]
 layout_mode = 1
-offset_left = -86.0
-offset_top = -84.0
-offset_right = -28.0
-offset_bottom = -32.0
-
-[node name="Fade" type="ColorRect" parent="." unique_id=1298872723]
-visible = false
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
+offset_left = -143.333
+offset_top = -140.0
+offset_right = -46.667
+offset_bottom = -53.333
 
 [connection signal="pressed" from="START" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="OPTIONS" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="QUIT" to="." method="_on_quit_pressed"]

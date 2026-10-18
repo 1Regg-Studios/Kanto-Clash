@@ -1,0 +1,193 @@
+[gd_scene format=3 uid="uid://bndt4asoeknwy"]
+
+[ext_resource type="Script" uid="uid://cxk6ymrp63p71" path="res://src/UI/randomizer/minigame_randomizer.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bue37fpsuj37i" path="res://assets/Main Menu UI/Main Menu BG.jpg" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bvwxkikc8r566" path="res://assets/Minigame Randomizer/Game Icon Formatted/BlankState.png" id="3_blank"]
+[ext_resource type="Texture2D" uid="uid://c3uuousudxsg4" path="res://assets/Minigame Randomizer/MINI GAMES.png" id="4_title"]
+[ext_resource type="PackedScene" uid="uid://1wbul62s3wc4" path="res://src/UI/sound_button/sound_button.tscn" id="5_mute"]
+[ext_resource type="Texture2D" uid="uid://cpglxjkjycljo" path="res://assets/Minigame Randomizer/SlotFrame.png" id="6_slotframe"]
+
+[node name="MinigameRandomizer" type="Control" unique_id=391731726]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="." unique_id=626808662]
+modulate = Color(0.4, 0.4, 0.4, 1)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Title" type="TextureRect" parent="." unique_id=916587998]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -405.5
+offset_top = -223.5
+offset_right = 405.5
+offset_bottom = -136.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_title")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Slots" type="Control" parent="." unique_id=1332341346]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -544.0
+offset_top = -2.0
+offset_right = 544.0
+offset_bottom = 222.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Slot1" type="Control" parent="Slots" unique_id=1032713832]
+clip_contents = true
+anchors_preset = 0
+offset_left = 36.815
+offset_right = 260.8151
+offset_bottom = 224.0
+mouse_filter = 2
+
+[node name="Base" type="TextureRect" parent="Slots/Slot1" unique_id=309148792]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_blank")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Reel" type="Control" parent="Slots/Slot1" unique_id=280169659]
+anchors_preset = 0
+offset_right = 224.0
+offset_bottom = 224.0
+mouse_filter = 2
+
+[node name="Slot2" type="Control" parent="Slots" unique_id=1077552271]
+clip_contents = true
+anchors_preset = 0
+offset_left = 300.305
+offset_top = 0.845
+offset_right = 524.3051
+offset_bottom = 224.845
+mouse_filter = 2
+
+[node name="Base" type="TextureRect" parent="Slots/Slot2" unique_id=1950011233]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_blank")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Reel" type="Control" parent="Slots/Slot2" unique_id=646209123]
+anchors_preset = 0
+offset_right = 224.0
+offset_bottom = 224.0
+mouse_filter = 2
+
+[node name="Slot3" type="Control" parent="Slots" unique_id=953632253]
+clip_contents = true
+anchors_preset = 0
+offset_left = 562.875
+offset_right = 786.875
+offset_bottom = 224.0
+mouse_filter = 2
+
+[node name="Base" type="TextureRect" parent="Slots/Slot3" unique_id=206703145]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_blank")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Reel" type="Control" parent="Slots/Slot3" unique_id=147626624]
+anchors_preset = 0
+offset_right = 224.0
+offset_bottom = 224.0
+mouse_filter = 2
+
+[node name="Slot4" type="Control" parent="Slots" unique_id=1857339390]
+clip_contents = true
+anchors_preset = 0
+offset_left = 827.0
+offset_right = 1051.0
+offset_bottom = 224.0
+mouse_filter = 2
+
+[node name="Base" type="TextureRect" parent="Slots/Slot4" unique_id=719096417]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_blank")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Reel" type="Control" parent="Slots/Slot4" unique_id=1244347526]
+anchors_preset = 0
+offset_right = 224.0
+offset_bottom = 224.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Slots" unique_id=953721360]
+texture_filter = 1
+layout_mode = 0
+offset_left = -4.684204
+offset_top = -27.0
+offset_right = 1092.6842
+offset_bottom = 251.0
+mouse_filter = 2
+texture = ExtResource("6_slotframe")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MuteButton" parent="." unique_id=1824261932 instance=ExtResource("5_mute")]
+layout_mode = 1
+offset_left = -143.333
+offset_top = -140.0
+offset_right = -46.667
+offset_bottom = -53.333

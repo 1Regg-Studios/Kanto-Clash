@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bcg6gdtsbq3g6"
+path="res://.godot/imported/1 Regg Studios Intro.wav-8bdcb1360ec1f6d673e8228b7e89613a.sample"
+
+[deps]
+
+source_file="res://assets/Intro/1 Regg Studios Intro.wav"
+dest_files=["res://.godot/imported/1 Regg Studios Intro.wav-8bdcb1360ec1f6d673e8228b7e89613a.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
