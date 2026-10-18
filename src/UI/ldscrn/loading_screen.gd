@@ -20,6 +20,7 @@ var _threaded := false
 
 
 func _ready() -> void:
+	AudioManager.stop_menu_music()
 	if next_scene_path == "":
 		next_scene_path = GameSchedule.next_scene_path
 	_fill_clip.size.x = 0.0
@@ -44,13 +45,9 @@ func _process(delta: float) -> void:
 func _get_target_progress() -> float:
 	if not _threaded:
 		return minf(_elapsed / simulated_load_time, 1.0)
-	match ResourceLoader.load_threaded_get_status(next_scene_path):
-		ResourceLoader.THREAD_LOAD_LOADED:
-			return 1.0
-		ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-			var info: Array = []
-			ResourceLoader.load_threaded_get_status(next_scene_path, info)
-			return info[0]
+	var info: Array = []
+	if ResourceLoader.load_threaded_get_status(next_scene_path, info) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+		return info[0]
 	return 1.0
 
 

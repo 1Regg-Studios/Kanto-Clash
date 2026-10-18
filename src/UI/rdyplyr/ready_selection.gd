@@ -33,6 +33,7 @@ var _transitioning := false
 
 
 func _ready() -> void:
+	AudioManager.start_menu_music()
 	for portrait in _portraits:
 		portrait.modulate = NOT_READY_MODULATE
 	var blink := create_tween().set_loops()
@@ -45,6 +46,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	for i in range(READY_ACTIONS.size()):
 		if event.is_action_pressed(READY_ACTIONS[i]):
+			AudioManager.play_ready()
 			_set_ready(i, not _ready_states[i])
 			get_viewport().set_input_as_handled()
 			return

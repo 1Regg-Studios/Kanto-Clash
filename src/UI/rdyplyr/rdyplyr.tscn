@@ -413,3 +413,4 @@ offset_left = -143.333
 offset_top = -140.0
 offset_right = -46.667
 offset_bottom = -53.333
+play_click_sound = false

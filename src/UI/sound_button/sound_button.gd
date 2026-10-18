@@ -2,10 +2,17 @@ extends TextureButton
 
 const MASTER_BUS := "Master"
 
+@export var play_click_sound := true
+
+var _bus_index: int
+
 
 func _ready() -> void:
-	button_pressed = AudioServer.is_bus_mute(AudioServer.get_bus_index(MASTER_BUS))
+	_bus_index = AudioServer.get_bus_index(MASTER_BUS)
+	set_pressed_no_signal(AudioServer.is_bus_mute(_bus_index))
 
 
 func _toggled(toggled_on: bool) -> void:
-	AudioServer.set_bus_mute(AudioServer.get_bus_index(MASTER_BUS), toggled_on)
+	if play_click_sound:
+		AudioManager.play_click()
+	AudioServer.set_bus_mute(_bus_index, toggled_on)
