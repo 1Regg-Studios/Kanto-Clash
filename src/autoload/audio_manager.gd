@@ -1,6 +1,7 @@
 extends Node
 
 const SETTINGS_PATH := "user://settings.cfg"
+const SETTINGS_SAVE_DELAY := 0.25
 const MASTER_BUS := "Master"
 const MUSIC_BUS := "Music"
 const SFX_BUS := "Sfx"
@@ -17,6 +18,10 @@ const MUSIC_SILENT_DB := -60.0
 var master_volume := 1.0
 var music_volume := 1.0
 var sfx_volume := 1.0
+
+var _settings_timer: Timer
+var _settings_dirty := false
+var _settings_path := SETTINGS_PATH
 
 var _click_player: AudioStreamPlayer
 var _ready_player: AudioStreamPlayer
@@ -37,6 +42,11 @@ func _ready() -> void:
 	_apply_bus(MASTER_BUS, master_volume)
 	_apply_bus(MUSIC_BUS, music_volume)
 	_apply_bus(SFX_BUS, sfx_volume)
+	_settings_timer = Timer.new()
+	_settings_timer.one_shot = true
+	_settings_timer.wait_time = SETTINGS_SAVE_DELAY
+	_settings_timer.timeout.connect(flush_settings)
+	add_child(_settings_timer)
 	_click_player = _make_sfx_player(CLICK_SOUND)
 	_ready_player = _make_sfx_player(READY_SOUND)
 	_pick_player = _make_sfx_player(PICK_SOUND)
@@ -47,6 +57,10 @@ func _ready() -> void:
 	_music_timer.timeout.connect(_play_next_track)
 	add_child(_music_timer)
 	_load_menu_tracks()
+
+
+func _exit_tree() -> void:
+	flush_settings()
 
 
 func _make_sfx_player(stream: AudioStream) -> AudioStreamPlayer:
@@ -98,21 +112,40 @@ func stop_menu_music() -> void:
 
 
 func set_master_volume(value: float) -> void:
-	master_volume = clampf(value, 0.0, 1.0)
+	value = clampf(value, 0.0, 1.0)
+	if master_volume != value:
+		master_volume = value
+		_queue_settings_save()
 	_apply_bus(MASTER_BUS, master_volume)
-	_save_settings()
 
 
 func set_music_volume(value: float) -> void:
-	music_volume = clampf(value, 0.0, 1.0)
+	value = clampf(value, 0.0, 1.0)
+	if music_volume != value:
+		music_volume = value
+		_queue_settings_save()
 	_apply_bus(MUSIC_BUS, music_volume)
-	_save_settings()
 
 
 func set_sfx_volume(value: float) -> void:
-	sfx_volume = clampf(value, 0.0, 1.0)
+	value = clampf(value, 0.0, 1.0)
+	if sfx_volume != value:
+		sfx_volume = value
+		_queue_settings_save()
 	_apply_bus(SFX_BUS, sfx_volume)
+
+
+func flush_settings() -> void:
+	if not _settings_dirty:
+		return
+	_settings_timer.stop()
 	_save_settings()
+
+
+func _queue_settings_save() -> void:
+	# Apply slider changes immediately, but coalesce disk writes while dragging.
+	_settings_dirty = true
+	_settings_timer.start()
 
 
 func _load_menu_tracks() -> void:
@@ -186,7 +219,7 @@ func _apply_bus(bus_name: String, volume: float) -> void:
 
 func _load_settings() -> void:
 	var config := ConfigFile.new()
-	if config.load(SETTINGS_PATH) != OK:
+	if config.load(_settings_path) != OK:
 		return
 	master_volume = float(config.get_value("audio", "master", 1.0))
 	music_volume = float(config.get_value("audio", "music", 1.0))
@@ -198,4 +231,8 @@ func _save_settings() -> void:
 	config.set_value("audio", "master", master_volume)
 	config.set_value("audio", "music", music_volume)
 	config.set_value("audio", "sfx", sfx_volume)
-	config.save(SETTINGS_PATH)
+	var error := config.save(_settings_path)
+	if error == OK:
+		_settings_dirty = false
+	else:
+		push_warning("Could not save audio settings: %s" % error_string(error))

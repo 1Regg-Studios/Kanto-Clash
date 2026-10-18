@@ -3,7 +3,8 @@ extends Control
 const LOADING_SCREEN := "res://src/UI/ldscrn/ldscrn.tscn"
 
 const ICON_SIZE := 224
-const REEL_COPIES := 4
+# Free spin stays within one sequence; braking travels less than one more.
+const REEL_COPIES := 2
 const SPIN_SPEED := 1900.0
 const SPIN_RAMP_TIME := 0.4
 const SPIN_ACCEL := SPIN_SPEED / SPIN_RAMP_TIME
@@ -28,18 +29,20 @@ const TOGGLE_TIME := 0.15
 ]
 
 var _icons: Array[Texture2D] = []
+var _sequence := 0.0
 var _spinning: Array[bool] = [true, true, true, true]
 var _spin_speed := 0.0
-var _spin_started := false
 var _landed := 0
 var _transitioning := false
 
 
 func _ready() -> void:
+	set_process(false)
 	AudioManager.start_menu_music()
 	_icons = GameSchedule.load_icons()
 	if _icons.is_empty():
 		return
+	_sequence = float(ICON_SIZE * _icons.size())
 	for reel in _reels:
 		_build_reel(reel)
 		reel.modulate = NOT_READY_MODULATE
@@ -48,8 +51,6 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if not _spin_started:
-		return
 	_spin_speed = minf(_spin_speed + SPIN_ACCEL * delta, SPIN_SPEED)
 	for i in _reels.size():
 		if _spinning[i]:
@@ -60,7 +61,7 @@ func _start_spin() -> void:
 	await get_tree().create_timer(SPIN_START_DELAY).timeout
 	if _transitioning:
 		return
-	_spin_started = true
+	set_process(true)
 	_roll()
 
 
@@ -92,19 +93,18 @@ func _roll() -> void:
 func _spin_reel(slot: int, delta: float) -> void:
 	var reel := _reels[slot]
 	reel.position.y -= _spin_speed * delta
-	var sequence := float(ICON_SIZE * _icons.size())
-	if reel.position.y <= -sequence:
-		reel.position.y += sequence
+	if reel.position.y <= -_sequence:
+		# Normalize even when a slow frame crosses more than one full sequence.
+		reel.position.y = -fposmod(-reel.position.y, _sequence)
 
 
 func _land_slot(slot: int, target_index: int) -> void:
 	var reel := _reels[slot]
-	var sequence := float(ICON_SIZE * _icons.size())
 	var target_y := -float(target_index * ICON_SIZE)
-	var until_brake := fposmod(fposmod(reel.position.y - target_y, sequence) - LAND_DISTANCE, sequence)
+	var until_brake := fposmod(fposmod(reel.position.y - target_y, _sequence) - LAND_DISTANCE, _sequence)
 	await get_tree().create_timer(until_brake / SPIN_SPEED).timeout
 	_spinning[slot] = false
-	var travel := fposmod(reel.position.y - target_y, sequence)
+	var travel := fposmod(reel.position.y - target_y, _sequence)
 	var tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(reel, "position:y", reel.position.y - travel, 2.0 * travel / SPIN_SPEED)
 	await tween.finished
@@ -121,6 +121,7 @@ func _on_slot_landed(slot: int) -> void:
 
 func _finish() -> void:
 	_transitioning = true
+	set_process(false)
 	await get_tree().create_timer(HOLD_TIME).timeout
 	GameSchedule.next_scene_path = GameSchedule.first_scene_path()
 	await SceneFader.change_scene(LOADING_SCREEN)
