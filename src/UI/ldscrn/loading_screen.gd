@@ -17,6 +17,8 @@ const MAIN_MENU_SCENE := "res://src/UI/main/mainmenu.tscn"
 var _progress := 0.0
 var _elapsed := 0.0
 var _threaded := false
+var _load_progress: Array = []
+var _load_status := ResourceLoader.THREAD_LOAD_INVALID_RESOURCE
 
 
 func _ready() -> void:
@@ -26,6 +28,8 @@ func _ready() -> void:
 	_fill_clip.size.x = 0.0
 	if next_scene_path != "" and ResourceLoader.exists(next_scene_path):
 		_threaded = ResourceLoader.load_threaded_request(next_scene_path) == OK
+		if _threaded:
+			_load_status = ResourceLoader.THREAD_LOAD_IN_PROGRESS
 	var blink := create_tween().set_loops()
 	blink.tween_property(_loading_text, "modulate:a", BLINK_MIN_ALPHA, BLINK_HALF_PERIOD)
 	blink.tween_property(_loading_text, "modulate:a", 1.0, BLINK_HALF_PERIOD)
@@ -38,22 +42,23 @@ func _process(delta: float) -> void:
 		target = minf(target, EARLY_MAX_PROGRESS)
 	_progress = move_toward(_progress, target, delta * fill_speed)
 	_fill_clip.size.x = _progress_bar.size.x * _progress
-	if target >= 1.0 and _progress >= 1.0:
+	if target >= 1.0 and _progress >= 1.0 and _load_status != ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 		_finish()
 
 
 func _get_target_progress() -> float:
 	if not _threaded:
 		return minf(_elapsed / simulated_load_time, 1.0)
-	var info: Array = []
-	if ResourceLoader.load_threaded_get_status(next_scene_path, info) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-		return info[0]
+	if _load_status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+		_load_status = ResourceLoader.load_threaded_get_status(next_scene_path, _load_progress)
+		if _load_status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			return float(_load_progress[0]) if not _load_progress.is_empty() else 0.0
 	return 1.0
 
 
 func _finish() -> void:
 	set_process(false)
-	if _threaded:
+	if _load_status == ResourceLoader.THREAD_LOAD_LOADED:
 		var packed := ResourceLoader.load_threaded_get(next_scene_path) as PackedScene
 		if packed != null:
 			await SceneFader.change_scene_to_packed(packed)

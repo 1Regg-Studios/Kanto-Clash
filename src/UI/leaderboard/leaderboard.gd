@@ -45,8 +45,8 @@ func play(scores: Array) -> void:
 	_place_rows(starting_order)
 
 	_remaining = ROW_COUNT
-	for i in range(ROW_COUNT):
-		_count_up_row(i, starting_order.find(i))
+	for slot in range(ROW_COUNT):
+		_count_up_row(starting_order[slot], slot)
 
 
 func _count_up_row(index: int, starting_slot: int) -> void:

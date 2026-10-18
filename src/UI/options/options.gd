@@ -40,6 +40,7 @@ func _on_back_pressed() -> void:
 	_transitioning = true
 	_back_button.disabled = true
 	await _slide(_panel.position + Vector2(0.0, get_viewport_rect().size.y), 0.0, Tween.EASE_IN).finished
+	AudioManager.flush_settings()
 	closed.emit()
 
 

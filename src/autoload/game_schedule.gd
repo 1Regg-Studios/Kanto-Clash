@@ -41,18 +41,99 @@ var picked: Array[String] = []
 var skipped := ""
 var next_scene_path := ""
 
+# Keep game picks independent from menu music and reel animation randomness.
+var _rng := RandomNumberGenerator.new()
+var _history_path := "user://game_schedule.cfg"
+var _last_picked: Array[String] = []
+var _last_skipped := ""
+var _skip_pool: Array[String] = []
+
+
+func _ready() -> void:
+	_rng.randomize()
+	_load_history()
+
 
 func roll() -> Array[String]:
 	var pool: Array[String] = []
 	for game in GAMES:
 		pool.append(game["id"])
-	pool.shuffle()
+	skipped = _pick_skipped(pool)
+	pool.erase(skipped)
 	picked = []
-	for i in ROUNDS:
-		picked.append(pool[i])
-	skipped = pool[ROUNDS]
+	for _round in ROUNDS:
+		var index := _rng.randi_range(0, pool.size() - 1)
+		picked.append(pool.pop_at(index))
+	_avoid_repeated_slots()
+	_last_picked = picked.duplicate()
+	_last_skipped = skipped
+	_save_history()
 	roster_ready.emit(picked, skipped)
 	return picked
+
+
+func _pick_skipped(pool: Array[String]) -> String:
+	# Every game sits out once per five-run cycle, in a random order.
+	if _skip_pool.is_empty():
+		_skip_pool = pool.duplicate()
+	var candidates: Array[String] = _skip_pool.duplicate()
+	# Also prevent repeating the skipped game across cycle boundaries.
+	candidates.erase(_last_skipped)
+	var id := candidates[_rng.randi_range(0, candidates.size() - 1)]
+	_skip_pool.erase(id)
+	return id
+
+
+func _avoid_repeated_slots() -> void:
+	for slot in mini(picked.size(), _last_picked.size()):
+		if picked[slot] != _last_picked[slot]:
+			continue
+		var other := _rng.randi_range(0, picked.size() - 2)
+		if other >= slot:
+			other += 1
+		# Unique IDs mean moving a matched game cannot create a repeat elsewhere.
+		var id := picked[slot]
+		picked[slot] = picked[other]
+		picked[other] = id
+
+
+func _load_history() -> void:
+	var config := ConfigFile.new()
+	if config.load(_history_path) != OK:
+		return
+	var last_picked: Variant = config.get_value("variety", "last_picked", [])
+	var last_skipped: Variant = config.get_value("variety", "last_skipped", "")
+	var skip_pool: Variant = config.get_value("variety", "skip_pool", [])
+	if not _valid_history_ids(last_picked) or not _valid_history_ids(skip_pool):
+		return
+	if not last_skipped is String or index_of(last_skipped) == -1:
+		return
+	if last_picked.size() != ROUNDS or last_picked.has(last_skipped) or skip_pool.has(last_skipped):
+		return
+	_last_picked.assign(last_picked)
+	_last_skipped = last_skipped
+	_skip_pool.assign(skip_pool)
+
+
+func _valid_history_ids(value: Variant) -> bool:
+	if not value is Array:
+		return false
+	var seen: Array[String] = []
+	for id in value:
+		if not id is String or index_of(id) == -1 or seen.has(id):
+			return false
+		seen.append(id)
+	return true
+
+
+func _save_history() -> void:
+	var config := ConfigFile.new()
+	config.set_value("variety", "last_picked", _last_picked)
+	config.set_value("variety", "last_skipped", _last_skipped)
+	config.set_value("variety", "skip_pool", _skip_pool)
+	var error := config.save(_history_path)
+	if error != OK:
+		push_warning("Could not save game schedule history: %s" % error_string(error))
 
 
 func load_icons() -> Array[Texture2D]:
@@ -99,6 +180,7 @@ func first_scene_path() -> String:
 
 
 func reset() -> void:
+	# Keep variety history when clearing the active run.
 	picked = []
 	skipped = ""
 	next_scene_path = ""

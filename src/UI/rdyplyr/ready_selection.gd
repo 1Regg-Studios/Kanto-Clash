@@ -29,6 +29,7 @@ const BLINK_HALF_PERIOD := 0.5
 ]
 
 var _ready_states: Array[bool] = [false, false, false, false]
+var _portrait_tweens: Array[Tween] = [null, null, null, null]
 var _transitioning := false
 
 
@@ -66,7 +67,11 @@ func _set_ready(index: int, ready: bool) -> void:
 
 
 func _tween_portrait(index: int, color: Color) -> void:
+	var previous := _portrait_tweens[index]
+	if previous != null and previous.is_valid():
+		previous.kill()
 	var tween := create_tween()
+	_portrait_tweens[index] = tween
 	tween.tween_property(_portraits[index], "modulate", color, TOGGLE_TIME)
 
 
