@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://csffilwrx7w87"]
+
+[ext_resource type="PackedScene" uid="uid://cek7d54635s5c" path="res://Kanto Clash/MiniGames/Tug Of war/player_scene.tscn" id="1_2y4k0"]
+[ext_resource type="Texture2D" uid="uid://be5paq6xwuc8r" path="res://Kanto Clash/MiniGames/Art Assets/Tug Of War BG.png" id="1_xbt1v"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jtnub"]
+size = Vector2(1121.5, 84.5)
+
+[node name="TugOfwar" type="Node2D" unique_id=623005286]
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=33482416]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TugOfWarBg2" type="Sprite2D" parent="TextureRect" unique_id=177657834]
+position = Vector2(580, 325.5)
+scale = Vector2(0.59791666, 0.5953704)
+texture = ExtResource("1_xbt1v")
+
+[node name="PlayerScene" parent="TextureRect" unique_id=374640963 instance=ExtResource("1_2y4k0")]
+position = Vector2(249, 193)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1875231761]
+position = Vector2(582, 324)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=919169062]
+position = Vector2(172, 50)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1438509171]
+position = Vector2(402, 351)
+shape = SubResource("RectangleShape2D_jtnub")

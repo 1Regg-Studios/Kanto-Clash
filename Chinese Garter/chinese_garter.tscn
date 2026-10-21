@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://bt64m3fk51w2u"]
+
+[ext_resource type="Texture2D" uid="uid://wm8s1obawrv0" path="res://Kanto Clash/MiniGames/Art Assets/chinese garter bg.png" id="1_eqlk1"]
+[ext_resource type="PackedScene" uid="uid://c8b6jq3udl75s" path="res://Kanto Clash/MiniGames/Chinese Garter/ChineseGarterPlayerScene.tscn" id="2_7qxwr"]
+[ext_resource type="Script" uid="uid://tqh3ykfh1gph" path="res://Kanto Clash/MiniGames/Chinese Garter/timing_guage.gd" id="3_7qxwr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jtnub"]
+size = Vector2(1154.5, 116.5)
+
+[node name="ChineseGarter" type="Node2D" unique_id=1764537106]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1390289988]
+position = Vector2(577.875, 325)
+scale = Vector2(0.6022135, 0.5981481)
+texture = ExtResource("1_eqlk1")
+
+[node name="ChineseGarterPlayerScene" parent="." unique_id=400635363 instance=ExtResource("2_7qxwr")]
+position = Vector2(17, 99)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1588393193]
+position = Vector2(578, 325)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=538801471]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1436817242]
+position = Vector2(577, 492)
+shape = SubResource("RectangleShape2D_jtnub")
+
+[node name="TimingGuage" type="Node2D" parent="." unique_id=645281933]
+script = ExtResource("3_7qxwr")
