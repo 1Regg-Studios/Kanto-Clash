@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bt64m3fk51w2u"]
 
-[ext_resource type="Texture2D" uid="uid://wm8s1obawrv0" path="res://Kanto Clash/MiniGames/Art Assets/chinese garter bg.png" id="1_eqlk1"]
+[ext_resource type="Texture2D" uid="uid://bfqs0e6cawp5k" path="res://Kanto Clash/MiniGames/Art Assets/Chinese grater BG.png" id="1_7qxwr"]
 [ext_resource type="PackedScene" uid="uid://c8b6jq3udl75s" path="res://Kanto Clash/MiniGames/Chinese Garter/ChineseGarterPlayerScene.tscn" id="2_7qxwr"]
 [ext_resource type="Script" uid="uid://tqh3ykfh1gph" path="res://Kanto Clash/MiniGames/Chinese Garter/timing_guage.gd" id="3_7qxwr"]
 
@@ -9,10 +9,10 @@ size = Vector2(1154.5, 116.5)
 
 [node name="ChineseGarter" type="Node2D" unique_id=1764537106]
 
-[node name="Background" type="Sprite2D" parent="." unique_id=1390289988]
-position = Vector2(577.875, 325)
-scale = Vector2(0.6022135, 0.5981481)
-texture = ExtResource("1_eqlk1")
+[node name="Background" type="Sprite2D" parent="." unique_id=1684062009]
+position = Vector2(579.25, 321.75)
+scale = Vector2(0.59765625, 0.5986111)
+texture = ExtResource("1_7qxwr")
 
 [node name="ChineseGarterPlayerScene" parent="." unique_id=400635363 instance=ExtResource("2_7qxwr")]
 position = Vector2(17, 99)
