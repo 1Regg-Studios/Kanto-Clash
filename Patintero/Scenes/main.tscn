@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b5tur5htv1vq1"]
 
-[ext_resource type="Texture2D" uid="uid://dpyh58wdmfars" path="res://Sprites/PATINTERO-20261016T040509Z-1-001/PATINTERO/Patintero BG changed.png" id="1_8gbba"]
+[ext_resource type="Texture2D" uid="uid://b8tvbh1hwypls" path="res://Sprites/PATINTERO-20261016T040509Z-1-001/PATINTERO/Patintero final BG.png" id="1_8gbba"]
 [ext_resource type="PackedScene" uid="uid://dd72e4b6ehom5" path="res://Scenes/player.tscn" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://bo4eqgb4i2kko" path="res://Scenes/platform.tscn" id="3_8gbba"]
 
@@ -361,13 +361,19 @@ func _get_lane(x: float) -> int:
 
 [node name="Main" type="Node2D" unique_id=1357374264]
 
-[node name="PatinteroBgChanged" type="Sprite2D" parent="." unique_id=1281965597]
-position = Vector2(572, 326)
-scale = Vector2(0.59999996, 0.6037038)
+[node name="PatinteroFinalBg" type="Sprite2D" parent="." unique_id=1580894133]
+position = Vector2(573.3333, 322.5)
+scale = Vector2(3.5833333, 3.5833333)
 texture = ExtResource("1_8gbba")
 
 [node name="Player" parent="." unique_id=1710869111 instance=ExtResource("1_jjgbg")]
 position = Vector2(177, 119)
+boost_speed = 1200.0
+boost_duration = 0.05
+deceleration = 3500.0
+max_tap_hold = 0.1
+stun_duration = 2.0
+ghost_interval = 0.2
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=676751117]
 position = Vector2(16, 203)
