@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://b0khrj5q1av2h"]
+
+[ext_resource type="Script" uid="uid://dx4kk5g4dkmy4" path="res://Script/powergauge.gd" id="1_dm2ps"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_i0f24"]
+load_path = "res://.godot/imported/BG.png-ddf9e59977212ef2997e2986d86841db.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dm2ps"]
+load_path = "res://.godot/imported/HITBOX.png-b20c3e196efa28267a322f11a5abdc79.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_sdeel"]
+load_path = "res://.godot/imported/GAUGE.png-0c27cd9e57ead21f258c42aef01e2221.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_h506f"]
+load_path = "res://.godot/imported/BAR.png-7ce3f8b9a384b99261e9cc758f7837a8.ctex"
+
+[node name="PowerGauge" type="Node2D" unique_id=786895121]
+script = ExtResource("1_dm2ps")
+
+[node name="Bg" type="Sprite2D" parent="." unique_id=1108201917]
+position = Vector2(184.74998, 318.3082)
+scale = Vector2(0.6917808, 0.69178087)
+texture = SubResource("CompressedTexture2D_i0f24")
+
+[node name="Hitbox" type="Sprite2D" parent="Bg" unique_id=2145285618]
+position = Vector2(-2.1683044, -0.66329956)
+scale = Vector2(0.9405944, 0.9687112)
+texture = SubResource("CompressedTexture2D_dm2ps")
+
+[node name="bg" type="TextureRect" parent="." unique_id=1528215401]
+offset_left = 153.0
+offset_top = 15.000001
+offset_right = 318.0
+offset_bottom = 907.0
+scale = Vector2(0.68000174, 0.6830267)
+texture = SubResource("CompressedTexture2D_sdeel")
+
+[node name="Line" type="TextureRect" parent="." unique_id=765213428]
+offset_left = 126.0
+offset_top = 575.0
+offset_right = 245.0
+offset_bottom = 615.0
+texture = SubResource("CompressedTexture2D_h506f")

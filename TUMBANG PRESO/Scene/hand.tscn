@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://bgh4vcicpncbt"]
+
+[ext_resource type="Texture2D" uid="uid://c3inkhpvgm5p4" path="res://Sprite/TUMBANG PRESO/Throwing animation/1.png" id="1_awpat"]
+[ext_resource type="Texture2D" uid="uid://vs0gyl8h0t6" path="res://Sprite/TUMBANG PRESO/Throwing animation/2.png" id="2_fb1sb"]
+[ext_resource type="Texture2D" uid="uid://b7bvrc0w78g74" path="res://Sprite/TUMBANG PRESO/Throwing animation/3.png" id="3_ksjlf"]
+[ext_resource type="Texture2D" uid="uid://bdafqm75ylgbq" path="res://Sprite/TUMBANG PRESO/Throwing animation/4.png" id="4_perxe"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jvale"]
+animations = [{
+"frames": [{
+"duration": 1.1,
+"texture": ExtResource("1_awpat")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_fb1sb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ksjlf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_perxe")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 3.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jvale"]
+radius = 31.906113
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1010254049]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1656719658]
+position = Vector2(1146.0001, 431)
+scale = Vector2(0.4648148, 0.4648148)
+sprite_frames = SubResource("SpriteFrames_jvale")
+autoplay = "default"
+frame_progress = 0.43286923
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=532299697]
+position = Vector2(1103, 627)
+shape = SubResource("CircleShape2D_jvale")

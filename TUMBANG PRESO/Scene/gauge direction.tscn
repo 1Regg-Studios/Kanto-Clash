@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://crk6j1e8uxlrg"]
+
+[ext_resource type="Script" uid="uid://poq2nb5n3h38" path="res://Script/directiongauge.gd" id="1_iebl5"]
+[ext_resource type="Texture2D" uid="uid://c2i8b7ywb1gcn" path="res://Sprite/TUMBANG PRESO/UI/Direction/HIT BOX.png" id="2_70u31"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_b6efj"]
+load_path = "res://.godot/imported/BG.png-4f77c3e21036875ab10b88471f077919.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_31685"]
+load_path = "res://.godot/imported/GUAGE.png-394b073a203bf074aabae19abe0746e6.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_iebl5"]
+load_path = "res://.godot/imported/BAR.png-92a8b5bdc769798ae629a89f8e12394d.ctex"
+
+[node name="DirectionGuage" type="Node2D" unique_id=1980682558]
+script = ExtResource("1_iebl5")
+
+[node name="Bg" type="Sprite2D" parent="." unique_id=876015748]
+position = Vector2(446, 99)
+texture = SubResource("CompressedTexture2D_b6efj")
+
+[node name="Bg2" type="Sprite2D" parent="." unique_id=904715423]
+position = Vector2(448, 101)
+texture = ExtResource("2_70u31")
+
+[node name="background" type="TextureRect" parent="." unique_id=1807046036]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("CompressedTexture2D_31685")
+
+[node name="Line" type="TextureRect" parent="." unique_id=821428203]
+offset_left = 433.0
+offset_top = 39.0
+offset_right = 473.0
+offset_bottom = 157.0
+texture = SubResource("CompressedTexture2D_iebl5")

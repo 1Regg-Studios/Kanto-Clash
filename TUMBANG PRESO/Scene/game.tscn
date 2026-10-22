@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://n7tm3bbuvu2u"]
+
+[ext_resource type="Texture2D" uid="uid://d0801dcglb2kw" path="res://Sprite/Tumbang Preso BG.png" id="1_mhtsl"]
+[ext_resource type="PackedScene" uid="uid://crk6j1e8uxlrg" path="res://Scene/gauge direction.tscn" id="2_w51g1"]
+[ext_resource type="PackedScene" uid="uid://b0khrj5q1av2h" path="res://Scene/powergauge.tscn" id="3_4jv7b"]
+[ext_resource type="PackedScene" uid="uid://bgh4vcicpncbt" path="res://Scene/hand.tscn" id="4_03iqk"]
+[ext_resource type="PackedScene" uid="uid://dlgy8g0bxuwys" path="res://Scene/can.tscn" id="5_ihreq"]
+[ext_resource type="PackedScene" uid="uid://b0y6tqcqsjyo6" path="res://Scene/controller.tscn" id="6_h8jt7"]
+[ext_resource type="Script" uid="uid://bp7mirpdcs1do" path="res://Script/controller.gd" id="7_sagxc"]
+
+[node name="Node2D" type="Node2D" unique_id=447043128]
+
+[node name="TumbangPresoBg" type="Sprite2D" parent="." unique_id=149803324]
+position = Vector2(578.2222, 326.75)
+scale = Vector2(0.600463, 0.600463)
+texture = ExtResource("1_mhtsl")
+
+[node name="DirectionGuage" parent="." unique_id=1980682558 instance=ExtResource("2_w51g1")]
+position = Vector2(175, 539)
+scale = Vector2(0.51096463, 0.51096463)
+
+[node name="PowerGauge" parent="." unique_id=786895121 instance=ExtResource("3_4jv7b")]
+position = Vector2(-36, 206)
+scale = Vector2(0.64, 0.64)
+
+[node name="CharacterBody2D" parent="." unique_id=1010254049 instance=ExtResource("4_03iqk")]
+position = Vector2(-537, -177)
+scale = Vector2(1.4598532, 1.38638)
+
+[node name="Can" parent="." unique_id=623103784 instance=ExtResource("5_ihreq")]
+position = Vector2(390.00006, 86.000015)
+scale = Vector2(0.32843697, 0.3495719)
+
+[node name="Controller" parent="." unique_id=1081483483 node_paths=PackedStringArray("direction_gauge", "power_gauge", "can") instance=ExtResource("6_h8jt7")]
+position = Vector2(1001, 440)
+script = ExtResource("7_sagxc")
+direction_gauge = NodePath("../DirectionGuage")
+power_gauge = NodePath("../PowerGauge")
+can = NodePath("../Can")
