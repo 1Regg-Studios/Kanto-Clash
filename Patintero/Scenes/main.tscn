@@ -8,6 +8,9 @@
 a = Vector2(-179, -97)
 b = Vector2(1085, -93)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jvale"]
+size = Vector2(1141, 46)
+
 [sub_resource type="Animation" id="Animation_jjvhh"]
 loop_mode = 2
 tracks/0/type = "value"
@@ -387,6 +390,11 @@ position = Vector2(1028.0001, -78.000015)
 rotation = 1.5683389
 shape = SubResource("SegmentShape2D_h1bgf")
 
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="StaticBody2D" unique_id=1011200284]
+position = Vector2(-108.000244, -78.000015)
+rotation = 1.5683389
+shape = SubResource("SegmentShape2D_h1bgf")
+
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D" unique_id=1147969199]
 position = Vector2(153, 209)
 shape = SubResource("SegmentShape2D_h1bgf")
@@ -402,6 +410,14 @@ shape = SubResource("SegmentShape2D_h1bgf")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=1649178554]
 position = Vector2(163, -46)
 shape = SubResource("SegmentShape2D_h1bgf")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="StaticBody2D" unique_id=380628229]
+position = Vector2(560.5, -178)
+shape = SubResource("RectangleShape2D_jvale")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="StaticBody2D" unique_id=1931661549]
+position = Vector2(560.5, 414)
+shape = SubResource("RectangleShape2D_jvale")
 
 [node name="Platform" parent="." unique_id=511646536 instance=ExtResource("3_8gbba")]
 position = Vector2(263, 276)
