@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://dlgy8g0bxuwys"]
+
+[ext_resource type="Script" uid="uid://xgedqqui8fcr" path="res://Script/can.gd" id="1_n35oo"]
+[ext_resource type="Texture2D" uid="uid://cypuev8pfaffc" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/1.png" id="1_r4uv8"]
+[ext_resource type="Texture2D" uid="uid://cdpk3562hs4os" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/2.png" id="2_n35oo"]
+[ext_resource type="Texture2D" uid="uid://d138vvc7h6cg3" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/3.png" id="3_t1pbt"]
+[ext_resource type="Texture2D" uid="uid://bc1gdgtya4ok2" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/4.png" id="4_pj83k"]
+[ext_resource type="Texture2D" uid="uid://b2jd0shgwcjko" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/5.png" id="5_i0rxr"]
+[ext_resource type="Texture2D" uid="uid://ciwjp4nktr57l" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/6.png" id="6_fyjdw"]
+[ext_resource type="Texture2D" uid="uid://b44p4bfr1t6q1" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/7.png" id="7_bs1fp"]
+[ext_resource type="Texture2D" uid="uid://qebbjsg3dw1d" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/8.png" id="8_at1ub"]
+[ext_resource type="Texture2D" uid="uid://6n831vbb2bid" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/9.png" id="9_0otsr"]
+[ext_resource type="Texture2D" uid="uid://b8enlyb0i60ys" path="res://Sprite/TUMBANG PRESO/Can Getting Hit Animation/10.png" id="10_pqiw4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jvale"]
+size = Vector2(200, 301)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jvale"]
+animations = [{
+"frames": [{
+"duration": 0.01,
+"texture": ExtResource("1_r4uv8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_n35oo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_t1pbt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pj83k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_i0rxr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_fyjdw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_bs1fp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_at1ub")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_0otsr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_pqiw4")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 9.0
+}]
+
+[node name="Can" type="AnimatableBody2D" unique_id=623103784]
+disable_mode = 2
+script = ExtResource("1_n35oo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=222490871]
+position = Vector2(613, 311.5)
+shape = SubResource("RectangleShape2D_jvale")
+
+[node name="can" type="AnimatedSprite2D" parent="." unique_id=448128311]
+position = Vector2(723, 431)
+sprite_frames = SubResource("SpriteFrames_jvale")
