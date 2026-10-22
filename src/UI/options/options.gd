@@ -13,6 +13,7 @@ const DIM_ALPHA := 0.6
 @onready var _back_button: TextureButton = $Panel/BackButton
 
 var _transitioning := false
+var _slide_tween: Tween
 
 
 func _ready() -> void:
@@ -31,7 +32,11 @@ func _bind_slider(slider: HSlider, value: float, setter: Callable) -> void:
 func _slide_in() -> void:
 	var end := _panel.position
 	_panel.position += Vector2(0.0, get_viewport_rect().size.y)
-	_slide(end, DIM_ALPHA, Tween.EASE_OUT)
+	_slide_tween = _slide(end, DIM_ALPHA, Tween.EASE_OUT)
+
+
+func close() -> void:
+	_on_back_pressed()
 
 
 func _on_back_pressed() -> void:
@@ -39,6 +44,8 @@ func _on_back_pressed() -> void:
 		return
 	_transitioning = true
 	_back_button.disabled = true
+	if _slide_tween != null and _slide_tween.is_valid():
+		_slide_tween.kill()
 	await _slide(_panel.position + Vector2(0.0, get_viewport_rect().size.y), 0.0, Tween.EASE_IN).finished
 	AudioManager.flush_settings()
 	closed.emit()

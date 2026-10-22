@@ -58,9 +58,14 @@ func _get_target_progress() -> float:
 
 func _finish() -> void:
 	set_process(false)
+	var packed: PackedScene
 	if _load_status == ResourceLoader.THREAD_LOAD_LOADED:
-		var packed := ResourceLoader.load_threaded_get(next_scene_path) as PackedScene
-		if packed != null:
-			await SceneFader.change_scene_to_packed(packed)
-			return
+		packed = ResourceLoader.load_threaded_get(next_scene_path) as PackedScene
+	if packed == null and next_scene_path != "" and ResourceLoader.exists(next_scene_path):
+		# A threaded request can fail even when the scene is still loadable normally.
+		packed = ResourceLoader.load(next_scene_path) as PackedScene
+	if packed != null:
+		await SceneFader.change_scene_to_packed(packed)
+		return
+	push_error("Could not load scheduled game scene: %s" % next_scene_path)
 	await SceneFader.change_scene(MAIN_MENU_SCENE)

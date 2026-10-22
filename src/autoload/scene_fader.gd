@@ -9,6 +9,7 @@ var _busy := false
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	layer = 100
 	_cover = ColorRect.new()
 	_cover.color = Color.BLACK

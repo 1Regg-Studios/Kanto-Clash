@@ -1,0 +1,110 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://src/UI/pause/pause_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/Pause/PAUSE BOX.png" id="2_box"]
+[ext_resource type="Texture2D" path="res://assets/Pause/RESUME W.png" id="3_resume"]
+[ext_resource type="Texture2D" path="res://assets/Pause/RESUME Y.png" id="4_resume_hover"]
+[ext_resource type="Texture2D" path="res://assets/Pause/OPTIONS W.png" id="5_options"]
+[ext_resource type="Texture2D" path="res://assets/Pause/OPTIONS Y.png" id="6_options_hover"]
+[ext_resource type="Texture2D" path="res://assets/Pause/MAIN MENU W.png" id="7_main_menu"]
+[ext_resource type="Texture2D" path="res://assets/Pause/MAIN MENU Y.png" id="8_main_menu_hover"]
+[ext_resource type="Texture2D" path="res://assets/Pause/QUIT W.png" id="9_quit"]
+[ext_resource type="Texture2D" path="res://assets/Pause/QUIT Y.png" id="10_quit_hover"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 50
+process_mode = 3
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Center" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -366.0
+offset_top = -462.5
+offset_right = 366.0
+offset_bottom = 462.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="TextureRect" parent="Root/Center"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_box")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="ResumeButton" type="TextureButton" parent="Root/Center/Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 179.25
+offset_top = 330.0
+offset_right = 552.75
+offset_bottom = 381.0
+ignore_texture_size = true
+texture_normal = ExtResource("3_resume")
+texture_hover = ExtResource("4_resume_hover")
+stretch_mode = 0
+
+[node name="OptionsButton" type="TextureButton" parent="Root/Center/Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 179.25
+offset_top = 440.0
+offset_right = 552.75
+offset_bottom = 486.5
+ignore_texture_size = true
+texture_normal = ExtResource("5_options")
+texture_hover = ExtResource("6_options_hover")
+stretch_mode = 0
+
+[node name="MainMenuButton" type="TextureButton" parent="Root/Center/Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 178.5
+offset_top = 550.0
+offset_right = 553.5
+offset_bottom = 586.0
+ignore_texture_size = true
+texture_normal = ExtResource("7_main_menu")
+texture_hover = ExtResource("8_main_menu_hover")
+stretch_mode = 0
+
+[node name="QuitButton" type="TextureButton" parent="Root/Center/Panel"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 279.75
+offset_top = 650.0
+offset_right = 452.25
+offset_bottom = 695.0
+ignore_texture_size = true
+texture_normal = ExtResource("9_quit")
+texture_hover = ExtResource("10_quit_hover")
+stretch_mode = 0

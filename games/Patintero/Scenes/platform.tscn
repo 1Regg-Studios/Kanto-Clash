@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://bo4eqgb4i2kko"]
+
+[ext_resource type="Texture2D" uid="uid://ciik2reuiycrp" path="res://games/Patintero/Sprites/PATINTERO-20261016T040509Z-1-001/PATINTERO/guard.png" id="1_1rc8e"]
+[ext_resource type="Script" uid="uid://cpnc6qwxmdj62" path="res://games/Patintero/Scripts/platform.gd" id="1_n5262"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jvale"]
+size = Vector2(5.2598786, 18.251598)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u63d8"]
+size = Vector2(26, 80)
+
+[node name="Platform" type="AnimatableBody2D" unique_id=511646536 groups=["platform"]]
+script = ExtResource("1_n5262")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1705039337]
+texture_filter = 1
+rotation = 3.1314435
+scale = Vector2(2, 2)
+texture = ExtResource("1_1rc8e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=81163145]
+position = Vector2(-1.4951315, 0.47965163)
+rotation = 3.1314435
+scale = Vector2(4, 4)
+shape = SubResource("RectangleShape2D_jvale")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1441088287]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=747662512]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_u63d8")

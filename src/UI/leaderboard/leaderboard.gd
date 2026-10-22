@@ -37,25 +37,30 @@ func _ready() -> void:
 		_row_slots.append(row.position.y)
 
 
-func play(scores: Array) -> void:
+func play(scores: Array, starting_scores: Array = []) -> void:
 	_stop_tweens()
 	_scores = _to_scores(scores)
+	AudioManager.play_score()
 
+	var previous_scores := _to_scores(starting_scores)
 	var starting_order := _players_by_score(true)
+	if not starting_scores.is_empty():
+		starting_order = _players_by_score(false, previous_scores)
 	_place_rows(starting_order)
 
 	_remaining = ROW_COUNT
 	for slot in range(ROW_COUNT):
-		_count_up_row(starting_order[slot], slot)
+		var player := starting_order[slot]
+		_count_up_row(player, slot, previous_scores[player])
 
 
-func _count_up_row(index: int, starting_slot: int) -> void:
+func _count_up_row(index: int, starting_slot: int, starting_score: int) -> void:
 	var label := _score_labels[index]
-	label.text = "0"
+	_set_label_value(float(starting_score), label)
 	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_tweens.append(tween)
 	tween.tween_interval(starting_slot * ROW_STAGGER)
-	tween.tween_method(_set_label_value.bind(label), 0.0, float(_scores[index]), COUNT_TIME)
+	tween.tween_method(_set_label_value.bind(label), float(starting_score), float(_scores[index]), COUNT_TIME)
 	tween.finished.connect(_on_row_finished)
 
 
@@ -95,16 +100,17 @@ func _on_sorted() -> void:
 	pass
 
 
-func _players_by_score(ascending: bool) -> Array[int]:
+func _players_by_score(ascending: bool, scores: Array[int] = []) -> Array[int]:
+	var values := _scores if scores.is_empty() else scores
 	var order: Array[int] = []
 	for i in range(ROW_COUNT):
 		order.append(i)
 	order.sort_custom(func(a: int, b: int) -> bool:
-		if _scores[a] == _scores[b]:
+		if values[a] == values[b]:
 			return a < b
 		if ascending:
-			return _scores[a] < _scores[b]
-		return _scores[a] > _scores[b]
+			return values[a] < values[b]
+		return values[a] > values[b]
 	)
 	return order
 
