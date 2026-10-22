@@ -52,3 +52,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			print("Power: ", lock())
 		else:
 			start()
+func reset() -> void:
+	running = false
+	value = start_value
+	line.position = bottom_pos.lerp(top_pos, value)

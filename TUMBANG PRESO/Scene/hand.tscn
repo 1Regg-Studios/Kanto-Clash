@@ -4,6 +4,17 @@
 [ext_resource type="Texture2D" uid="uid://vs0gyl8h0t6" path="res://Sprite/TUMBANG PRESO/Throwing animation/2.png" id="2_fb1sb"]
 [ext_resource type="Texture2D" uid="uid://b7bvrc0w78g74" path="res://Sprite/TUMBANG PRESO/Throwing animation/3.png" id="3_ksjlf"]
 [ext_resource type="Texture2D" uid="uid://bdafqm75ylgbq" path="res://Sprite/TUMBANG PRESO/Throwing animation/4.png" id="4_perxe"]
+[ext_resource type="Texture2D" uid="uid://3pqwc67ehdrl" path="res://Sprite/TUMBANG PRESO/Throwing animation/5.png" id="5_l1nwo"]
+[ext_resource type="Texture2D" uid="uid://brnaybuggaw2p" path="res://Sprite/TUMBANG PRESO/Throwing animation/6.png" id="6_602ao"]
+[ext_resource type="Texture2D" uid="uid://72hrcmfx8vqb" path="res://Sprite/TUMBANG PRESO/Throwing animation/7.png" id="7_4440g"]
+[ext_resource type="Texture2D" uid="uid://ds712hqrgfqpo" path="res://Sprite/TUMBANG PRESO/Throwing animation/8.png" id="8_kdro3"]
+[ext_resource type="Texture2D" uid="uid://chkc6lqc2fqp4" path="res://Sprite/TUMBANG PRESO/Throwing animation/9.png" id="9_2m6qg"]
+[ext_resource type="Texture2D" uid="uid://1f4uteo48fsa" path="res://Sprite/TUMBANG PRESO/Throwing animation/10.png" id="10_cmg5h"]
+[ext_resource type="Texture2D" uid="uid://bi5voj3bkto4h" path="res://Sprite/TUMBANG PRESO/Throwing animation/11.png" id="11_3uh87"]
+[ext_resource type="Texture2D" uid="uid://by2ixgni6783a" path="res://Sprite/TUMBANG PRESO/Throwing animation/12.png" id="12_tem0p"]
+[ext_resource type="Texture2D" uid="uid://wjju0iwwqvtn" path="res://Sprite/TUMBANG PRESO/Throwing animation/13.png" id="13_083h6"]
+[ext_resource type="Texture2D" uid="uid://cyndrifyv83s7" path="res://Sprite/TUMBANG PRESO/Throwing animation/14.png" id="14_n80cg"]
+[ext_resource type="Texture2D" uid="uid://b6ujdcyph0b5v" path="res://Sprite/TUMBANG PRESO/Throwing animation/15.png" id="15_miewg"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_jvale"]
 animations = [{
@@ -16,13 +27,51 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("3_ksjlf")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_perxe")
 }],
 "loop": 1,
-"name": &"default",
-"speed": 3.0
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_perxe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_l1nwo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_602ao")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_4440g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_kdro3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_2m6qg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_cmg5h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_3uh87")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_tem0p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_083h6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_n80cg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_miewg")
+}],
+"loop": 1,
+"name": &"throw",
+"speed": 10.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jvale"]
@@ -31,11 +80,13 @@ radius = 31.906113
 [node name="CharacterBody2D" type="CharacterBody2D" unique_id=1010254049]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1656719658]
-position = Vector2(1146.0001, 431)
-scale = Vector2(0.4648148, 0.4648148)
+position = Vector2(977, 405)
+rotation = -1.653628
+scale = Vector2(0.47498316, 0.4749831)
 sprite_frames = SubResource("SpriteFrames_jvale")
-autoplay = "default"
-frame_progress = 0.43286923
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.34158862
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=532299697]
 position = Vector2(1103, 627)
