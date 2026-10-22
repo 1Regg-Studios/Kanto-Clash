@@ -41,9 +41,9 @@ func _ready() -> void:
 	play(ScoreKeeper.totals)
 
 
-func play(scores: Array) -> void:
+func play(scores: Array, starting_scores: Array = []) -> void:
 	_reset_prompt()
-	super.play(scores)
+	super.play(scores, starting_scores)
 
 
 func _on_sorted() -> void:
@@ -95,6 +95,7 @@ func _return_to_menu() -> void:
 		_blink.kill()
 	get_viewport().set_input_as_handled()
 	ScoreKeeper.reset()
+	GameSchedule.reset()
 	await SceneFader.change_scene(MAIN_MENU_SCENE)
 
 

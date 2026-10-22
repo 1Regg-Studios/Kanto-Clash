@@ -1,5 +1,7 @@
 # opencode / AI tooling
 opencode.json
+/.opencode/mcp/gemini-image/
+/.opencode/secrets/
 INDEX.md
 CODE_EXPLAINED.md
 THIRD_PARTY.md

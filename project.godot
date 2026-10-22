@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 [autoload]
 
 ScoreKeeper="*res://src/autoload/score_keeper.gd"
+ScoreEngine="*res://src/autoload/score_engine.gd"
 DisplayManager="*res://src/autoload/display_manager.gd"
 GameSchedule="*res://src/autoload/game_schedule.gd"
 SceneFader="*res://src/autoload/scene_fader.gd"

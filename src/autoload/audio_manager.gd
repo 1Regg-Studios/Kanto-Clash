@@ -10,6 +10,7 @@ const MIN_VOLUME := 0.0001
 const CLICK_SOUND := preload("res://assets/Sfx/emilianodleon-button-ui-sound-effect-395762.mp3")
 const READY_SOUND := preload("res://assets/Sfx/floraphonic-90s-game-ui-3-185096.mp3")
 const PICK_SOUND := preload("res://assets/Sfx/Randomizer/vadim_makes_sound-achievement-badge-pop-sound-1-547860.mp3")
+const SCORE_SOUND := preload("res://assets/Sfx/leaderboard/floraphonic-classic-game-action-positive-19-224568.mp3")
 
 const MENU_MUSIC_DIR := "res://assets/Music/Main"
 const MUSIC_FADE_TIME := 2.0
@@ -26,6 +27,7 @@ var _settings_path := SETTINGS_PATH
 var _click_player: AudioStreamPlayer
 var _ready_player: AudioStreamPlayer
 var _pick_player: AudioStreamPlayer
+var _score_player: AudioStreamPlayer
 
 var _music_playing: AudioStreamPlayer
 var _music_waiting: AudioStreamPlayer
@@ -35,6 +37,9 @@ var _music_timer: Timer
 var _music_tween: Tween
 var _music_active := false
 var _last_music_track: AudioStream
+
+var _game_music_player: AudioStreamPlayer
+var _game_music_tween: Tween
 
 
 func _ready() -> void:
@@ -50,6 +55,7 @@ func _ready() -> void:
 	_click_player = _make_sfx_player(CLICK_SOUND)
 	_ready_player = _make_sfx_player(READY_SOUND)
 	_pick_player = _make_sfx_player(PICK_SOUND)
+	_score_player = _make_sfx_player(SCORE_SOUND)
 	_music_playing = _make_music_player()
 	_music_waiting = _make_music_player()
 	_music_timer = Timer.new()
@@ -91,6 +97,10 @@ func play_pick() -> void:
 	_pick_player.play()
 
 
+func play_score() -> void:
+	_score_player.play()
+
+
 func start_menu_music() -> void:
 	if _music_active or _music_tracks.is_empty():
 		return
@@ -109,6 +119,43 @@ func stop_menu_music() -> void:
 		if player.playing:
 			_music_tween.tween_property(player, "volume_db", MUSIC_SILENT_DB, MUSIC_FADE_TIME)
 	_music_tween.chain().tween_callback(_stop_music_players)
+
+
+func play_game_music(track: AudioStream) -> void:
+	if track == null:
+		return
+	if _game_music_player == null:
+		_game_music_player = AudioStreamPlayer.new()
+		_game_music_player.bus = MUSIC_BUS
+		_game_music_player.finished.connect(_game_music_player.play)
+		add_child(_game_music_player)
+	# Keep the same track running across scene hand-offs (e.g. between tug of
+	# war rounds) instead of snapping back to the start of the song.
+	if _game_music_player.stream == track and _game_music_player.playing:
+		return
+	_kill_game_music_tween()
+	_game_music_player.stop()
+	_game_music_player.stream = track
+	_game_music_player.volume_db = 0.0
+	_game_music_player.play()
+
+
+func stop_game_music() -> void:
+	if _game_music_player == null or not _game_music_player.playing:
+		return
+	_kill_game_music_tween()
+	_game_music_tween = create_tween()
+	_game_music_tween.tween_property(_game_music_player, "volume_db", MUSIC_SILENT_DB, MUSIC_FADE_TIME)
+	_game_music_tween.tween_callback(func() -> void:
+		_game_music_player.stop()
+		_game_music_player.stream = null
+		_game_music_player.volume_db = 0.0
+	)
+
+
+func _kill_game_music_tween() -> void:
+	if _game_music_tween != null and _game_music_tween.is_valid():
+		_game_music_tween.kill()
 
 
 func set_master_volume(value: float) -> void:

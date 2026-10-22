@@ -13,6 +13,7 @@ var _options_screen: Node = null
 
 
 func _ready() -> void:
+	AudioManager.stop_game_music()
 	AudioManager.start_menu_music()
 	for button in [_start, _options, _quit]:
 		button.pressed.connect(AudioManager.play_click)

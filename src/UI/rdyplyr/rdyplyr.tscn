@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dju5pnhdwniw5" path="res://assets/Character Select/frontviewpurple.png" id="13_purple"]
 [ext_resource type="Texture2D" uid="uid://dfkltaaimqow3" path="res://assets/Character Select/PRESS THE KEY TO GET READY.png" id="9_prompt"]
 [ext_resource type="Texture2D" uid="uid://cs7dfrr1l7si5" path="res://assets/Character Select/BOX.png" id="10_box"]
+[ext_resource type="PackedScene" path="res://src/UI/pause/pause_menu.tscn" id="14_pause"]
 
 [node name="ReadySelection" type="Control" unique_id=1433569334]
 layout_mode = 3
@@ -101,9 +102,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -85.0
+offset_left = -110.0
 offset_top = 128.333
-offset_right = 85.0
+offset_right = 110.0
 offset_bottom = 478.333
 grow_horizontal = 2
 mouse_filter = 2
@@ -189,9 +190,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -85.0
+offset_left = -110.0
 offset_top = 128.333
-offset_right = 85.0
+offset_right = 110.0
 offset_bottom = 478.333
 grow_horizontal = 2
 mouse_filter = 2
@@ -277,9 +278,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -85.0
+offset_left = -110.0
 offset_top = 128.333
-offset_right = 85.0
+offset_right = 110.0
 offset_bottom = 478.333
 grow_horizontal = 2
 mouse_filter = 2
@@ -365,9 +366,9 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -85.0
+offset_left = -110.0
 offset_top = 128.333
-offset_right = 85.0
+offset_right = 110.0
 offset_bottom = 478.333
 grow_horizontal = 2
 mouse_filter = 2
@@ -414,3 +415,5 @@ offset_top = -140.0
 offset_right = -46.667
 offset_bottom = -53.333
 play_click_sound = false
+
+[node name="PauseMenu" parent="." instance=ExtResource("14_pause")]

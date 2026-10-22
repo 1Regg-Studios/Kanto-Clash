@@ -1,0 +1,195 @@
+[gd_scene format=3 uid="uid://csffilwrx7w87"]
+
+[ext_resource type="Script" uid="uid://da5ccqk4ymke0" path="res://games/Tug Of war/tug_of_war.gd" id="1_game"]
+[ext_resource type="Texture2D" uid="uid://br2anwn3b4hkf" path="res://games/Tug Of war/assets/tug of war bg.png" id="2_bg"]
+[ext_resource type="Texture2D" path="res://games/Tug Of war/assets/rope-uniform.png" id="3_rope"]
+[ext_resource type="FontFile" uid="uid://vc8p13pqqln6" path="res://assets/Fonts/UpheavalPro.ttf" id="4_font"]
+[ext_resource type="Script" path="res://games/Tug Of war/tug_meter.gd" id="5_meter"]
+[ext_resource type="PackedScene" path="res://games/Tug Of war/tug_result.tscn" id="6_result"]
+[ext_resource type="Texture2D" path="res://games/Patintero/UI/frame.png" id="7_frame"]
+[ext_resource type="PackedScene" path="res://src/UI/pause/pause_menu.tscn" id="8_pause"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_o650j"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wfg4h"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_of88k"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wlsv5"]
+
+[sub_resource type="FontVariation" id="FontVariation_timer"]
+base_font = ExtResource("4_font")
+spacing_glyph = 28
+
+[node name="TugOfWar" type="Node2D" unique_id=1762309341]
+texture_filter = 1
+script = ExtResource("1_game")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1285737434]
+position = Vector2(960, 540)
+
+[node name="Background" type="Sprite2D" parent="." unique_id=6876383]
+position = Vector2(960, 540)
+texture = ExtResource("2_bg")
+
+[node name="FrameOverlay" type="Sprite2D" parent="." unique_id=1711803312]
+texture_filter = 2
+position = Vector2(960, 540)
+texture = ExtResource("7_frame")
+
+[node name="World" type="Node2D" parent="." unique_id=1383742488]
+
+[node name="Rope" type="Line2D" parent="World" unique_id=318908741]
+texture_repeat = 2
+points = PackedVector2Array(602, 610, 1278, 610)
+width = 24.0
+default_color = Color(1, 1, 1, 1)
+texture = ExtResource("3_rope")
+texture_mode = 1
+
+[node name="P1" type="AnimatedSprite2D" parent="World" unique_id=1522664380]
+position = Vector2(500, 600)
+scale = Vector2(8, 8)
+sprite_frames = SubResource("SpriteFrames_o650j")
+
+[node name="P2" type="AnimatedSprite2D" parent="World" unique_id=1457426265]
+position = Vector2(720, 600)
+scale = Vector2(8, 8)
+sprite_frames = SubResource("SpriteFrames_wfg4h")
+
+[node name="P3" type="AnimatedSprite2D" parent="World" unique_id=344826334]
+position = Vector2(1200, 600)
+scale = Vector2(8, 8)
+sprite_frames = SubResource("SpriteFrames_of88k")
+flip_h = true
+
+[node name="P4" type="AnimatedSprite2D" parent="World" unique_id=493496406]
+position = Vector2(1420, 600)
+scale = Vector2(8, 8)
+sprite_frames = SubResource("SpriteFrames_wlsv5")
+flip_h = true
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=939275632]
+layer = 10
+
+[node name="Root" type="Control" parent="HUD" unique_id=11271358]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Composition" type="Control" parent="HUD/Root" unique_id=1467915600]
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Meter" type="Control" parent="HUD/Root/Composition" unique_id=1232326374]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -662.5
+offset_top = 129.0
+offset_right = 662.5
+offset_bottom = 370.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("5_meter")
+
+[node name="Timer" type="Label" parent="HUD/Root/Composition/Meter" unique_id=1258250049]
+layout_mode = 0
+offset_left = 411.75
+offset_top = 139.08
+offset_right = 1054.08
+offset_bottom = 241.56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_timer")
+theme_override_font_sizes/font_size = 112
+text = "01:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P1Indicator" type="TextureRect" parent="HUD/Root/Composition" unique_id=713465797]
+texture_filter = 1
+layout_mode = 0
+offset_right = 205.2
+offset_bottom = 180.9
+mouse_filter = 2
+expand_mode = 1
+
+[node name="P2Indicator" type="TextureRect" parent="HUD/Root/Composition" unique_id=1054639743]
+texture_filter = 1
+layout_mode = 0
+offset_right = 205.2
+offset_bottom = 180.9
+mouse_filter = 2
+expand_mode = 1
+
+[node name="P3Indicator" type="TextureRect" parent="HUD/Root/Composition" unique_id=1649469914]
+texture_filter = 1
+layout_mode = 0
+offset_right = 205.2
+offset_bottom = 180.9
+mouse_filter = 2
+expand_mode = 1
+
+[node name="P4Indicator" type="TextureRect" parent="HUD/Root/Composition" unique_id=1560333798]
+texture_filter = 1
+layout_mode = 0
+offset_right = 205.2
+offset_bottom = 180.9
+mouse_filter = 2
+expand_mode = 1
+
+[node name="P1Key" type="Label" parent="HUD/Root/Composition" unique_id=570601551]
+layout_mode = 0
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P2Key" type="Label" parent="HUD/Root/Composition" unique_id=1044039443]
+layout_mode = 0
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P3Key" type="Label" parent="HUD/Root/Composition" unique_id=1118505637]
+layout_mode = 0
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P4Key" type="Label" parent="HUD/Root/Composition" unique_id=41105452]
+layout_mode = 0
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameOver" parent="HUD/Root" instance=ExtResource("6_result")]
+visible = false
+layout_mode = 1
+
+[node name="PauseMenu" parent="." instance=ExtResource("8_pause")]
