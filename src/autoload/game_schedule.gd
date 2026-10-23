@@ -10,12 +10,28 @@ const GAMES: Array[Dictionary] = [
 		"name": "Tug of War",
 		"icon": "res://assets/Minigame Randomizer/Game Icon Formatted/Tugofwar.png",
 		"scene": "res://games/Tug Of war/tug_ofwar.tscn",
+		"tutorial": "res://src/UI/tutorial/tug_of_war_tutorial.tscn",
 	},
 	{
 		"id": "patintero",
 		"name": "Patintero",
 		"icon": "res://assets/Minigame Randomizer/Game Icon Formatted/Patintero.png",
 		"scene": "res://games/Patintero/Scenes/main.tscn",
+		"tutorial": "res://src/UI/tutorial/patintero_tutorial.tscn",
+	},
+	{
+		"id": "chinese_garter",
+		"name": "Chinese Garter",
+		"icon": "res://assets/Minigame Randomizer/Game Icon Formatted/Chinesegarter.png",
+		"scene": "res://games/Chinese Garter/chinese_garter.tscn",
+		"tutorial": "res://src/UI/tutorial/chinese_garter_tutorial.tscn",
+	},
+	{
+		"id": "tumbang_preso",
+		"name": "Tumbang Preso",
+		"icon": "res://assets/Minigame Randomizer/Game Icon Formatted/TumbangPreso.png",
+		"scene": "res://games/Tumbang Preso/Scene/game.tscn",
+		"tutorial": "res://src/UI/tutorial/tumbang_preso_tutorial.tscn",
 	},
 ]
 
@@ -24,7 +40,6 @@ var skipped := ""
 var next_scene_path := ""
 var current_game_index := -1
 var tug_round := 1
-var tug_team_layouts: Array[bool] = []
 
 # Keep game picks independent from menu music and reel animation randomness.
 var _rng := RandomNumberGenerator.new()
@@ -47,7 +62,9 @@ func roll() -> Array[String]:
 	skipped = _pick_skipped(pool)
 	pool.erase(skipped)
 	picked = []
-	# Cycle through the pool so every game plays equally often.
+	# Shuffle before filling extra slots so smaller rosters repeat a random game.
+	# Every available game still plays at least once.
+	_shuffle(pool)
 	while picked.size() < ROUNDS:
 		picked.append(pool[picked.size() % pool.size()])
 	_shuffle(picked)
@@ -209,20 +226,11 @@ func _prepare_current_game() -> void:
 	var id := picked[current_game_index]
 	if id == "tug_of_war":
 		reset_tug_rounds()
-	next_scene_path = scene_path_for(id)
+	next_scene_path = _find(id).get("tutorial", scene_path_for(id))
 
 
 func reset_tug_rounds() -> void:
 	tug_round = 1
-	tug_team_layouts.clear()
-	tug_team_layouts.append(_rng.randi_range(0, 1) == 1)
-	tug_team_layouts.append(_rng.randi_range(0, 1) == 1)
-
-
-func tug_layout_for_current_round() -> bool:
-	if tug_team_layouts.size() != 2:
-		reset_tug_rounds()
-	return tug_team_layouts[tug_round - 1]
 
 
 func advance_tug_round() -> bool:
@@ -239,4 +247,3 @@ func reset() -> void:
 	next_scene_path = ""
 	current_game_index = -1
 	tug_round = 1
-	tug_team_layouts.clear()

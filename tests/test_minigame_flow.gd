@@ -4,9 +4,17 @@ const RESULTS := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
 const OVERALL := "res://src/UI/overallleaderboard/overall_leaderboard.tscn"
 const LOADING := "res://src/UI/ldscrn/ldscrn.tscn"
 const MAIN_MENU := "res://src/UI/main/mainmenu.tscn"
+const TUTORIALS := {
+	"tug_of_war": "res://src/UI/tutorial/tug_of_war_tutorial.tscn",
+	"patintero": "res://src/UI/tutorial/patintero_tutorial.tscn",
+	"chinese_garter": "res://src/UI/tutorial/chinese_garter_tutorial.tscn",
+	"tumbang_preso": "res://src/UI/tutorial/tumbang_preso_tutorial.tscn",
+}
 # Consecutive Tug games must each play two rounds and have separate scores.
-const LINEUP: Array[String] = ["patintero", "tug_of_war", "tug_of_war", "patintero"]
+const LINEUP: Array[String] = ["chinese_garter", "tug_of_war", "tug_of_war", "patintero"]
+const TUMBANG_LINEUP: Array[String] = ["chinese_garter", "tug_of_war", "tumbang_preso", "patintero"]
 
+var _lineup: Array[String] = LINEUP.duplicate()
 var _failures := 0
 var _score_updates := 0
 var _capture_dir := ""
@@ -17,6 +25,8 @@ func _ready() -> void:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--capture-dir="):
 			_capture_dir = argument.trim_prefix("--capture-dir=")
+		elif argument == "--with-tumbang-preso":
+			_lineup = TUMBANG_LINEUP.duplicate()
 	get_tree().create_timer(60.0, true, false, true).timeout.connect(func() -> void:
 		push_error("The minigame sequence did not finish within 60 seconds")
 		get_tree().quit(1)
@@ -33,14 +43,30 @@ func _run() -> void:
 	GameSchedule.reset()
 	ScoreKeeper.totals_changed.connect(_on_score_update)
 	get_tree().scene_changed.connect(_on_scene_changed)
-	GameSchedule.picked.assign(LINEUP)
-	_check(GameSchedule.first_scene_path() == GameSchedule.scene_path_for(LINEUP[0]), "The first game initializes the schedule position and loading target")
+	GameSchedule.picked.assign(_lineup)
+	_check(GameSchedule.first_scene_path() == TUTORIALS[_lineup[0]], "The first game initializes the schedule position and tutorial loading target")
 	await SceneFader.change_scene(LOADING)
 
 	var expected_totals: Array[int] = [0, 0, 0, 0]
 	var expected_updates := 0
-	for game_index in LINEUP.size():
-		var game_id := LINEUP[game_index]
+	for game_index in _lineup.size():
+		var game_id := _lineup[game_index]
+		if TUTORIALS.has(game_id):
+			var tutorial := await _wait_for_scene(TUTORIALS[game_id])
+			if tutorial == null:
+				get_tree().quit(1)
+				return
+			_check(ScoreKeeper.totals == expected_totals, "%s's tutorial preserves earlier scores" % GameSchedule.name_of(game_id))
+			if game_id == "tug_of_war":
+				_check(GameSchedule.tug_round == 1, "The Tug tutorial starts before round one")
+			while not tutorial.get("_input_enabled"):
+				await get_tree().process_frame
+			await _capture("game-%d-tutorial" % (game_index + 1))
+			for pressed in [true, false]:
+				var proceed := InputEventKey.new()
+				proceed.keycode = KEY_SPACE
+				proceed.pressed = pressed
+				Input.parse_input_event(proceed)
 		var game := await _wait_for_scene(GameSchedule.scene_path_for(game_id))
 		if game == null:
 			get_tree().quit(1)
@@ -52,20 +78,29 @@ func _run() -> void:
 		if game_id == "patintero":
 			scores = await _finish_patintero(game)
 			expected_updates += 1
+		elif game_id == "chinese_garter":
+			scores = await _finish_chinese_garter(game)
+			expected_updates += 1
+		elif game_id == "tumbang_preso":
+			scores = _finish_tumbang_preso(game)
+			expected_updates += 1
 		else:
 			scores = await _finish_tug(game)
 			expected_updates += 2
 		var points: Array[int] = []
 		for player in scores.size():
-			points.append(scores[player] * 10)
+			var multiplier := 1 if game_id == "tug_of_war" else (30 if game_id == "chinese_garter" else 10)
+			if game_id == "tumbang_preso":
+				multiplier = 2
+			points.append(scores[player] * multiplier)
 			expected_totals[player] += points[player]
 
 		var results := await _wait_for_scene(RESULTS)
 		if results == null:
 			get_tree().quit(1)
 			return
-		_check(ScoreKeeper.last_round_scores == scores, "Game %d results contain both internal rounds" % (game_index + 1))
-		_check(ScoreKeeper.totals == expected_totals, "Game %d credits exactly ×10 to the overall totals" % (game_index + 1))
+		_check(ScoreKeeper.last_round_scores == scores, "Game %d results contain every player's complete score" % (game_index + 1))
+		_check(ScoreKeeper.totals == expected_totals, "Game %d credits its exact leaderboard award to the overall totals" % (game_index + 1))
 		_check(_score_updates == expected_updates, "Game %d posts each result only once" % (game_index + 1))
 		_check(_leaderboard_start_scores == previous_totals, "Game %d's leaderboard starts counting from the previous totals" % (game_index + 1))
 		_check(results.get("_scores") == expected_totals, "Game %d's leaderboard includes points from every completed minigame" % (game_index + 1))
@@ -77,7 +112,7 @@ func _run() -> void:
 		_check(not results.has_node("Multiplier"), "The leaderboard has no multiplier subtitle")
 		_check(ScoreKeeper.totals == expected_totals, "The leaderboard animation cannot credit the score twice")
 		await get_tree().process_frame
-		var next_id := LINEUP[game_index + 1] if game_index + 1 < LINEUP.size() else ""
+		var next_id := _lineup[game_index + 1] if game_index + 1 < _lineup.size() else ""
 		_check(GameSchedule.next_game_id() == next_id, "The next destination follows the schedule, including repeated games")
 		var prompt: String = results.get_node("Continue").text
 		_check(prompt.contains("OVERALL RESULTS" if next_id.is_empty() else GameSchedule.name_of(next_id).to_upper()), "The countdown announces the correct next screen")
@@ -89,8 +124,8 @@ func _run() -> void:
 	if overall == null:
 		get_tree().quit(1)
 		return
-	_check(GameSchedule.current_game_index == LINEUP.size() and GameSchedule.next_scene_path.is_empty(), "The schedule ends after exactly four minigames")
-	_check(overall.get("_scores") == expected_totals, "The final leaderboard displays all four multiplied game awards")
+	_check(GameSchedule.current_game_index == _lineup.size() and GameSchedule.next_scene_path.is_empty(), "The schedule ends after exactly four minigames")
+	_check(overall.get("_scores") == expected_totals, "The final leaderboard displays all four game awards")
 	await overall.sort_finished
 	for player in expected_totals.size():
 		var label: Label = overall.get_node("Board/Row%d/Score" % (player + 1))
@@ -104,7 +139,7 @@ func _run() -> void:
 	var menu := await _wait_for_scene(MAIN_MENU)
 	_check(menu != null, "The final results return to the main menu on input")
 	_check(ScoreKeeper.totals == [0, 0, 0, 0] and ScoreKeeper.last_round_scores == [0, 0, 0, 0], "The next match starts with fresh scores")
-	_check(GameSchedule.picked.is_empty() and GameSchedule.current_game_index == -1 and GameSchedule.tug_round == 1 and GameSchedule.tug_team_layouts.is_empty(), "Returning to the menu clears the lineup and Tug round state")
+	_check(GameSchedule.picked.is_empty() and GameSchedule.current_game_index == -1 and GameSchedule.tug_round == 1, "Returning to the menu clears the lineup and Tug round state")
 	_check(not GameSchedule.advance_game() and GameSchedule.next_scene_path.is_empty(), "An empty schedule cannot replay a stale minigame")
 	Engine.time_scale = 1.0
 	# Let audio playback release its streams before the headless runner exits.
@@ -129,12 +164,40 @@ func _finish_patintero(game: Node) -> Array[int]:
 	return [105, 45, 45, 105]
 
 
+func _finish_chinese_garter(game: Node) -> Array[int]:
+	for player_index in range(4):
+		await game.turn_started
+		_check(game.get("_turn_index") == player_index, "Chinese Garter gives P%d the next full-screen turn" % (player_index + 1))
+		var gauge: Node2D = game.get_node("TimingGuage")
+		gauge.set("t", (float(gauge.get("zone_start")) + float(gauge.get("zone_end"))) * 0.5)
+		gauge.call("attempt_hit")
+		game.set("_time_left", 0.001)
+		game.call("_process", 0.01)
+		game.call("_finish_turn")
+	return [1, 1, 1, 1]
+
+
+func _finish_tumbang_preso(game: Node) -> Array[int]:
+	var controller: Node = game.get_node("Controller")
+	controller.call("_clear_round_intro")
+	var scores: Array[int] = [450, 0, 190, 50]
+	controller.set("scores", scores)
+	controller.call("show_final")
+	controller.call("show_final")
+	for pressed in [true, false]:
+		var restart := InputEventKey.new()
+		restart.keycode = KEY_SPACE
+		restart.pressed = pressed
+		Input.parse_input_event(restart)
+	Input.flush_buffered_events()
+	_check(controller.get("scores") == scores and not controller.is_processing_input(), "A scheduled Tumbang Preso result blocks restart presses during the leaderboard transition")
+	return scores
+
+
 func _finish_tug(game: Node) -> Array[int]:
 	_check(GameSchedule.tug_round == 1, "Every scheduled Tug game starts at round one")
 	await _wait_for_tug_intro(game)
-	# Switching layouts leaves one player scoreless, exercising score carry-over.
-	GameSchedule.tug_team_layouts[1] = not bool(game.get("cross_team_pairs"))
-	var first_scores := ScoreEngine.tug_round_scores(0, bool(game.get("cross_team_pairs")))
+	var first_scores: Array[int] = [500, 500, 250, 250]
 	var old_instance := game.get_instance_id()
 	game.call("_finish_winning_team", true)
 	game.call("_finish_winning_team", false)
@@ -145,13 +208,13 @@ func _finish_tug(game: Node) -> Array[int]:
 	_check(GameSchedule.tug_round == 2, "Tug plays its second internal round before advancing the schedule")
 	_check(ScoreKeeper.last_round_scores == first_scores, "Tug preserves round one's scores across its scene reload")
 	await _wait_for_tug_intro(game)
-	var second_scores := ScoreEngine.tug_round_scores(1, bool(game.get("cross_team_pairs")))
+	var second_scores: Array[int] = [500, 500, 250, 250]
 	var combined: Array[int] = []
 	for player in first_scores.size():
 		combined.append(first_scores[player] + second_scores[player])
-	_check(combined.has(0), "A scoreless Tug player must still retain points from earlier minigames")
-	game.call("_finish_winning_team", false)
 	game.call("_finish_winning_team", true)
+	_check(game.get("_round_scores") == second_scores, "Round two keeps P1/P2 on Team 1 and P3/P4 on Team 2")
+	game.call("_finish_winning_team", false)
 	return combined
 
 

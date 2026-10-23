@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://c8b6jq3udl75s"]
 
-[ext_resource type="Texture2D" uid="uid://t2hhtwyxye6w" path="res://Kanto Clash/MiniGames/Art Assets/jumping animation.png" id="1_5jaqy"]
-[ext_resource type="Script" uid="uid://cddh8m3l8dd51" path="res://Kanto Clash/MiniGames/Chinese Garter/player_body.gd" id="2_6vv6y"]
-[ext_resource type="Texture2D" uid="uid://6midlfm3cx85" path="res://Kanto Clash/MiniGames/Art Assets/ropeholder2.png" id="3_tla0g"]
-[ext_resource type="Texture2D" uid="uid://cvmd4y1dsm1uy" path="res://Kanto Clash/MiniGames/Art Assets/ropeholder.png" id="4_ak28a"]
+[ext_resource type="Texture2D" uid="uid://hfpxmq8y67rp" path="res://games/Chinese Garter/assets/player character/p1.png" id="1_5jaqy"]
+[ext_resource type="Script" uid="uid://cddh8m3l8dd51" path="res://games/Chinese Garter/player_body.gd" id="2_6vv6y"]
+[ext_resource type="Texture2D" path="res://games/Chinese Garter/ropeholderfinal.png" id="3_tla0g"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tla0g"]
 atlas = ExtResource("1_5jaqy")
@@ -195,7 +194,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ktlhq")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"default",
 "speed": 15.0
 }]
@@ -203,79 +202,25 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_ihs2j"]
 radius = 24.33105
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_f0e8b"]
-atlas = ExtResource("3_tla0g")
-region = Rect2(0, 0, 33, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_7vqpi"]
-atlas = ExtResource("4_ak28a")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_ihs2j"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f0e8b")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_7vqpi")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kxri2"]
-atlas = ExtResource("3_tla0g")
-region = Rect2(0, 0, 33, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_mpvur"]
-atlas = ExtResource("4_ak28a")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_l7j83"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_kxri2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_mpvur")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}]
-
 [node name="ChineseGarterPlayerScene" type="Node2D" unique_id=400635363]
+texture_filter = 1
 
 [node name="PlayerBody" type="CharacterBody2D" parent="." unique_id=2028706271]
+position = Vector2(960, 640)
 script = ExtResource("2_6vv6y")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayerBody" unique_id=1467185664]
-position = Vector2(542, 263)
-scale = Vector2(3.3484848, 3.0333333)
+position = Vector2(0, 89.000046)
+scale = Vector2(8.3, 8.3)
 sprite_frames = SubResource("SpriteFrames_jtnub")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBody" unique_id=1478904312]
-position = Vector2(539, 287)
+position = Vector2(0, -24.33105)
 shape = SubResource("CircleShape2D_ihs2j")
 
-[node name="PlayerJumpRope" type="Node2D" parent="." unique_id=1293866972]
+[node name="RopeHolders" type="Node2D" parent="." unique_id=1293866972]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayerJumpRope" unique_id=1538659640]
-position = Vector2(340, 335)
-scale = Vector2(3.7424242, 2.90625)
-sprite_frames = SubResource("SpriteFrames_ihs2j")
-autoplay = "default"
-frame_progress = 0.41542998
-
-[node name="PlayerJumpRope2" type="Node2D" parent="." unique_id=177171050]
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayerJumpRope2" unique_id=2030176573]
-position = Vector2(756.23486, 336.75)
-scale = Vector2(3.452179, 2.8593752)
-sprite_frames = SubResource("SpriteFrames_l7j83")
-autoplay = "default"
-frame_progress = 0.14301346
-flip_h = true
+[node name="Sprite2D" type="Sprite2D" parent="RopeHolders" unique_id=1538659640]
+position = Vector2(960, 770)
+scale = Vector2(8.3, 8.3)
+texture = ExtResource("3_tla0g")

@@ -11,6 +11,7 @@ const CLICK_SOUND := preload("res://assets/Sfx/emilianodleon-button-ui-sound-eff
 const READY_SOUND := preload("res://assets/Sfx/floraphonic-90s-game-ui-3-185096.mp3")
 const PICK_SOUND := preload("res://assets/Sfx/Randomizer/vadim_makes_sound-achievement-badge-pop-sound-1-547860.mp3")
 const SCORE_SOUND := preload("res://assets/Sfx/leaderboard/floraphonic-classic-game-action-positive-19-224568.mp3")
+const ERROR_SOUND := preload("res://assets/Sfx/lesiakower-error-mistake-sound-effect-incorrect-answer-437420.mp3")
 
 const MENU_MUSIC_DIR := "res://assets/Music/Main"
 const MUSIC_FADE_TIME := 2.0
@@ -28,6 +29,7 @@ var _click_player: AudioStreamPlayer
 var _ready_player: AudioStreamPlayer
 var _pick_player: AudioStreamPlayer
 var _score_player: AudioStreamPlayer
+var _error_player: AudioStreamPlayer
 
 var _music_playing: AudioStreamPlayer
 var _music_waiting: AudioStreamPlayer
@@ -56,6 +58,8 @@ func _ready() -> void:
 	_ready_player = _make_sfx_player(READY_SOUND)
 	_pick_player = _make_sfx_player(PICK_SOUND)
 	_score_player = _make_sfx_player(SCORE_SOUND)
+	_error_player = _make_sfx_player(ERROR_SOUND)
+	_error_player.volume_db = -6.0
 	_music_playing = _make_music_player()
 	_music_waiting = _make_music_player()
 	_music_timer = Timer.new()
@@ -99,6 +103,10 @@ func play_pick() -> void:
 
 func play_score() -> void:
 	_score_player.play()
+
+
+func play_error() -> void:
+	_error_player.play()
 
 
 func start_menu_music() -> void:
@@ -196,14 +204,11 @@ func _queue_settings_save() -> void:
 
 
 func _load_menu_tracks() -> void:
-	var dir := DirAccess.open(MENU_MUSIC_DIR)
-	if dir == null:
-		return
-	for file in dir.get_files():
-		var name := file.trim_suffix(".remap")
-		if name.get_extension().to_lower() != "mp3":
+	# ResourceLoader preserves original filenames for imported music in exports.
+	for file in ResourceLoader.list_directory(MENU_MUSIC_DIR):
+		if file.get_extension().to_lower() != "mp3":
 			continue
-		var track := load(MENU_MUSIC_DIR.path_join(name)) as AudioStream
+		var track := load(MENU_MUSIC_DIR.path_join(file)) as AudioStream
 		if track != null:
 			_music_tracks.append(track)
 

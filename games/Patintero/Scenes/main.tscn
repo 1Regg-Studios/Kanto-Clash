@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b5tur5htv1vq1"]
 
-[ext_resource type="Texture2D" uid="uid://dpyh58wdmfars" path="res://games/Patintero/Sprites/PATINTERO-20261016T040509Z-1-001/PATINTERO/Patintero BG changed.png" id="1_8gbba"]
+[ext_resource type="Texture2D" path="res://games/Patintero/Sprites/PATINTERO-20261016T040509Z-1-001/PATINTERO/Patintero final BG.png" id="1_8gbba"]
 [ext_resource type="PackedScene" uid="uid://dd72e4b6ehom5" path="res://games/Patintero/Scenes/player.tscn" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://bo4eqgb4i2kko" path="res://games/Patintero/Scenes/platform.tscn" id="3_8gbba"]
 [ext_resource type="Script" uid="uid://5jvef2exo8t1" path="res://games/Patintero/Scripts/impact_camera.gd" id="4_camera"]
@@ -10,6 +10,11 @@
 [ext_resource type="FontFile" uid="uid://vc8p13pqqln6" path="res://assets/Fonts/UpheavalPro.ttf" id="8_font"]
 [ext_resource type="Script" path="res://games/Patintero/Scripts/patintero_game.gd" id="9_game"]
 [ext_resource type="PackedScene" path="res://src/UI/pause/pause_menu.tscn" id="10_pause"]
+[ext_resource type="Script" path="res://games/Patintero/Scripts/patintero_hud.gd" id="11_hud"]
+[ext_resource type="Texture2D" path="res://games/Patintero/UI/Player Press Indicator/Not Pressed/P1.png" id="12_p1"]
+[ext_resource type="Texture2D" path="res://games/Patintero/UI/Player Press Indicator/Not Pressed/P2.png" id="13_p2"]
+[ext_resource type="Texture2D" path="res://games/Patintero/UI/Player Press Indicator/Not Pressed/P3.png" id="14_p3"]
+[ext_resource type="Texture2D" path="res://games/Patintero/UI/Player Press Indicator/Not Pressed/P4.png" id="15_p4"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_h1bgf"]
 a = Vector2(-179, -97)
@@ -371,7 +376,7 @@ script = ExtResource("9_game")
 
 [node name="PatinteroBgChanged" type="Sprite2D" parent="." unique_id=1281965597]
 position = Vector2(572, 326)
-scale = Vector2(0.59999996, 0.6037038)
+scale = Vector2(3.6, 3.6222222)
 texture = ExtResource("1_8gbba")
 
 [node name="Player" parent="." unique_id=1710869111 instance=ExtResource("1_jjgbg")]
@@ -526,6 +531,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("11_hud")
 
 [node name="Frame" type="TextureRect" parent="HUD/Root"]
 texture_filter = 1
@@ -586,10 +592,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Round" type="Label" parent="HUD/Root"]
-offset_left = 54.0
-offset_top = 28.0
-offset_right = 490.0
-offset_bottom = 96.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 111.0
+offset_right = 220.0
+offset_bottom = 179.0
+grow_horizontal = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -597,6 +608,115 @@ theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("8_font")
 theme_override_font_sizes/font_size = 42
 text = "ROUND 1 / 2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PressIndicators" type="Control" parent="HUD/Root"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 104.0
+offset_top = 144.0
+offset_right = 274.24
+offset_bottom = 942.08
+mouse_filter = 2
+
+[node name="P1Indicator" type="TextureRect" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_right = 170.24
+offset_bottom = 150.08
+mouse_filter = 2
+texture = ExtResource("12_p1")
+expand_mode = 1
+
+[node name="P2Indicator" type="TextureRect" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_top = 216.0
+offset_right = 170.24
+offset_bottom = 366.08
+mouse_filter = 2
+texture = ExtResource("13_p2")
+expand_mode = 1
+
+[node name="P3Indicator" type="TextureRect" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_top = 432.0
+offset_right = 170.24
+offset_bottom = 582.08
+mouse_filter = 2
+texture = ExtResource("14_p3")
+expand_mode = 1
+
+[node name="P4Indicator" type="TextureRect" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_top = 648.0
+offset_right = 170.24
+offset_bottom = 798.08
+mouse_filter = 2
+texture = ExtResource("15_p4")
+expand_mode = 1
+
+[node name="P1Key" type="Label" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_left = 3.12
+offset_top = 98.08
+offset_right = 167.12
+offset_bottom = 134.08
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 28
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P2Key" type="Label" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_left = 3.12
+offset_top = 314.08
+offset_right = 167.12
+offset_bottom = 350.08
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 28
+text = "F"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P3Key" type="Label" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_left = 3.12
+offset_top = 530.08
+offset_right = 167.12
+offset_bottom = 566.08
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 28
+text = "J"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P4Key" type="Label" parent="HUD/Root/PressIndicators"]
+layout_mode = 0
+offset_left = 3.12
+offset_top = 746.08
+offset_right = 167.12
+offset_bottom = 782.08
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("8_font")
+theme_override_font_sizes/font_size = 28
+text = ";"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Scores" type="Label" parent="HUD/Root"]

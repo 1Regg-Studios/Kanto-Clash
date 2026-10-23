@@ -1,0 +1,246 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://src/UI/tutorial/patintero_tutorial.gd" id="1_tutorial"]
+[ext_resource type="FontFile" path="res://assets/Fonts/UpheavalPro.ttf" id="2_font"]
+[ext_resource type="Texture2D" path="res://games/Patintero/UI/Player Press Indicator/Not Pressed/P1.png" id="3_key"]
+[ext_resource type="PackedScene" path="res://games/Patintero/Scenes/main.tscn" id="4_game"]
+[ext_resource type="Script" path="res://src/UI/tutorial/patintero_preview.gd" id="5_preview"]
+[ext_resource type="Script" path="res://src/UI/tutorial/patintero_preview_runner.gd" id="6_runner"]
+[ext_resource type="Texture2D" path="res://assets/Minigame Randomizer/Game Icon Formatted/Patintero.png" id="7_game_icon"]
+
+[sub_resource type="Theme" id="Theme_tutorial"]
+default_font = ExtResource("2_font")
+default_font_size = 60
+Label/colors/font_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_preview"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="PatinteroTutorial" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_tutorial")
+script = ExtResource("1_tutorial")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Composition" type="Control" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Card" type="Panel" parent="Composition"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 1896.0
+offset_bottom = 1056.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="GameIcon" type="TextureRect" parent="Composition"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 460.0
+offset_top = 108.0
+offset_right = 568.0
+offset_bottom = 216.0
+mouse_filter = 2
+texture = ExtResource("7_game_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 592.0
+offset_top = 96.0
+offset_right = 1520.0
+offset_bottom = 232.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984314, 0.752941, 0.321569, 1)
+theme_override_font_sizes/font_size = 140
+text = "PATINTERO"
+horizontal_alignment = 0
+vertical_alignment = 1
+
+[node name="Objective" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 232.0
+offset_right = 1720.0
+offset_bottom = 316.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 52
+text = "AVOID THE GUARDS AND REACH THE FINISH"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Key" type="TextureRect" parent="Composition"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 152.0
+offset_top = 416.0
+offset_right = 344.0
+offset_bottom = 580.0
+mouse_filter = 2
+texture = ExtResource("3_key")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AssignedKey" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 514.0
+offset_right = 344.0
+offset_bottom = 562.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984314, 0.752941, 0.321569, 1)
+theme_override_font_sizes/font_size = 36
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Instructions" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 420.0
+offset_right = 988.0
+offset_bottom = 580.0
+mouse_filter = 2
+theme_override_constants/line_spacing = 8
+theme_override_font_sizes/font_size = 76
+text = "HOLD YOUR KEY\nTO MOVE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DashKey" type="TextureRect" parent="Composition"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 152.0
+offset_top = 644.0
+offset_right = 344.0
+offset_bottom = 808.0
+mouse_filter = 2
+texture = ExtResource("3_key")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DashAssignedKey" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 742.0
+offset_right = 344.0
+offset_bottom = 790.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984314, 0.752941, 0.321569, 1)
+theme_override_font_sizes/font_size = 36
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DashInstructions" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 648.0
+offset_right = 988.0
+offset_bottom = 808.0
+mouse_filter = 2
+theme_override_constants/line_spacing = 8
+theme_override_font_sizes/font_size = 76
+text = "DOUBLE-TAP\nTO DASH"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoringHint" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 836.0
+offset_right = 988.0
+offset_bottom = 884.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 36
+text = "CROSS EACH ZONE TO SCORE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PreviewFrame" type="Panel" parent="Composition"]
+layout_mode = 0
+offset_left = 1021.0
+offset_top = 381.0
+offset_right = 1795.0
+offset_bottom = 819.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_preview")
+
+[node name="GamePreview" type="SubViewportContainer" parent="Composition"]
+layout_mode = 0
+offset_left = 1024.0
+offset_top = 384.0
+offset_right = 1792.0
+offset_bottom = 816.0
+mouse_filter = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Composition/GamePreview"]
+disable_3d = true
+handle_input_locally = false
+gui_disable_input = true
+own_world_2d = true
+size = Vector2i(768, 432)
+render_target_update_mode = 4
+
+[node name="Patintero" parent="Composition/GamePreview/SubViewport" instance=ExtResource("4_game")]
+script = ExtResource("5_preview")
+
+[node name="Player" parent="Composition/GamePreview/SubViewport/Patintero" index="1"]
+script = ExtResource("6_runner")
+
+[node name="Player2" parent="Composition/GamePreview/SubViewport/Patintero" index="2"]
+script = ExtResource("6_runner")
+
+[node name="Player3" parent="Composition/GamePreview/SubViewport/Patintero" index="3"]
+script = ExtResource("6_runner")
+
+[node name="Player4" parent="Composition/GamePreview/SubViewport/Patintero" index="4"]
+script = ExtResource("6_runner")
+
+[node name="Continue" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 900.0
+offset_right = 1660.0
+offset_bottom = 976.0
+mouse_filter = 2
+text = "CLICK ANY KEY TO PROCEED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[editable path="Composition/GamePreview/SubViewport/Patintero"]

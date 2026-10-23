@@ -4,15 +4,20 @@ const MAX_GAME_SCORE := 100
 const PATINTERO_BASE_SCORE_CAP := MAX_GAME_SCORE
 const PATINTERO_SCORE_CAP := PATINTERO_BASE_SCORE_CAP * 2
 const PATINTERO_FINISH_MULTIPLIER_TENTHS: Array[int] = [20, 18, 16, 14]
-const TUG_ROUND_WIN_SCORE := 50
-const TUG_ROUND_DRAW_SCORE := 25
+# Tug awards are whole leaderboard points, including 125 for a drawn round.
+const TUG_ROUND_WIN_SCORE := 500
+const TUG_ROUND_LOSS_SCORE := 250
+const TUG_ROUND_DRAW_SCORE := 125
+const TUG_SCORE_CAP := TUG_ROUND_WIN_SCORE * 2
+# Three throws can each earn 100 points plus a 50-point perfect bonus.
+const TUMBANG_PRESO_SCORE_CAP := 450
 
 const GAME_SCORE_CAPS: Dictionary = {
 	&"patintero": PATINTERO_SCORE_CAP,
-	&"tug_of_war": MAX_GAME_SCORE,
+	&"tug_of_war": TUG_SCORE_CAP,
 	&"chinese_garter": MAX_GAME_SCORE,
 	&"sipa": MAX_GAME_SCORE,
-	&"tumbang_preso": MAX_GAME_SCORE,
+	&"tumbang_preso": TUMBANG_PRESO_SCORE_CAP,
 }
 
 const PATINTERO_ZONE_POINTS: Dictionary = {
@@ -56,7 +61,7 @@ func _patintero_multiplier_tenths(finish_place: int) -> int:
 	return 10
 
 
-func tug_round_scores(winner_team: int, cross_team_pairs: bool) -> Array[int]:
+func tug_round_scores(winner_team: int) -> Array[int]:
 	var scores: Array[int] = [0, 0, 0, 0]
 	if winner_team == -1:
 		scores.fill(TUG_ROUND_DRAW_SCORE)
@@ -65,11 +70,9 @@ func tug_round_scores(winner_team: int, cross_team_pairs: bool) -> Array[int]:
 		push_error("Tug of War winner_team must be -1 (draw), 0, or 1")
 		return scores
 
+	scores.fill(TUG_ROUND_LOSS_SCORE)
 	var team_one: Array[int] = [0, 1]
 	var team_two: Array[int] = [2, 3]
-	if cross_team_pairs:
-		team_one = [0, 2]
-		team_two = [1, 3]
 	var winners: Array[int] = []
 	if winner_team == 0:
 		winners = team_one

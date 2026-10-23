@@ -59,8 +59,9 @@ func _run() -> void:
 	var card: Panel = prompt.get_node("Composition/Card")
 	var entered_from: float = card.position.y
 	await get_tree().create_timer(0.8).timeout
-	_check(card.position.y < entered_from, "Result card floats upward on entry")
-	_check(card.position.y < 340.0 and card.position.y >= 332.0, "Result card gently hovers after entry")
+	_check(is_equal_approx(card.position.y, entered_from), "Result card stays in place during its fade-in")
+	await get_tree().create_timer(0.8).timeout
+	_check(is_equal_approx(card.position.y, entered_from), "Result card has no floating movement after entry")
 	_check(prompt.get_node("Composition/Card/Winner").text == "TEAM 2 WINS!", "Winning team is shown")
 	_check(not prompt.has_node("Restart"), "Enter restart prompt is removed")
 	var final_rope: float = game.get("_rope_pos")

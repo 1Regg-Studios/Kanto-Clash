@@ -2,7 +2,7 @@ extends Leaderboard
 
 const LOADING_SCREEN := "res://src/UI/ldscrn/ldscrn.tscn"
 const OVERALL_RESULTS_SCENE := "res://src/UI/overallleaderboard/overall_leaderboard.tscn"
-const RESULTS_HOLD_SECONDS := 3
+const RESULTS_HOLD_SECONDS := 10
 
 @onready var _continue_label: Label = $Continue
 
@@ -11,11 +11,7 @@ var _continuing := false
 
 func _ready() -> void:
 	super._ready()
-	var game_points := ScoreKeeper.last_round_points()
-	var previous_totals: Array[int] = []
-	for player in range(ROW_COUNT):
-		previous_totals.append(ScoreKeeper.totals[player] - game_points[player])
-	play(ScoreKeeper.totals, previous_totals)
+	play(ScoreKeeper.totals, ScoreKeeper.last_round_starting_totals)
 
 
 func set_scores(scores: Array) -> void:
@@ -30,7 +26,6 @@ func _on_sorted() -> void:
 	if _continuing:
 		return
 	_continuing = true
-	AudioManager.stop_game_music()
 
 	var next_id := GameSchedule.next_game_id()
 	var destination := "OVERALL RESULTS" if next_id.is_empty() else "NEXT: %s" % GameSchedule.name_of(next_id).to_upper()

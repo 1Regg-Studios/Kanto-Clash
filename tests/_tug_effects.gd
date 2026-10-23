@@ -16,8 +16,8 @@ func _ready() -> void:
 
 func _run() -> void:
 	_test_atlases()
-	for cross_pairs in [false, true]:
-		await _test_arena(cross_pairs)
+	for round_number in [1, 2]:
+		await _test_arena(round_number)
 	print("TUG EFFECTS: %d failure(s)" % _failures)
 	get_tree().quit(0 if _failures == 0 else 1)
 
@@ -51,18 +51,21 @@ func _test_atlases() -> void:
 		_check(matches_rest, "P%d effect ends in the same pose as its idle animation" % (player + 1))
 
 
-func _test_arena(cross_pairs: bool) -> void:
-	GameSchedule.tug_round = 1
-	GameSchedule.tug_team_layouts.assign([cross_pairs, cross_pairs])
+func _test_arena(round_number: int) -> void:
+	GameSchedule.tug_round = round_number
 	var game = GAME.instantiate()
 	game.match_seconds = 300.0
 	game.get_node("HUD/Root/GameOver").display_seconds = 10.0
 	add_child(game)
 	while game.get("_round_intro_active"):
 		await get_tree().process_frame
-	var layout := "cross" if cross_pairs else "standard"
+	var layout := "round-%d" % round_number
 	var world: Node2D = game.get_node("World")
 	var rope: Line2D = world.get_node("Rope")
+	for player in 4:
+		var puller: AnimatedSprite2D = world.get_node("P%d" % (player + 1))
+		_check(puller.flip_h == (player >= 2), "%s: P%d faces the opposing fixed team" % [layout, player + 1])
+		_check(is_equal_approx(puller.position.x, game.PLAYER_X[player]), "%s: P%d keeps its fixed arena slot" % [layout, player + 1])
 	_check(world.find_children("*", "AnimatedSprite2D", false, false).size() == 4, layout + ": one sprite per player")
 	_check(world.find_children("*", "Line2D", false, false).size() == 1, layout + ": one continuous rope")
 	_check(rope.get_point_count() == 2, layout + ": rope has both endpoints")
@@ -96,7 +99,7 @@ func _test_arena(cross_pairs: bool) -> void:
 		_key(PLAYER_KEYS[player], true)
 		await get_tree().process_frame
 		var puller: AnimatedSprite2D = world.get_node("P%d" % (player + 1))
-		var team_one := (player == 0 or player == 2) if cross_pairs else player < 2
+		var team_one := player < 2
 		var expected: float = before + (-12.0 if team_one else 12.0)
 		_check(game.get("_rope_pos") == expected, "%s: P%d pulls once in its team's direction" % [layout, player + 1])
 		_check(puller.animation == &"pull_effect" and puller.is_playing() and puller.visible, "%s: P%d plays its effect on the visible sprite" % [layout, player + 1])
@@ -128,7 +131,7 @@ func _test_arena(cross_pairs: bool) -> void:
 	_check(world.find_children("*", "AnimatedSprite2D", false, false).size() == 4, layout + ": rapid taps create no duplicate sprites")
 	await _capture(layout + "-rapid-taps")
 
-	if cross_pairs:
+	if round_number == 2:
 		game.set("_time_left", 0.0)
 	else:
 		for _tap_index in 56:

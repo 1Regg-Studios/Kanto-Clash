@@ -97,9 +97,9 @@ func set_round_active(active: bool) -> void:
 		_hit_sound_timer = 0.0
 
 
-func finish_run(finish_place: int, multiplier: float) -> void:
+func finish_run(finish_place: int) -> void:
 	set_round_active(false)
-	_player_label.text = "P%d - #%d\nx%.1f" % [player_id, finish_place, multiplier]
+	_player_label.text = "P%d - #%d" % [player_id, finish_place]
 
 
 func _physics_process(delta: float) -> void:

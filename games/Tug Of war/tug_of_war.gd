@@ -14,6 +14,8 @@ const PULL_EFFECT_TEXTURES: Array[Texture2D] = [
 	preload("res://games/Tug Of war/assets/p4-pull-effect.png"),
 ]
 
+const SMOKE_TEXTURE: Texture2D = preload("res://games/Tug Of war/assets/smoke effect.png")
+
 const INDICATOR_TEXTURES: Array[Texture2D] = [
 	preload("res://games/Tug Of war/assets/UI/Player Press Indicator/Not Pressed/P1.png"),
 	preload("res://games/Tug Of war/assets/UI/Player Press Indicator/Not Pressed/P2.png"),
@@ -38,8 +40,7 @@ const PLAYER_ACTIONS: Array[StringName] = [
 const PLAYER_COUNT := 4
 const GAME_FONT: Font = preload("res://assets/Fonts/UpheavalPro.ttf")
 const DESIGN_SIZE := Vector2(1920.0, 1080.0)
-const PLAYER_X: Array[float] = [570.0, 735.0, 1125.0, 1310.0]
-const CROSS_TEAM_PLAYER_X: Array[float] = [570.0, 1125.0, 735.0, 1310.0]
+const PLAYER_X: Array[float] = [540.0, 740.0, 1180.0, 1380.0]
 const PLAYER_Y := 574.0
 const PLAYER_SCALE := 8.0
 const SPRITE_SIZE := 32
@@ -47,9 +48,9 @@ const SPRITE_FRAMES := 4
 const PULL_ANIMATION_FPS := 6.0
 const PULL_EFFECT_FRAMES := 5
 const PULL_EFFECT_ANIMATION_FPS := 12.0
+const SMOKE_FRAMES := 3
+const SMOKE_ANIMATION_FPS := 12.0
 const REST_FRAME := 1
-const INDICATOR_X: Array[float] = [470.0, 693.0, 1200.0, 1440.0]
-const CROSS_TEAM_INDICATOR_X: Array[float] = [470.0, 1200.0, 693.0, 1440.0]
 const INDICATOR_SCALE := 1.12
 const INDICATOR_BOTTOM := 954.0
 const ROPE_TRAVEL := 130.0
@@ -69,15 +70,16 @@ const MAIN_MUSIC := preload("res://assets/Music/Main/Tug Of War/tatamusic-gaming
 @export_range(-24.0, 24.0, 0.5) var pull_sound_db := 12.0
 @export_range(0.05, 0.9, 0.01) var win_distance_ratio := 0.35
 @export var indicator_hold := 0.12
-@export var cross_team_pairs := false
 
 @onready var _camera: Camera2D = $Camera2D
 @onready var _background: Sprite2D = $Background
 @onready var _frame_overlay: Sprite2D = $FrameOverlay
 @onready var _world: Node2D = $World
+@onready var _rope: Line2D = $World/Rope
 @onready var _hud_root: Control = $HUD/Root
 @onready var _hud_layout: Control = $HUD/Root/Composition
 @onready var _meter = $HUD/Root/Composition/Meter
+@onready var _round_label: Label = $HUD/Root/Composition/Round
 @onready var _pullers: Array[AnimatedSprite2D] = [
 	$World/P1,
 	$World/P2,
@@ -109,14 +111,18 @@ var _layout_scale := 1.0
 var _layout_origin := Vector2.ZERO
 var _rope_visual_offset := 0.0
 var _round_scores: Array[int] = [0, 0, 0, 0]
+var _round_number := 1
 var _round_intro_active := true
 var _results_started := false
 var _pull_sound_players: Array[AudioStreamPlayer] = []
+var _pull_smoke: Array[AnimatedSprite2D] = []
 
 
 func _ready() -> void:
-	cross_team_pairs = GameSchedule.tug_layout_for_current_round()
+	_round_number = GameSchedule.tug_round
+	_round_label.text = "ROUND %d / 2" % _round_number
 	_build_pullers()
+	_setup_pull_smoke()
 	_setup_pull_audio()
 	_start_main_music()
 	_setup_indicators()
@@ -182,13 +188,19 @@ func _build_pullers() -> void:
 		puller.animation = &"pull"
 		puller.frame = REST_FRAME
 		puller.play(&"pull")
-		var player_x := CROSS_TEAM_PLAYER_X[player] if cross_team_pairs else PLAYER_X[player]
-		puller.position = Vector2(player_x, PLAYER_Y)
+		puller.position = Vector2(_player_x(player), PLAYER_Y)
 		puller.scale = Vector2(PLAYER_SCALE, PLAYER_SCALE)
-		puller.flip_h = player == 1 or player == 3 if cross_team_pairs else player >= 2
+		puller.flip_h = not _is_team_one(player)
 		puller.frame_changed.connect(_align_puller_grip.bind(player))
 		puller.animation_finished.connect(_on_pull_effect_finished.bind(player))
 		_align_puller_grip(player)
+	# Keep both rope ends inside the outer players' hands after spacing changes.
+	var grip_inset := PLAYER_SCALE * 4.0
+	var rope_y := PLAYER_Y + PLAYER_SCALE * 4.5
+	_rope.points = PackedVector2Array([
+		Vector2(_pullers[0].position.x + grip_inset, rope_y),
+		Vector2(_pullers[3].position.x - grip_inset, rope_y),
+	])
 
 
 func _add_puller_animation(frames: SpriteFrames, animation: StringName, texture: Texture2D, frame_count: int, fps: float, looping: bool) -> void:
@@ -207,6 +219,25 @@ func _align_puller_grip(player: int) -> void:
 	# the same continuous rope rather than moving or stretching rope sections.
 	var puller := _pullers[player]
 	puller.offset.y = 1.0 if puller.frame == 0 else 0.0
+
+
+func _setup_pull_smoke() -> void:
+	var frames := SpriteFrames.new()
+	frames.remove_animation(&"default")
+	_add_puller_animation(frames, &"smoke", SMOKE_TEXTURE, SMOKE_FRAMES, SMOKE_ANIMATION_FPS, false)
+	for puller in _pullers:
+		var smoke := AnimatedSprite2D.new()
+		smoke.name = "PullSmoke"
+		smoke.sprite_frames = frames
+		smoke.animation = &"smoke"
+		smoke.flip_h = puller.flip_h
+		smoke.z_index = 1
+		smoke.hide()
+		smoke.animation_finished.connect(smoke.hide)
+		# The sheet uses the same 32px canvas as the puller, aligning the dust
+		# with its feet while inheriting the character's scale and movement.
+		puller.add_child(smoke)
+		_pull_smoke.append(smoke)
 
 
 func _setup_pull_audio() -> void:
@@ -237,6 +268,10 @@ func _play_pull_effect(player: int) -> void:
 	var puller := _pullers[player]
 	puller.stop()
 	puller.play(&"pull_effect")
+	var smoke := _pull_smoke[player]
+	smoke.stop()
+	smoke.show()
+	smoke.play(&"smoke")
 
 
 func _on_pull_effect_finished(player: int) -> void:
@@ -288,6 +323,8 @@ func _finish(message: String, color: Color) -> void:
 		_pullers[player].pause()
 		_pullers[player].animation = &"pull"
 		_pullers[player].frame = REST_FRAME
+		_pull_smoke[player].stop()
+		_pull_smoke[player].hide()
 		_keys_held[player] = false
 		_indicator_until[player] = 0.0
 		_set_indicator(player, false)
@@ -296,15 +333,15 @@ func _finish(message: String, color: Color) -> void:
 		winning_team = 0
 	elif color == TEAM_TWO_COLOR:
 		winning_team = 1
-	_round_scores.assign(ScoreEngine.tug_round_scores(winning_team, cross_team_pairs))
-	_result_prompt.show_result(message, color, GameSchedule.tug_round)
+	_round_scores.assign(ScoreEngine.tug_round_scores(winning_team))
+	_result_prompt.show_result(message, color, _round_number)
 
 
 func _show_results() -> void:
 	if _results_started:
 		return
 	_results_started = true
-	ScoreKeeper.add_round_scores(_round_scores, &"tug_of_war", GameSchedule.tug_round > 1)
+	ScoreKeeper.add_round_scores(_round_scores, &"tug_of_war", _round_number > 1, _round_number)
 	if GameSchedule.advance_tug_round():
 		await SceneFader.change_scene("res://games/Tug Of war/tug_ofwar.tscn")
 	else:
@@ -334,7 +371,8 @@ func _show_round_intro() -> void:
 	label.pivot_offset = DESIGN_SIZE * 0.5
 	shade.add_child(label)
 	var reveal := create_tween()
-	for text in ["GET READY...", "ROUND %d" % GameSchedule.tug_round, "3", "2", "1", "START!"]:
+	for text in ["GET READY...", "ROUND %d" % _round_number, "5", "4", "3", "2", "1", "START!"]:
+		var is_countdown_number: bool = text in ["5", "4", "3", "2", "1"]
 		reveal.tween_callback(func() -> void:
 			label.text = text
 			label.modulate.a = 0.0
@@ -344,7 +382,7 @@ func _show_round_intro() -> void:
 		reveal.tween_property(label, "modulate:a", 1.0, 0.2)
 		reveal.tween_property(label, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 		reveal.set_parallel(false)
-		reveal.tween_interval(0.75 if text in ["3", "2", "1", "START!"] else 1.15)
+		reveal.tween_interval(0.75 if is_countdown_number or text == "START!" else 1.15)
 		reveal.tween_property(label, "modulate:a", 0.0, 0.16)
 	reveal.tween_callback(func() -> void: _round_intro_active = false; overlay.queue_free())
 
@@ -354,8 +392,7 @@ func _setup_indicators() -> void:
 		_indicators[player].texture = INDICATOR_TEXTURES[player]
 		_indicator_down[player] = false
 		_key_labels[player].text = _key_hint(PLAYER_ACTIONS[player])
-		var indicator_x := CROSS_TEAM_INDICATOR_X[player] if cross_team_pairs else INDICATOR_X[player]
-		_key_labels[player].position = Vector2(indicator_x - 82.0, 902.0)
+		_key_labels[player].position = Vector2(_player_x(player) - 82.0, 902.0)
 		_key_labels[player].size = Vector2(164.0, 36.0)
 		_place_indicator(player)
 
@@ -405,8 +442,11 @@ func _place_indicator(player: int) -> void:
 		return
 	var indicator_size := texture.get_size() * INDICATOR_SCALE
 	indicator.size = indicator_size
-	var indicator_x := CROSS_TEAM_INDICATOR_X[player] if cross_team_pairs else INDICATOR_X[player]
-	indicator.position = Vector2(indicator_x - indicator_size.x * 0.5, INDICATOR_BOTTOM - indicator_size.y)
+	indicator.position = Vector2(_player_x(player) - indicator_size.x * 0.5, INDICATOR_BOTTOM - indicator_size.y)
+
+
+func _player_x(player: int) -> float:
+	return PLAYER_X[player]
 
 
 func _update_meter(snap := false) -> void:
@@ -429,7 +469,7 @@ func _show_time() -> void:
 		return
 	_shown_seconds = seconds
 	var minutes := floori(seconds / 60.0)
-	_meter.set_time_text("%02d:%02d" % [minutes, seconds % 60], seconds <= 10)
+	_meter.set_time_text("%02d : %02d" % [minutes, seconds % 60], seconds <= 10)
 
 
 func _win_distance() -> float:
@@ -437,7 +477,7 @@ func _win_distance() -> float:
 
 
 func _is_team_one(player: int) -> bool:
-	return (player == 0 or player == 2) if cross_team_pairs else player < 2
+	return player < 2
 
 
 func _now() -> float:

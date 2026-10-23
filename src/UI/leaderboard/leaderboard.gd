@@ -30,9 +30,12 @@ var _row_slots: Array[float] = []
 var _scores: Array[int] = [0, 0, 0, 0]
 var _tweens: Array[Tween] = []
 var _remaining := 0
+var _animation_id := 0
 
 
 func _ready() -> void:
+	AudioManager.stop_game_music()
+	AudioManager.start_menu_music()
 	for row in _rows:
 		_row_slots.append(row.position.y)
 
@@ -61,15 +64,20 @@ func _count_up_row(index: int, starting_slot: int, starting_score: int) -> void:
 	_tweens.append(tween)
 	tween.tween_interval(starting_slot * ROW_STAGGER)
 	tween.tween_method(_set_label_value.bind(label), float(starting_score), float(_scores[index]), COUNT_TIME)
-	tween.finished.connect(_on_row_finished)
+	tween.finished.connect(_on_row_finished.bind(index, _animation_id))
 
 
-func _on_row_finished() -> void:
+func _on_row_finished(index: int, animation_id: int) -> void:
+	if animation_id != _animation_id:
+		return
+	_score_labels[index].text = str(_scores[index])
 	_remaining -= 1
 	if _remaining > 0:
 		return
 	count_finished.emit()
-	_sort_rows()
+	# A signal listener may replace the scores or start a new animation.
+	if animation_id == _animation_id:
+		_sort_rows()
 
 
 func _sort_rows() -> void:
@@ -85,15 +93,18 @@ func _move_row_to_slot(row_index: int, slot: int) -> void:
 	_tweens.append(tween)
 	tween.tween_interval(SORT_DELAY + slot * SORT_STAGGER)
 	tween.tween_property(row, "position:y", _row_slots[slot], SORT_TIME)
-	tween.finished.connect(_on_sort_row_finished)
+	tween.finished.connect(_on_sort_row_finished.bind(_animation_id))
 
 
-func _on_sort_row_finished() -> void:
+func _on_sort_row_finished(animation_id: int) -> void:
+	if animation_id != _animation_id:
+		return
 	_remaining -= 1
 	if _remaining > 0:
 		return
 	sort_finished.emit()
-	_on_sorted()
+	if animation_id == _animation_id:
+		_on_sorted()
 
 
 func _on_sorted() -> void:
@@ -135,6 +146,7 @@ func _set_label_value(value: float, label: Label) -> void:
 
 
 func _stop_tweens() -> void:
+	_animation_id += 1
 	for tween in _tweens:
 		if tween.is_valid():
 			tween.kill()

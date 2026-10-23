@@ -1,0 +1,90 @@
+[gd_resource type="SpriteFrames" load_steps=31 format=3]
+
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/1.png" id="1"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/2.png" id="2"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/3.png" id="3"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/4.png" id="4"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/5.png" id="5"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/6.png" id="6"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/7.png" id="7"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/8.png" id="8"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/9.png" id="9"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/10.png" id="10"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/11.png" id="11"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/12.png" id="12"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/13.png" id="13"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/1.png" id="14"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/2.png" id="15"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/3.png" id="16"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/4.png" id="17"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/5.png" id="18"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/6.png" id="19"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/7.png" id="20"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/8.png" id="21"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/no tsinelas/9.png" id="22"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/1.png" id="23"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/2.png" id="24"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/3.png" id="25"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/4.png" id="26"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/5.png" id="27"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/6.png" id="28"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/7.png" id="29"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Animation P4/idle/8.png" id="30"]
+
+[resource]
+resource_name = "Player 4 - Blue"
+animations = [{
+"frames": [
+{"duration": 1.1, "texture": ExtResource("1")},
+{"duration": 1.0, "texture": ExtResource("2")},
+{"duration": 1.0, "texture": ExtResource("3")}
+],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": ExtResource("4")},
+{"duration": 1.0, "texture": ExtResource("5")},
+{"duration": 1.0, "texture": ExtResource("6")},
+{"duration": 1.0, "texture": ExtResource("7")},
+{"duration": 1.0, "texture": ExtResource("8")},
+{"duration": 1.0, "texture": ExtResource("9")},
+{"duration": 1.0, "texture": ExtResource("10")},
+{"duration": 1.0, "texture": ExtResource("11")},
+{"duration": 1.0, "texture": ExtResource("12")},
+{"duration": 1.0, "texture": ExtResource("13")}
+],
+"loop": false,
+"name": &"throw",
+"speed": 10.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": ExtResource("14")},
+{"duration": 1.0, "texture": ExtResource("15")},
+{"duration": 1.0, "texture": ExtResource("16")},
+{"duration": 1.0, "texture": ExtResource("17")},
+{"duration": 1.0, "texture": ExtResource("18")},
+{"duration": 1.0, "texture": ExtResource("19")},
+{"duration": 1.0, "texture": ExtResource("20")},
+{"duration": 1.0, "texture": ExtResource("21")},
+{"duration": 1.0, "texture": ExtResource("22")}
+],
+"loop": false,
+"name": &"follow_through",
+"speed": 10.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": ExtResource("23")},
+{"duration": 1.0, "texture": ExtResource("24")},
+{"duration": 1.0, "texture": ExtResource("25")},
+{"duration": 1.0, "texture": ExtResource("26")},
+{"duration": 1.0, "texture": ExtResource("27")},
+{"duration": 1.0, "texture": ExtResource("28")},
+{"duration": 1.0, "texture": ExtResource("29")},
+{"duration": 1.0, "texture": ExtResource("30")}
+],
+"loop": true,
+"name": &"empty_idle",
+"speed": 8.0
+}]
