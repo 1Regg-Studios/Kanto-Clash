@@ -1,0 +1,212 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://src/UI/tutorial/tumbang_preso_tutorial.gd" id="1_tutorial"]
+[ext_resource type="FontFile" path="res://assets/Fonts/UpheavalPro.ttf" id="2_font"]
+[ext_resource type="Texture2D" path="res://games/Tug Of war/assets/UI/Player Press Indicator/Not Pressed/P1.png" id="3_key"]
+[ext_resource type="PackedScene" path="res://games/Tumbang Preso/Scene/game.tscn" id="4_game"]
+[ext_resource type="Script" path="res://src/UI/tutorial/tumbang_preso_preview.gd" id="5_preview"]
+[ext_resource type="Texture2D" path="res://assets/Minigame Randomizer/Game Icon Formatted/TumbangPreso.png" id="6_game_icon"]
+
+[sub_resource type="Theme" id="Theme_tutorial"]
+default_font = ExtResource("2_font")
+default_font_size = 60
+Label/colors/font_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_preview"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="TumbangPresoTutorial" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_tutorial")
+script = ExtResource("1_tutorial")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Composition" type="Control" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Card" type="Panel" parent="Composition"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 1896.0
+offset_bottom = 1056.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="GameIcon" type="TextureRect" parent="Composition"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 460.0
+offset_top = 108.0
+offset_right = 568.0
+offset_bottom = 216.0
+mouse_filter = 2
+texture = ExtResource("6_game_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 592.0
+offset_top = 96.0
+offset_right = 1520.0
+offset_bottom = 232.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984314, 0.752941, 0.321569, 1)
+theme_override_font_sizes/font_size = 110
+text = "TUMBANG PRESO"
+horizontal_alignment = 0
+vertical_alignment = 1
+
+[node name="Objective" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 232.0
+offset_right = 1760.0
+offset_bottom = 316.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 52
+text = "TIME YOUR AIM AND POWER TO KNOCK DOWN THE CAN"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Key" type="TextureRect" parent="Composition"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 152.0
+offset_top = 464.0
+offset_right = 344.0
+offset_bottom = 628.0
+mouse_filter = 2
+texture = ExtResource("3_key")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AssignedKey" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 562.0
+offset_right = 344.0
+offset_bottom = 610.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984314, 0.752941, 0.321569, 1)
+theme_override_font_sizes/font_size = 32
+text = "SPACE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Instructions" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 440.0
+offset_right = 988.0
+offset_bottom = 650.0
+mouse_filter = 2
+theme_override_constants/line_spacing = 8
+theme_override_font_sizes/font_size = 46
+text = "SPACE: LOCK DIRECTION\nSPACE AGAIN: LOCK POWER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TurnOrder" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 704.0
+offset_right = 988.0
+offset_bottom = 780.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984314, 0.752941, 0.321569, 1)
+theme_override_font_sizes/font_size = 52
+text = "P1 > P2 > P3 > P4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoringHint" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 790.0
+offset_right = 988.0
+offset_bottom = 880.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 32
+text = "3 THROWS EACH - AIM FOR THE TARGET ZONES\nCENTERED HITS SCORE MORE; MISSES LOSE 10"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PreviewFrame" type="Panel" parent="Composition"]
+layout_mode = 0
+offset_left = 1021.0
+offset_top = 381.0
+offset_right = 1795.0
+offset_bottom = 819.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_preview")
+
+[node name="GamePreview" type="SubViewportContainer" parent="Composition"]
+layout_mode = 0
+offset_left = 1024.0
+offset_top = 384.0
+offset_right = 1792.0
+offset_bottom = 816.0
+mouse_filter = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Composition/GamePreview"]
+disable_3d = true
+handle_input_locally = false
+gui_disable_input = true
+own_world_2d = true
+size = Vector2i(768, 432)
+render_target_update_mode = 4
+
+[node name="TumbangPreso" parent="Composition/GamePreview/SubViewport" instance=ExtResource("4_game")]
+
+[node name="Controller" parent="Composition/GamePreview/SubViewport/TumbangPreso" index="5"]
+script = ExtResource("5_preview")
+
+[node name="Continue" type="Label" parent="Composition"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 900.0
+offset_right = 1660.0
+offset_bottom = 976.0
+mouse_filter = 2
+text = "CLICK ANY KEY TO PROCEED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="demo_key_changed" from="Composition/GamePreview/SubViewport/TumbangPreso/Controller" to="." method="_on_demo_key_changed"]
+
+[editable path="Composition/GamePreview/SubViewport/TumbangPreso"]

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ceyyp86aiwr76"
+path="res://.godot/imported/hitslab-retro-arcade-game-music-396890.mp3-0f4fa4316207bad112df0927672da37e.mp3str"
+
+[deps]
+
+source_file="res://assets/Music/Main/Tumbang Preso/hitslab-retro-arcade-game-music-396890.mp3"
+dest_files=["res://.godot/imported/hitslab-retro-arcade-game-music-396890.mp3-0f4fa4316207bad112df0927672da37e.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

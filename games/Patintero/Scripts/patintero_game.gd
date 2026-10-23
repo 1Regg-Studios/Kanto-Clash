@@ -3,9 +3,9 @@ extends Node2D
 signal round_started(round_number: int)
 
 const ROUND_COUNT := 2
-const COUNTDOWN_STEP_SECONDS := 0.7
 const ROUND_END_SECONDS := 2.0
 const ROUND_RESULTS_SCENE := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
+const GAME_FONT: Font = preload("res://assets/Fonts/UpheavalPro.ttf")
 const MAIN_MUSIC := preload("res://assets/Music/Main/Patintero/tatamusic-game-gaming-music-557995.mp3")
 const ZONE_IDS: Array[StringName] = [&"zone_1", &"zone_2", &"zone_3", &"fn"]
 # Runners earn a zone award after clearing its guard line.
@@ -31,6 +31,7 @@ static var _last_spawn_order: Array[int] = []
 	$Platform3,
 	$Platform6,
 ]
+@onready var _hud: Control = $HUD/Root
 @onready var _timer: Node = $HUD/Root/Timer
 @onready var _score_label: Label = $HUD/Root/Scores
 @onready var _round_label: Label = $HUD/Root/Round
@@ -80,16 +81,58 @@ func _start_round() -> void:
 	_randomize_player_positions()
 	_round_label.text = "ROUND %d / %d" % [_round_number, ROUND_COUNT]
 	_update_score_label()
-	_round_notice.show()
-	_notice_title.text = _round_label.text
-	for countdown in [3, 2, 1]:
-		_notice_detail.text = "FIND YOUR PLAYER!\nP1 [A]     P2 [F]     P3 [J]     P4 [;]\nSTARTING IN %d..." % countdown
-		await get_tree().create_timer(COUNTDOWN_STEP_SECONDS, false).timeout
 	_round_notice.hide()
+	await _show_round_intro()
 	_round_intro_active = false
 	_set_court_active(true)
 	_timer.start_round()
 	round_started.emit(_round_number)
+
+
+func _show_round_intro() -> void:
+	var overlay := CanvasLayer.new()
+	overlay.name = "RoundIntro"
+	overlay.layer = 20
+	add_child(overlay)
+	var shade := ColorRect.new()
+	shade.name = "Shade"
+	shade.color = Color(0.015, 0.025, 0.06, 0.94)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.add_child(shade)
+	var label := Label.new()
+	label.name = "Countdown"
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_override("font", GAME_FONT)
+	label.add_theme_font_size_override("font_size", 108)
+	label.add_theme_color_override("font_color", Color("fbc052"))
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 12)
+	label.modulate.a = 0.0
+	label.scale = Vector2.ONE * 0.8
+	label.resized.connect(func() -> void: label.pivot_offset = label.size * 0.5)
+	shade.add_child(label)
+	label.pivot_offset = label.size * 0.5
+	# Use Tug of War's text sequence, pop-in easing, and hold/fade timing.
+	var reveal := create_tween()
+	for text in ["GET READY...", "ROUND %d" % _round_number, "5", "4", "3", "2", "1", "START!"]:
+		var is_countdown_number: bool = text in ["5", "4", "3", "2", "1"]
+		reveal.tween_callback(func() -> void:
+			label.text = text
+			label.modulate.a = 0.0
+			label.scale = Vector2.ONE * 0.8
+		)
+		reveal.set_parallel(true)
+		reveal.tween_property(label, "modulate:a", 1.0, 0.2)
+		reveal.tween_property(label, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		reveal.set_parallel(false)
+		reveal.tween_interval(0.75 if is_countdown_number or text == "START!" else 1.15)
+		reveal.tween_property(label, "modulate:a", 0.0, 0.16)
+	await reveal.finished
+	overlay.queue_free()
 
 
 func _randomize_player_positions() -> void:
@@ -112,9 +155,11 @@ func _randomize_player_positions() -> void:
 	for player_index in _players.size():
 		_players[player_index].reset_for_round(_spawn_positions[order[player_index]])
 		_previous_player_xs[player_index] = to_local(_players[player_index].global_position).x
+	_hud.set_player_lanes(order)
 
 
 func _set_court_active(active: bool) -> void:
+	_hud.set_round_active(active)
 	for player in _players:
 		player.set_round_active(active)
 	for guard in _guards:
@@ -156,7 +201,7 @@ func _physics_process(_delta: float) -> void:
 	for player_index in new_finishers:
 		_finish_order.append(player_index)
 		var finish_place := _finish_order.size()
-		_players[player_index].finish_run(finish_place, ScoreEngine.patintero_finish_multiplier(finish_place))
+		_players[player_index].finish_run(finish_place)
 	if progress_changed:
 		_update_score_label()
 	if _finish_order.size() == _players.size():
@@ -196,10 +241,9 @@ func _finish_round() -> void:
 func _round_results_text() -> String:
 	var finishers: Array[String] = []
 	for place_index in _finish_order.size():
-		finishers.append("%s: P%d (x%.1f)" % [
+		finishers.append("%s: P%d" % [
 			FINISH_PLACE_LABELS[place_index],
 			_finish_order[place_index] + 1,
-			ScoreEngine.patintero_finish_multiplier(place_index + 1),
 		])
 	var lines: Array[String] = []
 	for line_start in range(0, finishers.size(), 2):
@@ -209,7 +253,7 @@ func _round_results_text() -> String:
 		if not _finish_order.has(player_index):
 			unfinished.append("P%d" % (player_index + 1))
 	if not unfinished.is_empty():
-		lines.append("UNFINISHED: %s (x1.0)" % ", ".join(unfinished))
+		lines.append("UNFINISHED: %s" % ", ".join(unfinished))
 	lines.append("RESHUFFLING POSITIONS FOR ROUND 2..." if _round_number < ROUND_COUNT else "OPENING GAME LEADERBOARD...")
 	return "\n".join(lines)
 

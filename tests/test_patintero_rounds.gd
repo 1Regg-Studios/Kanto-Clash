@@ -49,12 +49,23 @@ func _run() -> void:
 	_check(players[0].get("_stun_timer") == 0.0, "Frozen guards cannot tag players during the countdown")
 	Input.action_release("P1_Ready")
 
-	var countdown_text: String = game.get_node("HUD/Root/RoundNotice/Detail").text
+	var countdown_label: Label = game.get_node("RoundIntro/Shade/Countdown")
+	var countdown_text := countdown_label.text
+	var countdown_alpha := countdown_label.modulate.a
+	var countdown_scale := countdown_label.scale
 	get_tree().paused = true
 	await get_tree().create_timer(0.85, true).timeout
-	_check(game.get_node("HUD/Root/RoundNotice/Detail").text == countdown_text, "Pausing also pauses the round countdown")
+	_check(countdown_label.text == countdown_text and countdown_label.modulate.a == countdown_alpha and countdown_label.scale == countdown_scale, "Pausing also freezes the round countdown text and animation")
 	get_tree().paused = false
-	await game.round_started
+	var countdown_steps: Array[String] = [countdown_text]
+	var timer_stayed_stopped := true
+	while game.get("_round_intro_active"):
+		if countdown_label.text != countdown_steps[-1]:
+			countdown_steps.append(countdown_label.text)
+		timer_stayed_stopped = timer_stayed_stopped and not timer.get("_running")
+		await get_tree().process_frame
+	_check(countdown_steps == ["GET READY...", "ROUND 1", "5", "4", "3", "2", "1", "START!"], "Patintero follows Tug of War's full round countdown sequence")
+	_check(timer_stayed_stopped, "The round timer waits until START! finishes")
 	_check(timer.get("_running") and game.get("_round_number") == 1, "Round one starts after the countdown")
 	await _capture("patintero-round-one")
 
@@ -64,7 +75,7 @@ func _run() -> void:
 	_check(not players[0].is_physics_processing() and players[1].is_physics_processing(), "A finisher stops moving while unfinished players keep racing")
 	players[0].call("_get_hit")
 	_check(players[0].get("_stun_timer") == 0.0, "A finished runner cannot be tagged again")
-	_check(players[0].get_node("PlayerLabel").text.contains("#1\nx2.0"), "The finished runner displays their placement and multiplier")
+	_check(players[0].get_node("PlayerLabel").text == "P1 - #1", "The finished runner displays their placement without a multiplier")
 	players[0].set("_stun_timer", 1.0)
 	players[1].set("_boost_timer", 0.2)
 	players[2].set("_dash_cooldown_timer", 1.0)
@@ -76,7 +87,8 @@ func _run() -> void:
 	_check(game.get("_round_finished"), "The timer ends round one")
 	game.call("_on_round_timeout")
 	_check(game.get("_game_scores") == [100, 30, 15, 5], "A timeout applies the finisher's bonus once and leaves unfinished zone scores at x1")
-	_check(game.get_node("HUD/Root/RoundNotice/Detail").text.contains("1ST: P1 (x2.0)") and game.get_node("HUD/Root/RoundNotice/Detail").text.contains("UNFINISHED: P2, P3, P4 (x1.0)"), "The round summary distinguishes finishers from unfinished runners")
+	var first_round_summary: String = game.get_node("HUD/Root/RoundNotice/Detail").text
+	_check(first_round_summary.contains("1ST: P1") and first_round_summary.contains("UNFINISHED: P2, P3, P4") and not first_round_summary.contains("(x"), "The round summary distinguishes finishers from unfinished runners without showing multipliers")
 	_check(_score_updates == 0 and ScoreKeeper.totals == [0, 0, 0, 0], "Round one waits for round two before posting game scores")
 	var first_round_music_position := music.get_playback_position()
 	await _capture("patintero-round-one-complete")
@@ -124,7 +136,7 @@ func _run() -> void:
 		court_frozen = court_frozen and not guard.is_physics_processing()
 	_check(court_frozen, "Automatic completion freezes every runner and guard")
 	var summary: String = game.get_node("HUD/Root/RoundNotice/Detail").text
-	_check(summary.contains("1ST: P4 (x2.0)") and summary.contains("2ND: P2 (x1.8)") and summary.contains("3RD: P3 (x1.6)") and summary.contains("4TH: P1 (x1.4)"), "The round summary shows all four actual placements and their bonuses")
+	_check(summary.contains("1ST: P4") and summary.contains("2ND: P2") and summary.contains("3RD: P3") and summary.contains("4TH: P1") and not summary.contains("(x"), "The round summary shows all four actual placements without multipliers")
 	game.call("_on_round_timeout")
 	game.call("_physics_process", 0.0)
 	_check(game.get("_game_scores") == [170, 120, 95, 105], "Both rounds contribute equally with their own finish multipliers and cannot be counted twice")

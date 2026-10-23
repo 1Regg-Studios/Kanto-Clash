@@ -3,11 +3,9 @@ extends Control
 signal finished
 
 const DESIGN_SIZE := Vector2(1920.0, 1080.0)
-const CARD_POSITION := Vector2(440.0, 340.0)
-const ENTER_TIME := 0.5
-const FLOAT_HEIGHT := 8.0
+const CARD_POSITION := Vector2(440.0, 315.0)
 
-@export_range(1.0, 10.0, 0.1) var display_seconds := 3.6
+@export_range(1.0, 10.0, 0.1) var display_seconds := 5.0
 
 @onready var _dim: ColorRect = $Dim
 @onready var _composition: Control = $Composition
@@ -18,7 +16,6 @@ const FLOAT_HEIGHT := 8.0
 @onready var _redirect: Label = $Composition/Card/Redirect
 
 var _entrance: Tween
-var _hover: Tween
 var _countdown: Tween
 var _presented := false
 
@@ -39,17 +36,14 @@ func show_result(message: String, color: Color, round_number: int) -> void:
 	_accent.color = Color("fbc04f")
 	_update_countdown(display_seconds)
 	_dim.color.a = 0.0
-	_card.position = CARD_POSITION + Vector2(0.0, 56.0)
-	_card.scale = Vector2.ONE * 0.96
+	_card.position = CARD_POSITION
+	_card.scale = Vector2.ONE
 	_card.modulate.a = 0.0
 	visible = true
 
 	_entrance = create_tween().set_parallel()
 	_entrance.tween_property(_dim, "color:a", 0.5, 0.35)
 	_entrance.tween_property(_card, "modulate:a", 1.0, 0.25)
-	_entrance.tween_property(_card, "position:y", CARD_POSITION.y, ENTER_TIME).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	_entrance.tween_property(_card, "scale", Vector2.ONE, ENTER_TIME).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_entrance.finished.connect(_start_hover)
 
 	_countdown = create_tween()
 	_countdown.tween_method(_update_countdown, display_seconds, 0.0, display_seconds)
@@ -63,22 +57,13 @@ func _layout() -> void:
 	_composition.scale = Vector2.ONE * fit
 
 
-func _start_hover() -> void:
-	_hover = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_hover.tween_property(_card, "position:y", CARD_POSITION.y - FLOAT_HEIGHT, 1.1)
-	_hover.tween_property(_card, "position:y", CARD_POSITION.y, 1.1)
-
-
 func _update_countdown(remaining: float) -> void:
 	var countdown_label := "NEXT ROUND STARTS IN" if GameSchedule.tug_round == 1 else "ROUND RESULTS IN"
 	_redirect.text = "%s %d..." % [countdown_label, maxi(1, ceili(remaining))]
 
 
 func _leave() -> void:
-	if _hover != null and _hover.is_valid():
-		_hover.kill()
 	_redirect.text = "STARTING NEXT ROUND..." if GameSchedule.tug_round == 1 else "OPENING ROUND RESULTS..."
 	var exit := create_tween().set_parallel()
-	exit.tween_property(_card, "position:y", _card.position.y - 28.0, 0.25).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	exit.tween_property(_card, "modulate:a", 0.0, 0.25)
 	finished.emit()

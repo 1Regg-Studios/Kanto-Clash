@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://bgh4vcicpncbt"]
+
+[ext_resource type="SpriteFrames" path="res://games/Tumbang Preso/Scene/player_1_frames.tres" id="1_frames"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jvale"]
+radius = 31.906113
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1010254049]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1656719658]
+position = Vector2(977, 405)
+rotation = -1.653628
+scale = Vector2(0.47498316, 0.4749831)
+sprite_frames = ExtResource("1_frames")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.34158862
+
+[node name="ReleasedHand" type="Sprite2D" parent="AnimatedSprite2D"]
+visible = false
+show_behind_parent = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=532299697]
+position = Vector2(1103, 627)
+shape = SubResource("CircleShape2D_jvale")

@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://crk6j1e8uxlrg"]
+
+[ext_resource type="Script" path="res://games/Tumbang Preso/Script/directiongauge.gd" id="1_iebl5"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Direction/HIT BOX.png" id="2_70u31"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Direction/BG.png" id="3_bg"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Direction/GUAGE.png" id="4_frame"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Direction/BAR.png" id="5_bar"]
+[ext_resource type="FontFile" path="res://assets/Fonts/UpheavalPro.ttf" id="6_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_target"]
+draw_center = false
+border_width_left = 2
+border_width_right = 2
+border_color = Color(0.9764706, 0.74509805, 0.31764707, 1)
+
+[node name="DirectionGuage" type="Node2D" unique_id=1980682558]
+texture_filter = 1
+script = ExtResource("1_iebl5")
+
+[node name="background" type="TextureRect" parent="." unique_id=1807046036]
+offset_right = 892.0
+offset_bottom = 145.0
+mouse_filter = 2
+texture = ExtResource("4_frame")
+expand_mode = 1
+
+[node name="Bg" type="TextureRect" parent="." unique_id=876015748]
+offset_left = 19.0
+offset_top = 74.0
+offset_right = 873.0
+offset_bottom = 127.0
+mouse_filter = 2
+texture = ExtResource("3_bg")
+expand_mode = 1
+
+[node name="Fill" type="TextureRect" parent="."]
+offset_left = 19.0
+offset_top = 74.0
+offset_right = 873.0
+offset_bottom = 127.0
+mouse_filter = 2
+texture = ExtResource("2_70u31")
+expand_mode = 1
+
+[node name="LeftLabel" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 63.0
+offset_right = 320.0
+offset_bottom = 137.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 60
+text = "LEFT"
+vertical_alignment = 1
+
+[node name="RightLabel" type="Label" parent="."]
+offset_left = 572.0
+offset_top = 63.0
+offset_right = 860.0
+offset_bottom = 137.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 60
+text = "RIGHT"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="TargetZone" type="Panel" parent="." unique_id=904715423]
+offset_left = 360.7
+offset_top = 74.0
+offset_right = 531.3
+offset_bottom = 127.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_target")
+
+[node name="Line" type="TextureRect" parent="." unique_id=821428203]
+offset_left = 426.5
+offset_top = 41.0
+offset_right = 465.5
+offset_bottom = 159.0
+mouse_filter = 2
+texture = ExtResource("5_bar")
+expand_mode = 1

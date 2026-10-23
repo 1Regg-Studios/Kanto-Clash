@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://b0khrj5q1av2h"]
+
+[ext_resource type="Script" path="res://games/Tumbang Preso/Script/powergauge.gd" id="1_dm2ps"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Power/BG.png" id="2_bg"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Power/GAUGE.png" id="3_frame"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Power/BAR.png" id="4_bar"]
+[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/UI/Power/HITBOX.png" id="5_fill"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_target"]
+draw_center = false
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color(0.9764706, 0.74509805, 0.31764707, 1)
+
+[node name="PowerGauge" type="Node2D" unique_id=786895121]
+texture_filter = 1
+script = ExtResource("1_dm2ps")
+
+[node name="bg" type="TextureRect" parent="." unique_id=1528215401]
+offset_right = 165.0
+offset_bottom = 892.0
+mouse_filter = 2
+texture = ExtResource("3_frame")
+expand_mode = 1
+
+[node name="Bg" type="TextureRect" parent="." unique_id=1108201917]
+offset_left = 19.0
+offset_top = 19.0
+offset_right = 72.0
+offset_bottom = 873.0
+mouse_filter = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+
+[node name="Fill" type="TextureRect" parent="."]
+offset_left = 19.0
+offset_top = 19.0
+offset_right = 72.0
+offset_bottom = 873.0
+mouse_filter = 2
+texture = ExtResource("5_fill")
+expand_mode = 1
+
+[node name="TargetZone" type="Panel" parent="." unique_id=2145285618]
+offset_left = 19.0
+offset_top = 190.1
+offset_right = 72.0
+offset_bottom = 360.7
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_target")
+
+[node name="Line" type="TextureRect" parent="." unique_id=765213428]
+offset_left = -13.0
+offset_top = 426.5
+offset_right = 106.0
+offset_bottom = 465.5
+mouse_filter = 2
+texture = ExtResource("4_bar")
+expand_mode = 1

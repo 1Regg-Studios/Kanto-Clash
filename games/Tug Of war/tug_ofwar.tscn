@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://games/Tug Of war/tug_result.tscn" id="6_result"]
 [ext_resource type="Texture2D" path="res://games/Patintero/UI/frame.png" id="7_frame"]
 [ext_resource type="PackedScene" path="res://src/UI/pause/pause_menu.tscn" id="8_pause"]
+[ext_resource type="Texture2D" path="res://games/Tug Of war/assets/UI/TIME.png" id="9_time"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_o650j"]
 
@@ -16,10 +17,6 @@
 [sub_resource type="SpriteFrames" id="SpriteFrames_of88k"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_wlsv5"]
-
-[sub_resource type="FontVariation" id="FontVariation_timer"]
-base_font = ExtResource("4_font")
-spacing_glyph = 28
 
 [node name="TugOfWar" type="Node2D" unique_id=1762309341]
 texture_filter = 1
@@ -41,30 +38,30 @@ texture = ExtResource("7_frame")
 
 [node name="Rope" type="Line2D" parent="World" unique_id=318908741]
 texture_repeat = 2
-points = PackedVector2Array(602, 610, 1278, 610)
+points = PackedVector2Array(572, 610, 1348, 610)
 width = 24.0
 default_color = Color(1, 1, 1, 1)
 texture = ExtResource("3_rope")
 texture_mode = 1
 
 [node name="P1" type="AnimatedSprite2D" parent="World" unique_id=1522664380]
-position = Vector2(500, 600)
+position = Vector2(540, 574)
 scale = Vector2(8, 8)
 sprite_frames = SubResource("SpriteFrames_o650j")
 
 [node name="P2" type="AnimatedSprite2D" parent="World" unique_id=1457426265]
-position = Vector2(720, 600)
+position = Vector2(740, 574)
 scale = Vector2(8, 8)
 sprite_frames = SubResource("SpriteFrames_wfg4h")
 
 [node name="P3" type="AnimatedSprite2D" parent="World" unique_id=344826334]
-position = Vector2(1200, 600)
+position = Vector2(1180, 574)
 scale = Vector2(8, 8)
 sprite_frames = SubResource("SpriteFrames_of88k")
 flip_h = true
 
 [node name="P4" type="AnimatedSprite2D" parent="World" unique_id=493496406]
-position = Vector2(1420, 600)
+position = Vector2(1380, 574)
 scale = Vector2(8, 8)
 sprite_frames = SubResource("SpriteFrames_wlsv5")
 flip_h = true
@@ -93,26 +90,65 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -662.5
-offset_top = 129.0
-offset_right = 662.5
-offset_bottom = 370.0
+offset_left = -642.4
+offset_top = 88.0
+offset_right = 642.4
+offset_bottom = 314.2
 grow_horizontal = 2
 mouse_filter = 2
 script = ExtResource("5_meter")
 
-[node name="Timer" type="Label" parent="HUD/Root/Composition/Meter" unique_id=1258250049]
+[node name="Timer" type="Control" parent="HUD/Root/Composition/Meter"]
 layout_mode = 0
-offset_left = 411.75
-offset_top = 139.08
-offset_right = 1054.08
-offset_bottom = 241.56
+offset_left = 497.4
+offset_top = 135.2
+offset_right = 787.4
+offset_bottom = 226.2
+mouse_filter = 2
+
+[node name="Box" type="TextureRect" parent="HUD/Root/Composition/Meter/Timer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_time")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="HUD/Root/Composition/Meter/Timer" unique_id=1258250049]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 2.0
+offset_right = -12.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 50
+text = "00 : 30"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Round" type="Label" parent="HUD/Root/Composition"]
+layout_mode = 0
+offset_left = 740.0
+offset_top = 320.0
+offset_right = 1180.0
+offset_bottom = 388.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_timer")
-theme_override_font_sizes/font_size = 112
-text = "01:00"
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 42
+text = "ROUND 1 / 2"
 horizontal_alignment = 1
 vertical_alignment = 1
 
