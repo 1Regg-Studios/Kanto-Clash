@@ -131,12 +131,11 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Turn" type="Label" parent="HUD"]
+[node name="Turn" type="Label" parent="HUD" unique_id=767598281]
 offset_left = 500.0
 offset_top = 174.0
 offset_right = 1420.0
 offset_bottom = 230.0
-mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("8_font")
@@ -145,12 +144,11 @@ text = "PLAYER 1'S TURN  /  4"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TurnScores" type="Label" parent="HUD"]
+[node name="TurnScores" type="Label" parent="HUD" unique_id=658891395]
 offset_left = 430.0
 offset_top = 1010.0
 offset_right = 1490.0
 offset_bottom = 1058.0
-mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("8_font")
@@ -211,7 +209,7 @@ text = "TIME'S UP!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Detail" type="Label" parent="TimeUpOverlay/Dimmer"]
+[node name="Detail" type="Label" parent="TimeUpOverlay/Dimmer" unique_id=2133580870]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -224,7 +222,6 @@ offset_right = 800.0
 offset_bottom = 210.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("8_font")
@@ -232,4 +229,4 @@ theme_override_font_sizes/font_size = 44
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PauseMenu" parent="." instance=ExtResource("9_pause")]
+[node name="PauseMenu" parent="." unique_id=674554373 instance=ExtResource("9_pause")]

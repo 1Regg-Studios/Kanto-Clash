@@ -4,6 +4,7 @@ const RESULTS := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
 const OVERALL := "res://src/UI/overallleaderboard/overall_leaderboard.tscn"
 const LOADING := "res://src/UI/ldscrn/ldscrn.tscn"
 const MAIN_MENU := "res://src/UI/main/mainmenu.tscn"
+const OUTRO := "res://src/UI/story_outro/story_outro.tscn"
 const TUTORIALS := {
 	"tug_of_war": "res://src/UI/tutorial/tug_of_war_tutorial.tscn",
 	"patintero": "res://src/UI/tutorial/patintero_tutorial.tscn",
@@ -146,8 +147,14 @@ func _run() -> void:
 	key.keycode = KEY_SPACE
 	key.pressed = true
 	Input.parse_input_event(key)
+	var outro := await _wait_for_scene(OUTRO)
+	_check(outro != null, "Continuing from the final results plays the story outro")
+	if outro == null:
+		get_tree().quit(1)
+		return
+	await _capture("story-outro")
 	var menu := await _wait_for_scene(MAIN_MENU)
-	_check(menu != null, "The final results return to the main menu on input")
+	_check(menu != null, "The story outro returns to the main menu automatically")
 	_check(ScoreKeeper.totals == [0, 0, 0, 0] and ScoreKeeper.last_round_scores == [0, 0, 0, 0], "The next match starts with fresh scores")
 	_check(GameSchedule.picked.is_empty() and GameSchedule.current_game_index == -1 and GameSchedule.tug_round == 1, "Returning to the menu clears the lineup and Tug round state")
 	_check(not GameSchedule.advance_game() and GameSchedule.next_scene_path.is_empty(), "An empty schedule cannot replay a stale minigame")

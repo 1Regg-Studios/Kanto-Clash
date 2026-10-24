@@ -136,7 +136,7 @@ offset_bottom = 650.0
 mouse_filter = 2
 theme_override_constants/line_spacing = 8
 theme_override_font_sizes/font_size = 64
-text = "PRESS SPACE\nIN THE GREEN ZONE"
+text = "PRESS SPACE\nWITH THE HANDLE\nFULLY IN GREEN"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -161,7 +161,7 @@ offset_right = 988.0
 offset_bottom = 880.0
 mouse_filter = 2
 theme_override_font_sizes/font_size = 34
-text = "ONE PLAYER AT A TIME - 30 SECONDS EACH\nEVERY SUCCESSFUL JUMP SCORES"
+text = "ONE PLAYER AT A TIME - 30 SECONDS EACH\nEVERY SUCCESSFUL JUMP: +1 POINT"
 horizontal_alignment = 1
 vertical_alignment = 1
 

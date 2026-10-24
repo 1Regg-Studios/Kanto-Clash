@@ -1,6 +1,6 @@
 extends Control
 
-const LOADING_SCREEN := "res://src/UI/ldscrn/ldscrn.tscn"
+const STORY_INTRO_SCENE := "res://src/UI/story_intro/story_intro.tscn"
 
 const ICON_SIZE := 224
 # Free spin stays within one sequence; braking travels less than one more.
@@ -124,4 +124,4 @@ func _finish() -> void:
 	set_process(false)
 	await get_tree().create_timer(HOLD_TIME).timeout
 	GameSchedule.next_scene_path = GameSchedule.first_scene_path()
-	await SceneFader.change_scene(LOADING_SCREEN)
+	await SceneFader.change_scene(STORY_INTRO_SCENE)

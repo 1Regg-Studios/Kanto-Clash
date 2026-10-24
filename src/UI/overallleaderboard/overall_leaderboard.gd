@@ -1,6 +1,6 @@
 extends Leaderboard
 
-const MENU_LOADING_SCENE := "res://src/UI/ldscrn/main_menu_loading.tscn"
+const OUTRO_SCENE := "res://src/UI/story_outro/story_outro.tscn"
 const PROMPT_FADE_TIME := 0.3
 const BLINK_MIN_ALPHA := 0.4
 const BLINK_HALF_PERIOD := 0.5
@@ -81,14 +81,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("Toggle_Fullscreen"):
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
-		_return_to_menu()
+		_play_outro()
 	elif event is InputEventJoypadButton and event.pressed:
-		_return_to_menu()
+		_play_outro()
 	elif event is InputEventMouseButton and event.pressed:
-		_return_to_menu()
+		_play_outro()
 
 
-func _return_to_menu() -> void:
+func _play_outro() -> void:
 	_transitioning = true
 	_awaiting_input = false
 	if _blink != null and _blink.is_valid():
@@ -96,7 +96,7 @@ func _return_to_menu() -> void:
 	get_viewport().set_input_as_handled()
 	ScoreKeeper.reset()
 	GameSchedule.reset()
-	await SceneFader.change_scene(MENU_LOADING_SCENE)
+	await SceneFader.change_scene(OUTRO_SCENE)
 
 
 func _reset_prompt() -> void:

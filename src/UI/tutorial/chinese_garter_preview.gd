@@ -41,7 +41,7 @@ func _process(delta: float) -> void:
 		_turn_index = (_turn_index + 1) % PLAYER_COUNT
 		_restart_demo()
 		demo_key_changed.emit(false)
-	elif _gauge.running and _player.is_on_floor():
+	elif _gauge.running and _player.can_jump():
 		var center: float = (_gauge.zone_start + _gauge.zone_end) * 0.5
 		if absf(_gauge.t - center) <= 0.04:
-			_gauge.attempt_hit()
+			_attempt_jump()

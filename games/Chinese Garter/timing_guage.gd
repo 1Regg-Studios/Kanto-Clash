@@ -1,7 +1,7 @@
 extends Node2D
 ## Vertical timing gauge (gauge only, no character logic).
 ## The handle moves up and down on its own.
-## Press SPACE when the handle is inside the green zone.
+## Press SPACE when the whole handle is inside the green zone.
 ## Attach this ONLY to a dedicated gauge Node2D, never to the character.
 
 signal hit(perfect: bool, points: int)
@@ -11,18 +11,18 @@ signal round_started
 @export var bar_size: Vector2 = Vector2(76, 880)
 @export var min_handle_height: float = 28.0
 @export var auto_position: bool = false ## Otherwise, use the position set in the scene.
-@export var needle_speed: float = 0.85
+@export var needle_speed: float = 1.0
 @export var speed_increase: float = 0.04
 ## Speed increases taper near this limit to keep long streaks playable.
-@export var max_needle_speed: float = 1.35
+@export var max_needle_speed: float = 1.5
 @export var speed_ramp_rate: float = 0.2
 @export var green_height: float = 0.24
 @export var green_shrink: float = 0.015
 @export var min_green_height: float = 0.12
-@export var zone_transition_duration: float = 0.3
+@export var zone_transition_duration: float = 0.25
 @export var perfect_margin: float = 0.3
 @export var auto_restart: bool = true
-@export var restart_delay: float = 0.6
+@export var restart_delay: float = 0.45
 
 var t: float = 0.0
 var direction: float = 1.0
@@ -60,6 +60,7 @@ func _new_round(initial: bool = false) -> void:
 	running = true
 	message = "Press SPACE!"
 	round_started.emit()
+	queue_redraw()
 
 
 func _ready() -> void:
@@ -89,16 +90,17 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if game_active:
-		# Keep the needle moving through the short result pause instead of freezing and snapping back.
-		needle_speed = move_toward(needle_speed, target_needle_speed, speed_ramp_rate * delta)
-		t += direction * needle_speed * delta
-		while t > 1.0 or t < 0.0:
-			if t > 1.0:
-				t = 2.0 - t
-				direction = -1.0
-			else:
-				t = -t
-				direction = 1.0
+		# Hold the judged position during feedback, then resume from that position.
+		if running:
+			needle_speed = move_toward(needle_speed, target_needle_speed, speed_ramp_rate * delta)
+			t += direction * needle_speed * delta
+			while t > 1.0 or t < 0.0:
+				if t > 1.0:
+					t = 2.0 - t
+					direction = -1.0
+				else:
+					t = -t
+					direction = 1.0
 
 		if _zone_transition_elapsed < zone_transition_duration:
 			_zone_transition_elapsed = minf(_zone_transition_elapsed + delta, zone_transition_duration)
@@ -131,8 +133,13 @@ func attempt_hit() -> void:
 func _check_hit() -> void:
 	if not game_active or not running:
 		return
+	var session := _session_id
 	running = false
-	if t >= zone_start and t <= zone_end:
+	_restart_pending = auto_restart
+	# Judge the same geometry that is drawn, including the handle's thickness.
+	var green_rect := _get_green_zone_rect()
+	var handle_rect := _get_handle_rect()
+	if green_rect.size.y > 0.0 and handle_rect.position.y >= green_rect.position.y and handle_rect.end.y <= green_rect.end.y:
 		var center := (zone_start + zone_end) * 0.5
 		var half := (zone_end - zone_start) * 0.5
 		var offset: float = abs(t - center) / half
@@ -154,14 +161,15 @@ func _check_hit() -> void:
 		message = "MISSED!"
 		missed.emit()
 
+	queue_redraw()
+	if not game_active or session != _session_id:
+		return
 	if auto_restart:
-		_start_next_zone_transition()
-		var session := _session_id
-		_restart_pending = true
 		await get_tree().create_timer(restart_delay, false).timeout
 		if game_active and session == _session_id:
-			_restart_pending = false
-			_new_round()
+			# Show the result against its original zone before moving the next target.
+			_start_next_zone_transition()
+			_resume_after_zone_transition()
 	else:
 		message += "\nPress SPACE to continue"
 
@@ -172,6 +180,9 @@ func _start_next_zone_transition() -> void:
 	_zone_transition_from_height = zone_end - zone_start
 	_zone_transition_to_height = green_height
 	_zone_transition_elapsed = 0.0
+	if zone_transition_duration <= 0.0:
+		zone_start = _zone_transition_to_start
+		zone_end = zone_start + _zone_transition_to_height
 
 
 func _resume_after_zone_transition() -> void:
@@ -179,6 +190,9 @@ func _resume_after_zone_transition() -> void:
 	_restart_pending = true
 	await get_tree().create_timer(zone_transition_duration, false).timeout
 	if game_active and session == _session_id:
+		zone_start = _zone_transition_to_start
+		zone_end = zone_start + _zone_transition_to_height
+		_zone_transition_elapsed = zone_transition_duration
 		_restart_pending = false
 		_new_round()
 
@@ -217,22 +231,34 @@ func stop_game() -> void:
 	queue_redraw()
 
 
+func _get_inner_rect() -> Rect2:
+	return Rect2(-bar_size / 2.0, bar_size).grow(-bar_size.x * 0.08)
+
+
+func _get_green_zone_rect() -> Rect2:
+	var inner := _get_inner_rect()
+	var y_top: float = lerp(inner.end.y, inner.position.y, zone_end)
+	var y_bottom: float = lerp(inner.end.y, inner.position.y, zone_start)
+	return Rect2(inner.position.x, y_top, inner.size.x, y_bottom - y_top)
+
+
+func _get_handle_rect() -> Rect2:
+	var inner := _get_inner_rect()
+	var handle_w := bar_size.x * 1.4
+	var handle_h := maxf(bar_size.x * 0.25, min_handle_height)
+	var y: float = lerp(inner.end.y, inner.position.y, t)
+	return Rect2(-handle_w / 2.0, y - handle_h / 2.0, handle_w, handle_h)
+
+
 func _draw() -> void:
-	var border := bar_size.x * 0.08
 	var bar_rect := Rect2(-bar_size / 2.0, bar_size)
-	var inner := bar_rect.grow(-border)
 
 	# Draw background and outline
 	draw_style_box(outline_box, bar_rect.grow(4.0))
 	draw_style_box(bar_box, bar_rect)
 
 	# Draw green timing zone
-	var y_top: float = lerp(inner.end.y, inner.position.y, zone_end)
-	var y_bottom: float = lerp(inner.end.y, inner.position.y, zone_start)
-	draw_rect(Rect2(inner.position.x, y_top, inner.size.x, y_bottom - y_top), Color("4a8a10"))
+	draw_rect(_get_green_zone_rect(), Color("4a8a10"))
 
 	# Draw moving handle
-	var handle_w := bar_size.x * 1.4
-	var handle_h := maxf(bar_size.x * 0.25, min_handle_height)
-	var y: float = lerp(inner.end.y, inner.position.y, t)
-	draw_style_box(handle_box, Rect2(-handle_w / 2.0, y - handle_h / 2.0, handle_w, handle_h))
+	draw_style_box(handle_box, _get_handle_rect())

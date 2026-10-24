@@ -27,6 +27,7 @@ func _run() -> void:
 	await get_tree().create_timer(0.7).timeout
 	Engine.time_scale = 4.0
 	_test_roster()
+	await _test_green_zone()
 	await _test_restart_isolation()
 	ScoreKeeper.reset()
 	ScoreKeeper.add_round_scores(STARTING_TOTALS, &"tug_of_war")
@@ -69,15 +70,21 @@ func _run() -> void:
 			_send_key(KEY_SPACE, true)
 			_send_key(KEY_SPACE)
 			_check(gauge.get("score") == hit_index + 1, "Repeats and cooldown mashing cannot duplicate a timing hit")
+			if player_index == 1 and hit_index == 0:
+				await _test_airborne_attempt(game)
 			if hit_index + 1 < EXPECTED_SCORES[player_index]:
-				await get_tree().create_timer(float(gauge.get("restart_delay")) + 0.08, false).timeout
+				while not gauge.get("running") or not player.call("can_jump"):
+					await get_tree().process_frame
 		if player_index == 0:
 			await _capture("chinese-garter-p1-jump")
 			await _test_pause(game, false)
 		if player_index == 3:
-			gauge.set("t", 0.0)
+			gauge.set("t", float(gauge.get("zone_start")) + 0.005)
 			_send_key(KEY_SPACE)
 			_check(gauge.get("score") == 0 and game.get_node("HUD/Feedback").text == "MISS!", "A missed attempt keeps P4's score at zero")
+			var jump_sound: AudioStreamPlayer = player.get("_jump_sound_player")
+			var error_sound: AudioStreamPlayer = AudioManager.get("_error_player")
+			_check(not jump_sound.playing and not player.get("_jump_animation_active") and error_sound.playing, "A partially overlapping handle plays only miss feedback, with no success sound or jump")
 		game.set("_time_left", 0.001)
 		game.call("_process", 0.01)
 		game.call("_finish_turn")
@@ -146,6 +153,66 @@ func _test_roster() -> void:
 	DirAccess.remove_absolute(history_path)
 
 
+func _test_green_zone() -> void:
+	var gauge := Node2D.new()
+	gauge.set_script(load("res://games/Chinese Garter/timing_guage.gd"))
+	gauge.set("auto_restart", false)
+	add_child(gauge)
+	gauge.set_process_input(false)
+	var outcomes: Array[String] = []
+	gauge.hit.connect(func(perfect: bool, points: int) -> void:
+		outcomes.append("PERFECT" if perfect else "GOOD")
+		_check(points == 1, "An accepted timing hit awards exactly one point")
+	)
+	gauge.missed.connect(func() -> void: outcomes.append("MISS"))
+	var cases := [
+		[Vector2(76, 880), 0.0, "MISS", "The bottom of the bar misses"],
+		[Vector2(76, 880), 1.0, "MISS", "The top of the bar misses"],
+		[Vector2(76, 880), 0.659, "MISS", "A handle below green misses"],
+		[Vector2(76, 880), 0.66, "MISS", "A handle centered on the lower green edge misses"],
+		[Vector2(76, 880), 0.665, "MISS", "Partial overlap at the lower green edge misses"],
+		[Vector2(76, 880), 0.68, "GOOD", "A fully contained handle near the lower edge scores"],
+		[Vector2(76, 880), 0.78, "PERFECT", "The green center scores a perfect hit"],
+		[Vector2(76, 880), 0.88, "GOOD", "A fully contained handle near the upper edge scores"],
+		[Vector2(76, 880), 0.895, "MISS", "Partial overlap at the upper green edge misses"],
+		[Vector2(76, 880), 0.9, "MISS", "A handle centered on the upper green edge misses"],
+		[Vector2(76, 880), 0.901, "MISS", "A handle above green misses"],
+		[Vector2(100, 216), 0.72, "MISS", "A resized gauge accounts for the visible handle thickness below green"],
+		[Vector2(100, 216), 0.74, "GOOD", "A resized gauge accepts a fully contained handle"],
+		[Vector2(100, 216), 0.78, "PERFECT", "A resized gauge keeps perfect timing centered"],
+		[Vector2(100, 216), 0.84, "MISS", "A resized gauge accounts for the visible handle thickness above green"],
+	]
+	var misses_preserve_difficulty := true
+	var results_stay_visible := true
+	for sample in cases:
+		gauge.call("reset_game")
+		gauge.call("start_game")
+		gauge.set_process(false)
+		gauge.set("bar_size", sample[0])
+		gauge.set("t", sample[1])
+		outcomes.clear()
+		gauge.call("attempt_hit")
+		var expected_score := 0 if sample[2] == "MISS" else 1
+		_check(outcomes == [sample[2]] and gauge.get("score") == expected_score and gauge.get("streak") == expected_score, sample[3])
+		if expected_score == 0:
+			misses_preserve_difficulty = misses_preserve_difficulty and gauge.get("target_needle_speed") == gauge.get("_initial_needle_speed") and gauge.get("green_height") == gauge.get("_initial_green_height")
+		var result_zone := Vector2(gauge.get("zone_start"), gauge.get("zone_end"))
+		gauge.call("_process", 0.2)
+		results_stay_visible = results_stay_visible and gauge.get("t") == sample[1] and Vector2(gauge.get("zone_start"), gauge.get("zone_end")) == result_zone
+	_check(misses_preserve_difficulty, "Misses cannot raise needle speed or shrink the green zone")
+	_check(results_stay_visible, "Hit and miss feedback holds the judged handle and original green zone in place")
+	outcomes.clear()
+	gauge.set_process(true)
+	gauge.call("attempt_hit")
+	gauge.set("t", 0.78)
+	gauge.call("attempt_hit")
+	_check(not gauge.get("running") and outcomes.is_empty() and gauge.get("score") == 0, "Manual restart cannot score while the next green zone is moving")
+	await get_tree().create_timer(float(gauge.get("zone_transition_duration")) + 0.05, false).timeout
+	_check(gauge.get("running") and is_equal_approx(float(gauge.get("zone_end")) - float(gauge.get("zone_start")), float(gauge.get("green_height"))), "Timing input resumes only after the next green zone reaches its final bounds")
+	gauge.queue_free()
+	await get_tree().process_frame
+
+
 func _test_restart_isolation() -> void:
 	var gauge := Node2D.new()
 	gauge.set_script(load("res://games/Chinese Garter/timing_guage.gd"))
@@ -153,17 +220,41 @@ func _test_restart_isolation() -> void:
 	gauge.set_process_input(false)
 	gauge.set("t", 0.8)
 	gauge.call("attempt_hit")
+	var result_zone := Vector2(gauge.get("zone_start"), gauge.get("zone_end"))
 	await get_tree().create_timer(0.3).timeout
+	_check(gauge.get("t") == 0.8 and Vector2(gauge.get("zone_start"), gauge.get("zone_end")) == result_zone, "Automatic restart preserves the visible result throughout its feedback pause")
+	gauge.call("attempt_hit")
+	_check(gauge.get("score") == 1, "Feedback-pause presses cannot add another point")
 	gauge.call("reset_game")
 	gauge.call("start_game")
 	gauge.set("t", 0.8)
 	gauge.call("attempt_hit")
 	await get_tree().create_timer(0.35).timeout
 	_check(not gauge.get("running") and gauge.get("score") == 1, "A delayed restart from an earlier turn cannot release the next player's cooldown")
-	await get_tree().create_timer(0.3).timeout
+	await get_tree().create_timer(0.3 + float(gauge.get("zone_transition_duration"))).timeout
 	_check(gauge.get("running"), "The new turn's own restart still completes normally")
 	gauge.queue_free()
 	await get_tree().process_frame
+
+
+func _test_airborne_attempt(game: Node) -> void:
+	var player: CharacterBody2D = game.get_node("ChineseGarterPlayerScene/PlayerBody")
+	var gauge: Node2D = game.get_node("TimingGuage")
+	var jump_sound: AudioStreamPlayer = player.get("_jump_sound_player")
+	var jump_sound_timer: Timer = player.get("_jump_sound_timer")
+	var error_sound: AudioStreamPlayer = AudioManager.get("_error_player")
+	_check(jump_sound.playing and player.get("_jump_animation_active"), "A valid green-zone hit starts the actual jump and success sound")
+	while not gauge.get("running"):
+		await get_tree().process_frame
+	_check(not player.call("can_jump") and player.get("_jump_animation_active"), "The character is still airborne when the timing cooldown ends")
+	var score_before: int = gauge.get("score")
+	error_sound.stop()
+	gauge.set("t", (float(gauge.get("zone_start")) + float(gauge.get("zone_end"))) * 0.5)
+	_send_key(KEY_SPACE)
+	_check(gauge.get("score") == score_before and game.get_node("HUD/Score/Value").text == str(score_before) and not error_sound.playing, "An airborne SPACE press cannot award phantom points or trigger conflicting feedback")
+	while not player.call("can_jump"):
+		await get_tree().process_frame
+	_check(not jump_sound.playing and jump_sound_timer.is_stopped(), "Landing stops the previous success sound before another attempt")
 
 
 func _test_tutorial() -> void:

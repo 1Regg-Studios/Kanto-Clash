@@ -102,19 +102,28 @@ func _pick_skipped(pool: Array[String]) -> String:
 
 
 func _avoid_repeated_slots() -> void:
-	for slot in mini(picked.size(), _last_picked.size()):
-		if picked[slot] != _last_picked[slot]:
-			continue
-		for other in picked.size():
-			if picked[other] == picked[slot]:
-				continue
-			# Do not move a repeat into a slot that would then repeat too.
-			if other < _last_picked.size() and picked[slot] == _last_picked[other]:
-				continue
-			var id := picked[slot]
-			picked[slot] = picked[other]
-			picked[other] = id
-			break
+	if _last_picked.is_empty():
+		return
+	# Four slots have at most 24 orders. Pick fairly among the valid ones instead
+	# of biasing the shuffle by repairing repeats with the first available swap.
+	var orders: Array[Array] = [picked.duplicate()]
+	for slot in picked.size():
+		var next_orders: Array[Array] = []
+		for order in orders:
+			for other in range(slot, picked.size()):
+				if slot < _last_picked.size() and order[other] == _last_picked[slot]:
+					continue
+				var candidate: Array[String] = []
+				candidate.assign(order)
+				var id := candidate[slot]
+				candidate[slot] = candidate[other]
+				candidate[other] = id
+				next_orders.append(candidate)
+		if next_orders.is_empty():
+			# Incompatible saved history must not prevent a fresh random roll.
+			return
+		orders = next_orders
+	picked.assign(orders[_rng.randi_range(0, orders.size() - 1)])
 
 
 func _load_history() -> void:
