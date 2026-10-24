@@ -1,6 +1,6 @@
 extends Control
 
-const MENU_LOADING_SCENE := "res://src/UI/ldscrn/main_menu_loading.tscn"
+const MAIN_MENU_SCENE := "res://src/UI/main/mainmenu.tscn"
 const START_DELAY := 0.5
 const FADE_IN_TIME := 0.6
 const HOLD_TIME := 1.2
@@ -42,4 +42,4 @@ func _go_to_main_menu() -> void:
 		return
 	_finished = true
 	_audio.stop()
-	await SceneFader.change_scene(MENU_LOADING_SCENE)
+	await SceneFader.change_scene(MAIN_MENU_SCENE)

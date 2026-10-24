@@ -1,15 +1,11 @@
 [gd_scene format=3 uid="uid://nhoa5ihncely"]
 
 [ext_resource type="Script" uid="uid://bwyr2rk20kprf" path="res://src/UI/ldscrn/loading_screen.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/loading screen/Comic/Untitled19_20261023194540.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bue37fpsuj37i" path="res://assets/Main Menu UI/Main Menu BG.jpg" id="2_bg"]
 [ext_resource type="Texture2D" uid="uid://crp1bxupvlvx0" path="res://assets/Main Menu UI/LOGO.png" id="3_logo"]
 [ext_resource type="Texture2D" uid="uid://bc7ej421vmxjb" path="res://assets/Loading UI/LOADING.....png" id="4_loading"]
 [ext_resource type="Texture2D" uid="uid://cgnopfd3qdken" path="res://assets/Loading UI/PRGRESS BAR.png" id="5_frame"]
 [ext_resource type="Texture2D" uid="uid://csnh6mf7v3ds" path="res://assets/Loading UI/INNER PROGRESS BAR.png" id="6_fill"]
-[ext_resource type="Texture2D" path="res://assets/loading screen/Comic/Untitled19_20261023194544.png" id="7_bg"]
-[ext_resource type="Texture2D" path="res://assets/loading screen/Comic/Untitled19_20261023194740.png" id="8_bg"]
-[ext_resource type="Texture2D" path="res://assets/loading screen/Comic/Untitled19_20261023194749.png" id="9_bg"]
-[ext_resource type="Texture2D" path="res://assets/loading screen/Comic/Untitled19_20261023194757.png" id="10_bg"]
 
 [node name="LoadingScreen" type="Control" unique_id=944259975]
 layout_mode = 3
@@ -19,10 +15,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
-background_textures = Array[Texture2D]([ExtResource("2_bg"), ExtResource("7_bg"), ExtResource("8_bg"), ExtResource("9_bg"), ExtResource("10_bg")])
 
 [node name="Background" type="TextureRect" parent="." unique_id=1604515164]
-modulate = Color(0.55, 0.55, 0.55, 1)
+modulate = Color(0.4, 0.4, 0.4, 1)
 texture_filter = 1
 layout_mode = 0
 anchor_right = 1.0
@@ -31,18 +26,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("2_bg")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="BackgroundNext" type="TextureRect" parent="."]
-modulate = Color(0.55, 0.55, 0.55, 0)
-texture_filter = 1
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 

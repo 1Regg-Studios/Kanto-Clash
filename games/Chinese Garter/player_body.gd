@@ -74,13 +74,13 @@ func _physics_process(delta: float) -> void:
 		_sprite.frame_progress = 0.0
 		_sprite.speed_scale = 1.0
 		_jump_animation_active = false
+		_stop_jump_sound()
 
 
 func reset_for_turn(id: int, spawn_position: Vector2) -> void:
 	set_physics_process(false)
 	_clear_miss_feedback()
-	_jump_sound_timer.stop()
-	_jump_sound_player.stop()
+	_stop_jump_sound()
 	player_id = id
 	position = spawn_position
 	velocity = Vector2.ZERO
@@ -91,8 +91,12 @@ func reset_for_turn(id: int, spawn_position: Vector2) -> void:
 	_jump_animation_active = false
 
 
+func can_jump() -> bool:
+	return is_physics_processing() and is_on_floor() and not _jump_animation_active
+
+
 func jump() -> void:
-	if not is_on_floor():
+	if not can_jump():
 		return
 	_clear_miss_feedback()
 	velocity.y = jump_force
@@ -118,6 +122,11 @@ func _play_jump_sound() -> void:
 	_jump_sound_timer.start()
 
 
+func _stop_jump_sound() -> void:
+	_jump_sound_timer.stop()
+	_jump_sound_player.stop()
+
+
 func _play_jump_animation() -> void:
 	var frames := _sprite.sprite_frames
 	var animation := _sprite.animation
@@ -135,6 +144,7 @@ func _play_jump_animation() -> void:
 
 
 func play_miss_feedback() -> void:
+	_stop_jump_sound()
 	_clear_miss_feedback()
 	_sprite.modulate = MISS_TINT
 	_miss_tween = create_tween()

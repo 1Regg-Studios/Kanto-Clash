@@ -203,7 +203,13 @@ func _input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 	_press_time_left = PRESS_HOLD
 	_set_indicator(true)
-	_gauge.attempt_hit()
+	_attempt_jump()
+
+
+func _attempt_jump() -> void:
+	# A timing hit must be able to produce a real jump before it can score.
+	if _player.can_jump():
+		_gauge.attempt_hit()
 
 
 func _process(delta: float) -> void:
@@ -259,15 +265,12 @@ func _format_time(seconds_left: float) -> String:
 	return "%02d : %02d" % [minutes, total_seconds % 60]
 
 
-func _on_hit(perfect: bool, _points: int) -> void:
+func _on_hit(perfect: bool, points: int) -> void:
 	_score.text = str(_gauge.score)
 	_rope_holders.update_score(_gauge.score)
-	_feedback.text = "PERFECT!" if perfect else "GOOD!"
+	_feedback.text = ("PERFECT! +%d" if perfect else "GOOD! +%d") % points
 	_press_time_left = PRESS_HOLD
-	var can_jump := _player.is_on_floor()
 	_player.jump()
-	if not can_jump:
-		AudioManager.play_error()
 
 
 func _on_missed() -> void:

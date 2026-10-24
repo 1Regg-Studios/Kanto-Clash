@@ -48,8 +48,8 @@ const KEY_PRESS_HOLD := 0.12
 @export_range(0.0, 10.0) var result_delay: float = 2.0
 @export_range(0.0, 10.0) var turn_end_delay: float = 2.0
 
-@export var direction_speed: float = 3.0
-@export var power_speed: float = 2.5
+@export var direction_speed: float = 1.8
+@export var power_speed: float = 1.8
 @export var speed_increase_per_turn: float = 0.0   # 0 = same for everyone
 
 @export var thrower: AnimatedSprite2D
