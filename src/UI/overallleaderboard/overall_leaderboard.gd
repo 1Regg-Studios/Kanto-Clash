@@ -1,6 +1,6 @@
 extends Leaderboard
 
-const MAIN_MENU_SCENE := "res://src/UI/main/mainmenu.tscn"
+const MENU_LOADING_SCENE := "res://src/UI/ldscrn/main_menu_loading.tscn"
 const PROMPT_FADE_TIME := 0.3
 const BLINK_MIN_ALPHA := 0.4
 const BLINK_HALF_PERIOD := 0.5
@@ -96,7 +96,7 @@ func _return_to_menu() -> void:
 	get_viewport().set_input_as_handled()
 	ScoreKeeper.reset()
 	GameSchedule.reset()
-	await SceneFader.change_scene(MAIN_MENU_SCENE)
+	await SceneFader.change_scene(MENU_LOADING_SCENE)
 
 
 func _reset_prompt() -> void:

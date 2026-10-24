@@ -58,12 +58,15 @@ func _layout() -> void:
 
 
 func _update_countdown(remaining: float) -> void:
-	var countdown_label := "NEXT ROUND STARTS IN" if GameSchedule.tug_round == 1 else "ROUND RESULTS IN"
+	var countdown_label := "NEXT ROUND STARTS IN"
+	if GameSchedule.tug_round > 1:
+		countdown_label = "OVERALL RESULTS IN" if GameSchedule.is_last_game() else "ROUND RESULTS IN"
 	_redirect.text = "%s %d..." % [countdown_label, maxi(1, ceili(remaining))]
 
 
 func _leave() -> void:
-	_redirect.text = "STARTING NEXT ROUND..." if GameSchedule.tug_round == 1 else "OPENING ROUND RESULTS..."
+	var results := "OPENING OVERALL RESULTS..." if GameSchedule.is_last_game() else "OPENING ROUND RESULTS..."
+	_redirect.text = "STARTING NEXT ROUND..." if GameSchedule.tug_round == 1 else results
 	var exit := create_tween().set_parallel()
 	exit.tween_property(_card, "modulate:a", 0.0, 0.25)
 	finished.emit()

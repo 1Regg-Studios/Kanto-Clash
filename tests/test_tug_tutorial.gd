@@ -6,6 +6,7 @@ const GAME := "res://games/Tug Of war/tug_ofwar.tscn"
 var _failures := 0
 var _capture_dir := ""
 var _key_states: Array[bool] = []
+var _tutorial_started_at := 0
 
 
 func _ready() -> void:
@@ -29,8 +30,12 @@ func _run() -> void:
 	GameSchedule.reset()
 	GameSchedule.picked.assign(["tug_of_war"])
 	_check(GameSchedule.first_scene_path() == TUTORIAL, "Scheduled Tug games enter the tutorial first")
+	get_tree().scene_changed.connect(func() -> void: _tutorial_started_at = Time.get_ticks_msec(), CONNECT_ONE_SHOT)
 	await SceneFader.change_scene(TUTORIAL)
 	var tutorial := get_tree().current_scene
+	var countdown: Label = tutorial.get_node("Composition/Continue")
+	var countdown_texts: Array[String] = [countdown.text]
+	_check(countdown.text == "GAME STARTS IN 5...", "The tutorial announces its five-second automatic start")
 	var preview: Node2D = tutorial.get_node("Composition/GamePreview/SubViewport/TugOfWar")
 	var key: TextureRect = tutorial.get_node("Composition/Key")
 	preview.connect("demo_key_changed", func(pressed: bool) -> void:
@@ -38,7 +43,7 @@ func _run() -> void:
 		_check(key.texture == tutorial.KEY_DOWN if pressed else key.texture == tutorial.KEY_UP, "The large key follows the preview's press/release state")
 	)
 	_check(preview.get_viewport() != get_viewport(), "The actual Tug arena renders inside its own preview viewport")
-	_check(not preview.is_processing_unhandled_input() and preview.get_node("PauseMenu").process_mode == Node.PROCESS_MODE_DISABLED, "The preview cannot intercept the proceed key or open its pause menu")
+	_check(not preview.is_processing_unhandled_input() and preview.get_node("PauseMenu").process_mode == Node.PROCESS_MODE_DISABLED, "The preview cannot accept gameplay input or open its pause menu")
 	_check(not preview.get_node("World/P2").flip_h and preview.get_node("World/P3").flip_h, "The preview keeps P1/P2 facing P3/P4")
 	_check(tutorial.get_node("Composition/Teams").text == "P1 + P2 VS P3 + P4", "The tutorial explains the fixed teams")
 	_check(tutorial.get_node("Composition/AssignedKey").text == "A", "The tutorial shows Player 1's assigned input")
@@ -63,7 +68,7 @@ func _run() -> void:
 	_check(not preview.get("_game_over") and not preview.get("_results_started"), "The looping demonstration cannot finish a real round")
 	_check(ScoreKeeper.totals == starting_totals and ScoreKeeper.last_round_scores == starting_scores, "Preview pulls cannot modify scores from earlier games")
 	_check(GameSchedule.tug_round == 1, "Preview pulls preserve the scheduled round")
-	_check(get_tree().current_scene == tutorial, "The tutorial waits for the player instead of auto-advancing")
+	_check(get_tree().current_scene == tutorial and not SceneFader.get("_busy"), "The tutorial stays visible until its countdown finishes")
 
 	if not _capture_dir.is_empty() and DisplayServer.get_name() != "headless":
 		var window := get_window()
@@ -81,10 +86,22 @@ func _run() -> void:
 		proceed.keycode = KEY_SPACE
 		proceed.pressed = pressed
 		Input.parse_input_event(proceed)
+	Input.flush_buffered_events()
+	await get_tree().process_frame
+	_check(get_tree().current_scene == tutorial and not SceneFader.get("_busy"), "A fresh key press cannot skip the countdown")
+	var transition_started_at := 0
 	while get_tree().current_scene == tutorial or SceneFader.get("_busy"):
+		if get_tree().current_scene == tutorial and not countdown_texts.has(countdown.text):
+			countdown_texts.append(countdown.text)
+		if transition_started_at == 0 and SceneFader.get("_busy"):
+			transition_started_at = Time.get_ticks_msec()
 		await get_tree().process_frame
+	var countdown_seconds := (transition_started_at - _tutorial_started_at) / 1000.0
+	_check(absf(countdown_seconds - 5.0) < 0.25, "The game transition starts automatically after five seconds")
+	for seconds in range(5, 0, -1):
+		_check(countdown_texts.has("GAME STARTS IN %d..." % seconds), "The visible countdown shows %d" % seconds)
 	var game := get_tree().current_scene
-	_check(game.scene_file_path == GAME, "A fresh key press starts the real Tug of War scene")
+	_check(game.scene_file_path == GAME, "The countdown starts the real Tug of War scene without input")
 	_check(GameSchedule.tug_round == 1 and game.get("_round_intro_active"), "The match starts with its normal first-round countdown")
 	_check(ScoreKeeper.totals == starting_totals, "Entering the match preserves all previous scores")
 	game.queue_free()

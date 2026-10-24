@@ -4,13 +4,11 @@ signal round_started(round_number: int)
 
 const ROUND_COUNT := 2
 const ROUND_END_SECONDS := 2.0
-const ROUND_RESULTS_SCENE := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
 const GAME_FONT: Font = preload("res://assets/Fonts/UpheavalPro.ttf")
 const MAIN_MUSIC := preload("res://assets/Music/Main/Patintero/tatamusic-game-gaming-music-557995.mp3")
 const ZONE_IDS: Array[StringName] = [&"zone_1", &"zone_2", &"zone_3", &"fn"]
 # Runners earn a zone award after clearing its guard line.
 const ZONE_CROSSING_XS: Array[float] = [316.0, 582.0, 855.0, 1024.0]
-const FINISH_PLACE_LABELS: Array[String] = ["1ST", "2ND", "3RD", "4TH"]
 
 # Keep consecutive games varied as well as the two rounds within a game.
 static var _last_spawn_order: Array[int] = []
@@ -37,7 +35,6 @@ static var _last_spawn_order: Array[int] = []
 @onready var _round_label: Label = $HUD/Root/Round
 @onready var _round_notice: ColorRect = $HUD/Root/RoundNotice
 @onready var _notice_title: Label = $HUD/Root/RoundNotice/Title
-@onready var _notice_detail: Label = $HUD/Root/RoundNotice/Detail
 
 var _round_number := 1
 var _round_scores: Array[int] = [0, 0, 0, 0]
@@ -228,34 +225,13 @@ func _finish_round() -> void:
 		)
 	_round_notice.show()
 	_notice_title.text = "ROUND %d COMPLETE" % _round_number
-	_notice_detail.text = _round_results_text()
 	await get_tree().create_timer(ROUND_END_SECONDS, false).timeout
 	if _round_number < ROUND_COUNT:
 		_round_number += 1
 		_start_round()
 	else:
 		ScoreKeeper.add_round_scores(_game_scores, &"patintero")
-		await SceneFader.change_scene(ROUND_RESULTS_SCENE)
-
-
-func _round_results_text() -> String:
-	var finishers: Array[String] = []
-	for place_index in _finish_order.size():
-		finishers.append("%s: P%d" % [
-			FINISH_PLACE_LABELS[place_index],
-			_finish_order[place_index] + 1,
-		])
-	var lines: Array[String] = []
-	for line_start in range(0, finishers.size(), 2):
-		lines.append("    ".join(finishers.slice(line_start, line_start + 2)))
-	var unfinished: Array[String] = []
-	for player_index in _players.size():
-		if not _finish_order.has(player_index):
-			unfinished.append("P%d" % (player_index + 1))
-	if not unfinished.is_empty():
-		lines.append("UNFINISHED: %s" % ", ".join(unfinished))
-	lines.append("RESHUFFLING POSITIONS FOR ROUND 2..." if _round_number < ROUND_COUNT else "OPENING GAME LEADERBOARD...")
-	return "\n".join(lines)
+		await GameSchedule.show_results()
 
 
 func _update_score_label() -> void:

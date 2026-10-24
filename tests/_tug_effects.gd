@@ -36,8 +36,9 @@ func _test_atlases() -> void:
 		for y in 32:
 			for x in source.get_width():
 				var frame := x / 32
-				var rope_start := 22 if frame == 0 else 21
-				var rope_top := 18 if frame == 0 else 19
+				var high_grip := frame == 0 or (player == 1 and frame == 3)
+				var rope_start := 22 if high_grip else 21
+				var rope_top := 18 if high_grip else 19
 				if x % 32 >= rope_start and y >= rope_top and y <= rope_top + 2:
 					rope_removed = rope_removed and effect.get_pixel(x, y).a == 0.0
 				else:
@@ -84,7 +85,8 @@ func _test_arena(round_number: int) -> void:
 				puller.pause()
 				puller.animation = animation
 				puller.frame = frame
-				var grip_row := 19.5 if frame == 0 else 20.5
+				var high_grip := frame == 0 or (player == 1 and frame >= 3)
+				var grip_row := 19.5 if high_grip else 20.5
 				var grip_y := puller.to_global(Vector2(0.0, grip_row - 16.0 + puller.offset.y)).y
 				aligned = aligned and is_equal_approx(grip_y, rope.to_global(rope.points[0]).y)
 			await _check_rope_ends(world, rope, "%s %s frame %d" % [layout, animation, frame])

@@ -13,7 +13,7 @@ extends CharacterBody2D
 
 const PLAYER_SPRITE_SHEETS: Array[Texture2D] = [
 	preload("res://games/Chinese Garter/assets/player character/p1.png"),
-	preload("res://games/Chinese Garter/assets/player character/p2.png"),
+	preload("res://assets/orange p2 revised/jumping animationorange.png"),
 	preload("res://games/Chinese Garter/assets/player character/p3.png"),
 	preload("res://games/Chinese Garter/assets/player character/p4.png"),
 ]

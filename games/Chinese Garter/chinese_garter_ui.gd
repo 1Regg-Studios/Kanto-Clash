@@ -6,7 +6,6 @@ const DESIGN_SIZE := Vector2(1920.0, 1080.0)
 const PLAYER_COUNT := 4
 const ROUND_DURATION_SECONDS := 30.0
 const TURN_END_SECONDS := 2.0
-const ROUND_RESULTS_SCENE := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
 const GAME_FONT: Font = preload("res://assets/Fonts/UpheavalPro.ttf")
 const MAIN_MUSIC := preload("res://assets/Music/Main/Chinese Garter/tatamusic-game-gaming-minecraft-background-music-377647.mp3")
 const PLAYER_COLORS: Array[Color] = [Color("8cdb64"), Color("fbc052"), Color("f08dc6"), Color("70c8f0")]
@@ -33,6 +32,7 @@ const PRESS_HOLD := 0.12
 @onready var _camera: Camera2D = $Camera2D
 @onready var _gauge: Node2D = $TimingGuage
 @onready var _player: CharacterBody2D = $ChineseGarterPlayerScene/PlayerBody
+@onready var _rope_holders: Node2D = $ChineseGarterPlayerScene/RopeHolders
 @onready var _score: Label = $HUD/Score/Value
 @onready var _timer: Label = $HUD/Timer/Label
 @onready var _feedback: Label = $HUD/Feedback
@@ -81,6 +81,7 @@ func _prepare_turn() -> void:
 	_press_time_left = 0.0
 	_gauge.reset_game()
 	_player.reset_for_turn(_turn_index + 1, _player_spawn)
+	_rope_holders.start_turn(_turn_index + 1)
 	_score.text = "0"
 	_timer.text = _format_time(_time_left)
 	_feedback.text = ""
@@ -122,7 +123,8 @@ func _finish_turn() -> void:
 	if practice_mode:
 		_time_up_overlay.show()
 		return
-	_time_up_detail.text += "\nNEXT: PLAYER %d" % (_turn_index + 2) if _turn_index + 1 < PLAYER_COUNT else "\nOPENING GAME LEADERBOARD..."
+	var results := "OPENING OVERALL RESULTS..." if GameSchedule.is_last_game() else "OPENING GAME LEADERBOARD..."
+	_time_up_detail.text += "\nNEXT: PLAYER %d" % (_turn_index + 2) if _turn_index + 1 < PLAYER_COUNT else "\n" + results
 	_time_up_overlay.show()
 	await get_tree().create_timer(TURN_END_SECONDS, false).timeout
 	if _turn_index + 1 < PLAYER_COUNT:
@@ -130,7 +132,7 @@ func _finish_turn() -> void:
 		_start_turn()
 	else:
 		ScoreKeeper.add_round_scores(_game_scores, &"chinese_garter")
-		await SceneFader.change_scene(ROUND_RESULTS_SCENE)
+		await GameSchedule.show_results()
 
 
 func _update_turn_scores() -> void:
@@ -259,6 +261,7 @@ func _format_time(seconds_left: float) -> String:
 
 func _on_hit(perfect: bool, _points: int) -> void:
 	_score.text = str(_gauge.score)
+	_rope_holders.update_score(_gauge.score)
 	_feedback.text = "PERFECT!" if perfect else "GOOD!"
 	_press_time_left = PRESS_HOLD
 	var can_jump := _player.is_on_floor()

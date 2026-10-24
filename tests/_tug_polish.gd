@@ -37,7 +37,8 @@ func _run() -> void:
 		for player in 4:
 			var puller: AnimatedSprite2D = game.get_node("World/P%d" % (player + 1))
 			puller.frame = frame
-			var grip_row := 19.5 if frame == 0 else 20.5
+			var high_grip := frame == 0 or (player == 1 and frame == 3)
+			var grip_row := 19.5 if high_grip else 20.5
 			var grip_y := puller.position.y + (grip_row - 16.0 + puller.offset.y) * puller.scale.y
 			_check(is_equal_approx(grip_y, rope.points[0].y), "P%d frame %d stays on the rope" % [player + 1, frame])
 		await _capture("tug-polish-frame-%d" % frame)

@@ -58,17 +58,20 @@ func _run() -> void:
 	for player in range(4):
 		_check(controller.get("current_player") == player + 1, "P%d receives the next turn" % (player + 1))
 		_check(controller.get("state") == CONTROLLER.State.INTRO and controller.get("current_attempt") == 1 and controller.get("scores") == completed, "Each player starts at attempt one with earlier players' scores preserved")
+		_check(controller.get("_time_left") == 20.0 and game.get_node("CanvasLayer/Timer/Label").text == "00 : 20", "Every player receives a fresh 20-second clock before their countdown")
 		_test_animation_assets(game, player + 1)
 		if player == 0:
 			await _test_pause(game, controller, "countdown")
 		await _test_countdown(controller, completed)
 		_check(direction.get("speed") == controller.get("direction_speed") and power.get("speed") == controller.get("power_speed"), "Every player receives the same starting gauge difficulty")
 		if player == 0:
+			await _test_pause(game, controller, "gameplay timer")
 			await _capture("tumbang-preso-start")
 		else:
 			await _capture("tumbang-preso-player-%d" % (player + 1))
 		for attempt in range(3):
 			controller.set("result_delay", 1.2 if attempt == 0 else 0.3)
+			var time_before_throw: float = controller.get("_time_left")
 			_check(controller.get("current_player") == player + 1 and controller.get("current_attempt") == attempt + 1, "P%d keeps attempt %d of three" % [player + 1, attempt + 1])
 			_check(thrower.animation == &"idle" and thrower.is_playing() and thrower.sprite_frames.get_frame_texture(&"idle", 0).resource_path.begins_with("res://games/Tumbang Preso/assets/Animation P%d/" % (player + 1)), "Every attempt restores the current player's ready animation")
 			_check(game.get_node("CanvasLayer/AttemptLabel").text == "ATTEMPT %d / 3" % (attempt + 1), "The HUD shows the current attempt")
@@ -113,6 +116,7 @@ func _run() -> void:
 				_check(thrower.animation == &"empty_idle" and thrower.is_playing() and controller.get("scores") == completed, "P%d settles into its matching empty-hand idle without scoring twice" % (player + 1))
 			while controller.get("state") == CONTROLLER.State.RESULT:
 				await get_tree().process_frame
+			_check(controller.get("_time_left") < time_before_throw, "Throw animations and results use the same clock without refilling it between attempts")
 			if attempt < 2:
 				_check(controller.get("state") == CONTROLLER.State.DIRECTION and controller.get("current_player") == player + 1 and not game.get_node("TurnEndOverlay/Dimmer").visible, "A hit or miss before attempt three returns to the same player immediately")
 		_check(controller.get("state") == CONTROLLER.State.TURN_END and game.get_node("TurnEndOverlay/Dimmer").visible, "Only the third throw opens the turn-complete summary")
@@ -189,10 +193,16 @@ func _run() -> void:
 	_check_target_contains_marker(direction, false)
 	_check_target_contains_marker(power, true)
 	_check(can.call("get_points", direction.get("value"), power.get("value")) == 150, "Randomized target zones remain aligned with perfect scoring")
+	can.set("randomize_target", false)
+	can.set("target_direction", 0.5)
+	can.set("target_power", 0.7)
+	await _test_turn_timer(game)
 
 	game.queue_free()
 	await get_tree().process_frame
 	Engine.time_scale = 1.0
+	AudioManager.stop_game_music()
+	await get_tree().create_timer(AudioManager.MUSIC_FADE_TIME + 0.15).timeout
 	print("TUMBANG PRESO: %d failure(s)" % _failures)
 	get_tree().quit(0 if _failures == 0 else 1)
 
@@ -205,6 +215,7 @@ func _test_countdown(controller: Node, completed: Array[int]) -> void:
 			observed.append(label.text)
 			_send_key(KEY_SPACE)
 			_check(controller.get("state") == CONTROLLER.State.INTRO and controller.get("current_attempt") == 1 and controller.get("scores") == completed and not controller.get("direction_gauge").get("running") and not controller.get("power_gauge").get("running"), "Countdown presses cannot throw, spend attempts, or score")
+			_check(controller.get("_time_left") == 20.0, "The intro countdown does not consume the player's 20 seconds")
 		await get_tree().process_frame
 	_check(observed == ["GET READY...", "PLAYER %d" % controller.get("current_player"), "5", "4", "3", "2", "1", "START!"], "Every player receives Chinese Garter's complete intro sequence")
 	_check(controller.get("state") == CONTROLLER.State.DIRECTION and controller.get("direction_gauge").get("running") and not controller.get("power_gauge").get("running"), "Only direction starts after the countdown, without carrying over a countdown press")
@@ -213,6 +224,7 @@ func _test_countdown(controller: Node, completed: Array[int]) -> void:
 func _test_pause(game: Node, controller: Node, phase: String) -> void:
 	_send_key(KEY_ESCAPE)
 	var state: int = controller.get("state")
+	var time_left: float = controller.get("_time_left")
 	var player: int = controller.get("current_player")
 	var attempt: int = controller.get("current_attempt")
 	var scores: Array = controller.get("scores").duplicate()
@@ -222,13 +234,82 @@ func _test_pause(game: Node, controller: Node, phase: String) -> void:
 	await get_tree().create_timer(1.0, true).timeout
 	_send_key(KEY_SPACE)
 	_check(get_tree().paused and controller.get("state") == state and controller.get("current_player") == player and controller.get("current_attempt") == attempt and controller.get("scores") == scores, "Pause freezes the %s and blocks gameplay input" % phase)
+	_check(controller.get("_time_left") == time_left, "Pause preserves the remaining turn time during the %s" % phase)
 	if state == CONTROLLER.State.INTRO:
 		_check(controller.get_node("RoundIntro/Shade/Countdown").text == countdown, "Pause also freezes the animated countdown")
-	else:
+	elif state == CONTROLLER.State.TURN_END:
 		_check(game.get_node("TurnEndOverlay/Dimmer").visible, "Pause keeps the turn summary in place")
 	_send_key(KEY_ESCAPE)
 	while get_tree().paused:
 		await get_tree().process_frame
+
+
+func _test_turn_timer(game: Node) -> void:
+	var controller: Node = game.get_node("Controller")
+	var direction: Node = game.get_node("DirectionGuage")
+	var power: Node = game.get_node("PowerGauge")
+	var timer: Label = game.get_node("CanvasLayer/Timer/Label")
+	var title: Label = game.get_node("TurnEndOverlay/Dimmer/Title")
+	var detail: Label = game.get_node("TurnEndOverlay/Dimmer/Detail")
+	controller.set("turn_end_delay", 0.5)
+	controller.call("restart")
+	controller.call("_on_round_intro_finished", controller.get("_turn_id"))
+	controller.set("_time_left", 1.01)
+	controller.call("_process", 0.02)
+	_check(timer.text == "00 : 01" and controller.get("state") == CONTROLLER.State.DIRECTION, "The timer rounds a partial final second up before expiring")
+	controller.call("_process", 2.0)
+	_check(controller.get("state") == CONTROLLER.State.TURN_END and timer.text == "00 : 00" and title.text == "TIME'S UP!", "Running out of time while aiming opens the timeout summary at zero")
+	_check(not direction.get("running") and not power.get("running") and controller.get("scores") == [0, 0, 0, 0] and detail.text.begins_with("PLAYER 1: 0 POINTS IN 0 THROWS"), "An unfinished direction attempt freezes both gauges and earns no points or completed throw")
+	_send_key(KEY_SPACE)
+	controller.call("_finish_player_turn")
+	await _capture("tumbang-preso-time-up")
+	while controller.get("state") == CONTROLLER.State.TURN_END:
+		await get_tree().process_frame
+	_check(controller.get("current_player") == 2 and controller.get("state") == CONTROLLER.State.INTRO and controller.get("_time_left") == 20.0 and timer.text == "00 : 20", "Timeout advances exactly once and gives the next player a fresh 20-second clock")
+
+	controller.call("_on_round_intro_finished", controller.get("_turn_id"))
+	_send_key(KEY_SPACE)
+	_check(controller.get("state") == CONTROLLER.State.POWER, "P2 can lock direction on its fresh turn")
+	controller.set("_time_left", 0.001)
+	controller.call("_process", 0.01)
+	_check(controller.get("state") == CONTROLLER.State.TURN_END and not power.get("running") and controller.get("scores") == [0, 0, 0, 0] and detail.text.begins_with("PLAYER 2: 0 POINTS IN 0 THROWS"), "Running out of time while choosing power ends the turn without releasing a throw")
+	while controller.get("state") == CONTROLLER.State.TURN_END:
+		await get_tree().process_frame
+	_check(controller.get("current_player") == 3 and controller.get("_time_left") == 20.0, "P3 also receives its own full time allowance")
+
+	controller.call("_on_round_intro_finished", controller.get("_turn_id"))
+	direction.set("value", 0.5)
+	_send_key(KEY_SPACE)
+	power.set("value", 0.7)
+	_send_key(KEY_SPACE)
+	controller.set("_time_left", 0.001)
+	controller.call("_process", 0.01)
+	_check(controller.get("state") == CONTROLLER.State.RESULT and controller.get("scores") == [0, 0, 0, 0] and timer.text == "00 : 00", "A throw already in flight is allowed to finish after the timer reaches zero")
+	_send_key(KEY_SPACE)
+	while controller.get("state") == CONTROLLER.State.RESULT:
+		await get_tree().process_frame
+	_check(controller.get("state") == CONTROLLER.State.TURN_END and controller.get("scores") == [0, 0, 150, 0] and title.text == "TIME'S UP!" and detail.text.begins_with("PLAYER 3: 150 POINTS IN 1 THROW\n"), "The released throw scores exactly once, then ends the expired turn without another attempt")
+	while controller.get("state") == CONTROLLER.State.TURN_END:
+		await get_tree().process_frame
+	_check(controller.get("current_player") == 4 and controller.get("_time_left") == 20.0, "The final player starts with a fresh timer and earlier scores intact")
+
+	controller.call("_on_round_intro_finished", controller.get("_turn_id"))
+	controller.set("result_delay", 3.0)
+	direction.set("value", 0.5)
+	_send_key(KEY_SPACE)
+	power.set("value", 0.7)
+	_send_key(KEY_SPACE)
+	while game.get_node("CanvasLayer/ResultLabel").text.is_empty():
+		await get_tree().process_frame
+	controller.set("_time_left", 0.001)
+	controller.call("_process", 0.01)
+	_check(controller.get("state") == CONTROLLER.State.TURN_END and controller.get("scores") == [0, 0, 150, 150], "Expiry during the result delay ends the turn immediately and preserves completed scores")
+	while controller.get("state") == CONTROLLER.State.TURN_END:
+		await get_tree().process_frame
+	_check(controller.get("state") == CONTROLLER.State.GAME_OVER and game.get_node("CanvasLayer/ResultLabel").text == "TIE: P3 & P4", "The final player's timeout opens the correct final results")
+	controller.call("restart")
+	await get_tree().create_timer(3.2).timeout
+	_check(controller.get("state") == CONTROLLER.State.INTRO and controller.get("current_player") == 1 and controller.get("current_attempt") == 1 and controller.get("scores") == [0, 0, 0, 0] and controller.get("_time_left") == 20.0 and timer.text == "00 : 20", "An expired turn's pending result callback cannot advance or consume time in a restarted match")
 
 
 func _test_animation_assets(game: Node, player: int) -> void:

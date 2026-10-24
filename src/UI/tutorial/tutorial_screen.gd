@@ -1,6 +1,7 @@
 extends Control
 
 const DESIGN_SIZE := Vector2(1920.0, 1080.0)
+const AUTO_START_SECONDS := 5.0
 
 @export_file("*.tscn") var next_scene_path := ""
 
@@ -14,8 +15,7 @@ var music_track: AudioStream
 @onready var _continue: Label = $Composition/Continue
 
 var _key_home := Vector2.ZERO
-var _input_enabled := false
-var _starting := false
+var _time_left := AUTO_START_SECONDS
 
 
 func _ready() -> void:
@@ -26,24 +26,25 @@ func _ready() -> void:
 	_on_demo_key_changed(false)
 	resized.connect(_layout_content)
 	_layout_content()
+	_update_countdown()
 	var blink := create_tween().set_loops().set_trans(Tween.TRANS_SINE)
 	blink.tween_property(_continue, "modulate:a", 0.45, 0.65)
 	blink.tween_property(_continue, "modulate:a", 1.0, 0.65)
-	# Let the incoming fade finish before accepting a new key press.
-	await get_tree().create_timer(0.65).timeout
-	_input_enabled = true
 
 
-func _unhandled_key_input(event: InputEvent) -> void:
-	if not event.is_pressed() or event.is_echo() or not _input_enabled or _starting:
+func _process(delta: float) -> void:
+	_time_left = maxf(0.0, _time_left - delta)
+	if _time_left > 0.0:
+		_update_countdown()
 		return
-	if event.is_action_pressed("Toggle_Fullscreen"):
-		return
-	get_viewport().set_input_as_handled()
-	_starting = true
-	AudioManager.play_click()
+	set_process(false)
+	_continue.text = "STARTING GAME..."
 	GameSchedule.next_scene_path = next_scene_path
 	await SceneFader.change_scene(next_scene_path)
+
+
+func _update_countdown() -> void:
+	_continue.text = "GAME STARTS IN %d..." % ceili(_time_left)
 
 
 func _layout_content() -> void:

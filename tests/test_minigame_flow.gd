@@ -17,18 +17,30 @@ const TUMBANG_LINEUP: Array[String] = ["chinese_garter", "tug_of_war", "tumbang_
 var _lineup: Array[String] = LINEUP.duplicate()
 var _failures := 0
 var _score_updates := 0
+var _round_leaderboards := 0
 var _capture_dir := ""
 var _leaderboard_start_scores: Array[int] = []
 
 
 func _ready() -> void:
+	var last_game := ""
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--capture-dir="):
 			_capture_dir = argument.trim_prefix("--capture-dir=")
 		elif argument == "--with-tumbang-preso":
 			_lineup = TUMBANG_LINEUP.duplicate()
-	get_tree().create_timer(60.0, true, false, true).timeout.connect(func() -> void:
-		push_error("The minigame sequence did not finish within 60 seconds")
+		elif argument.begins_with("--last-game="):
+			last_game = argument.trim_prefix("--last-game=")
+	if not last_game.is_empty():
+		if not _lineup.has(last_game):
+			push_error("The requested final minigame is not in the test lineup: " + last_game)
+			get_tree().quit(1)
+			return
+		_lineup.erase(last_game)
+		_lineup.append(last_game)
+	# Include the visible loading-screen crossfades and final audio fade-out.
+	get_tree().create_timer(75.0, true, false, true).timeout.connect(func() -> void:
+		push_error("The minigame sequence did not finish within 75 seconds")
 		get_tree().quit(1)
 	)
 	call_deferred("_run")
@@ -59,14 +71,8 @@ func _run() -> void:
 			_check(ScoreKeeper.totals == expected_totals, "%s's tutorial preserves earlier scores" % GameSchedule.name_of(game_id))
 			if game_id == "tug_of_war":
 				_check(GameSchedule.tug_round == 1, "The Tug tutorial starts before round one")
-			while not tutorial.get("_input_enabled"):
-				await get_tree().process_frame
+			_check(tutorial.get_node("Composition/Continue").text == "GAME STARTS IN 5...", "The tutorial displays its automatic countdown")
 			await _capture("game-%d-tutorial" % (game_index + 1))
-			for pressed in [true, false]:
-				var proceed := InputEventKey.new()
-				proceed.keycode = KEY_SPACE
-				proceed.pressed = pressed
-				Input.parse_input_event(proceed)
 		var game := await _wait_for_scene(GameSchedule.scene_path_for(game_id))
 		if game == null:
 			get_tree().quit(1)
@@ -95,15 +101,19 @@ func _run() -> void:
 			points.append(scores[player] * multiplier)
 			expected_totals[player] += points[player]
 
-		var results := await _wait_for_scene(RESULTS)
+		var is_final_game := game_index == _lineup.size() - 1
+		var results := await _wait_for_scene(OVERALL if is_final_game else RESULTS)
 		if results == null:
 			get_tree().quit(1)
 			return
 		_check(ScoreKeeper.last_round_scores == scores, "Game %d results contain every player's complete score" % (game_index + 1))
 		_check(ScoreKeeper.totals == expected_totals, "Game %d credits its exact leaderboard award to the overall totals" % (game_index + 1))
 		_check(_score_updates == expected_updates, "Game %d posts each result only once" % (game_index + 1))
-		_check(_leaderboard_start_scores == previous_totals, "Game %d's leaderboard starts counting from the previous totals" % (game_index + 1))
 		_check(results.get("_scores") == expected_totals, "Game %d's leaderboard includes points from every completed minigame" % (game_index + 1))
+		if is_final_game:
+			_check(_round_leaderboards == _lineup.size() - 1, "The final minigame opens overall results directly without an extra round leaderboard")
+			break
+		_check(_leaderboard_start_scores == previous_totals, "Game %d's leaderboard starts counting from the previous totals" % (game_index + 1))
 		await results.sort_finished
 		for player in scores.size():
 			var label: Label = results.get_node("Board/Row%d/Score" % (player + 1))
@@ -112,10 +122,10 @@ func _run() -> void:
 		_check(not results.has_node("Multiplier"), "The leaderboard has no multiplier subtitle")
 		_check(ScoreKeeper.totals == expected_totals, "The leaderboard animation cannot credit the score twice")
 		await get_tree().process_frame
-		var next_id := _lineup[game_index + 1] if game_index + 1 < _lineup.size() else ""
+		var next_id := _lineup[game_index + 1]
 		_check(GameSchedule.next_game_id() == next_id, "The next destination follows the schedule, including repeated games")
 		var prompt: String = results.get_node("Continue").text
-		_check(prompt.contains("OVERALL RESULTS" if next_id.is_empty() else GameSchedule.name_of(next_id).to_upper()), "The countdown announces the correct next screen")
+		_check(prompt.contains(GameSchedule.name_of(next_id).to_upper()), "The countdown announces the correct next screen")
 		# Repeated finish callbacks must not skip a scheduled game.
 		results.call("_on_sorted")
 		await _capture("game-%d-multiplied-results" % (game_index + 1))
@@ -249,6 +259,7 @@ func _on_scene_changed() -> void:
 	var scene := get_tree().current_scene
 	if scene == null or scene.scene_file_path != RESULTS:
 		return
+	_round_leaderboards += 1
 	_leaderboard_start_scores.clear()
 	for player in range(4):
 		var label: Label = scene.get_node("Board/Row%d/Score" % (player + 1))

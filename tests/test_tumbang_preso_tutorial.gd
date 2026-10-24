@@ -35,6 +35,8 @@ func _run() -> void:
 	var starting_destination := GameSchedule.next_scene_path
 	await SceneFader.change_scene(TUTORIAL)
 	var tutorial := get_tree().current_scene
+	# Inspect a full demo loop independently of the five-second countdown.
+	tutorial.set_process(false)
 	var preview: Node2D = tutorial.get_node("Composition/GamePreview/SubViewport/TumbangPreso")
 	var controller: Node = preview.get_node("Controller")
 	var direction: Node = preview.get_node("DirectionGuage")
@@ -53,11 +55,11 @@ func _run() -> void:
 			_demo_misses += 1
 	)
 	_check(preview.get_viewport() != get_viewport() and preview.get_world_2d() != get_viewport().find_world_2d(), "The real game runs in an isolated preview world")
-	_check(preview.get_node("PauseMenu").process_mode == Node.PROCESS_MODE_DISABLED and not controller.is_processing_input(), "The preview cannot pause the tutorial or consume its proceed key")
+	_check(preview.get_node("PauseMenu").process_mode == Node.PROCESS_MODE_DISABLED and not controller.is_processing_input(), "The preview cannot pause the tutorial or accept gameplay input")
 	_check(not controller.has_node("RoundIntro") and controller.get("state") == CONTROLLER.State.DIRECTION, "The demo starts the direction gauge without a match countdown")
 	var instructions: String = tutorial.get_node("Composition/Instructions").text
 	_check(tutorial.get_node("Composition/AssignedKey").text == "SPACE" and instructions.contains("LOCK DIRECTION") and instructions.contains("LOCK POWER"), "The tutorial explains both presses of the shared SPACE control")
-	_check(tutorial.get_node("Composition/TurnOrder").text == "P1 > P2 > P3 > P4" and tutorial.get_node("Composition/ScoringHint").text.contains("3 THROWS EACH"), "The instructions show player order and three throws per player")
+	_check(tutorial.get_node("Composition/TurnOrder").text == "P1 > P2 > P3 > P4" and tutorial.get_node("Composition/ScoringHint").text.contains("3 THROWS EACH - 20 SECONDS PER PLAYER"), "The instructions show player order, three throws, and the shared 20-second turn limit")
 	await _capture("tumbang-preso-tutorial")
 
 	Engine.time_scale = 4.0
@@ -104,20 +106,24 @@ func _run() -> void:
 		_check(composition.global_position.x >= 0.0 and composition.global_position.y >= 0.0 and end.x <= 1280.1 and end.y <= 800.1, "The tutorial fits a narrower window without clipping")
 		await _capture("tumbang-preso-tutorial-1280x800")
 
-	# Dismiss during a throw to exercise cleanup of pending preview animations.
+	# Resume the countdown during a throw to exercise preview cleanup.
 	while controller.get("state") != CONTROLLER.State.RESULT:
 		await get_tree().process_frame
 	_send_key(KEY_ENTER)
+	await get_tree().process_frame
+	_check(get_tree().current_scene == tutorial and not SceneFader.get("_busy"), "A fresh key press cannot skip the countdown")
+	tutorial.set_process(true)
 	while get_tree().current_scene == tutorial or SceneFader.get("_busy"):
 		await get_tree().process_frame
 	var game := get_tree().current_scene
 	var live_controller: Node = game.get_node("Controller")
-	_check(game.scene_file_path == GAME and live_controller.has_node("RoundIntro"), "A fresh key opens the real game with its normal countdown")
+	_check(game.scene_file_path == GAME and live_controller.has_node("RoundIntro"), "The tutorial countdown automatically opens the real game with its normal countdown")
 	_check(live_controller.get("current_player") == 1 and live_controller.get("current_attempt") == 1 and live_controller.get("scores") == [0, 0, 0, 0], "The live game starts fresh instead of inheriting demo progress")
 	_check(ScoreKeeper.totals == starting_totals and GameSchedule.next_scene_path == GAME, "Starting the game preserves scores and updates the actual destination")
 	game.queue_free()
 	get_tree().current_scene = null
-	await get_tree().process_frame
+	AudioManager.stop_game_music()
+	await get_tree().create_timer(AudioManager.MUSIC_FADE_TIME + 0.15).timeout
 	print("TUMBANG PRESO TUTORIAL: %d failure(s)" % _failures)
 	get_tree().quit(0 if _failures == 0 else 1)
 

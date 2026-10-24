@@ -23,7 +23,7 @@ func _ready() -> void:
 	_update_meter(true)
 	_hud_root.resized.connect(_layout_arena)
 	_layout_arena()
-	# The embedded game must never consume the tutorial's proceed key.
+	# The embedded game must never accept gameplay input.
 	set_process_unhandled_input(false)
 	$PauseMenu.process_mode = Node.PROCESS_MODE_DISABLED
 

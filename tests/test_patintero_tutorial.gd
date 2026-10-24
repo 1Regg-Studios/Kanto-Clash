@@ -33,6 +33,8 @@ func _run() -> void:
 	_check(GameSchedule.first_scene_path() == TUTORIAL, "Scheduled Patintero games enter their tutorial first")
 	await SceneFader.change_scene(TUTORIAL)
 	var tutorial := get_tree().current_scene
+	# Inspect a full demo loop independently of the five-second countdown.
+	tutorial.set_process(false)
 	var preview: Node2D = tutorial.get_node("Composition/GamePreview/SubViewport/Patintero")
 	var key: TextureRect = tutorial.get_node("Composition/Key")
 	var dash_key: TextureRect = tutorial.get_node("Composition/DashKey")
@@ -135,10 +137,14 @@ func _run() -> void:
 		proceed.keycode = KEY_SPACE
 		proceed.pressed = pressed
 		Input.parse_input_event(proceed)
+	Input.flush_buffered_events()
+	await get_tree().process_frame
+	_check(get_tree().current_scene == tutorial and not SceneFader.get("_busy"), "A fresh key press cannot skip the countdown")
+	tutorial.set_process(true)
 	while get_tree().current_scene == tutorial or SceneFader.get("_busy"):
 		await get_tree().process_frame
 	var game := get_tree().current_scene
-	_check(game.scene_file_path == GAME and game.has_node("RoundIntro"), "A fresh key starts Patintero with its normal round-one countdown")
+	_check(game.scene_file_path == GAME and game.has_node("RoundIntro"), "The tutorial countdown automatically starts Patintero with its normal round-one countdown")
 	_check(ScoreKeeper.totals == starting_totals and GameSchedule.next_scene_path == GAME, "Starting Patintero preserves scores and sets the actual game destination")
 	_check(AudioManager.get("_game_music_player") == music and music.get_playback_position() > music_position, "Patintero music continues smoothly from tutorial to match")
 	game.queue_free()
