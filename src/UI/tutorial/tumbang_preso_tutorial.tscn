@@ -161,7 +161,7 @@ offset_right = 988.0
 offset_bottom = 880.0
 mouse_filter = 2
 theme_override_font_sizes/font_size = 32
-text = "3 THROWS EACH - AIM FOR THE TARGET ZONES\nCENTERED HITS SCORE MORE; MISSES LOSE 10"
+text = "3 THROWS EACH - 20 SECONDS PER PLAYER\nCENTERED HITS SCORE MORE; MISSES LOSE 10"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -203,7 +203,7 @@ offset_top = 900.0
 offset_right = 1660.0
 offset_bottom = 976.0
 mouse_filter = 2
-text = "CLICK ANY KEY TO PROCEED"
+text = "GAME STARTS IN 5..."
 horizontal_alignment = 1
 vertical_alignment = 1
 

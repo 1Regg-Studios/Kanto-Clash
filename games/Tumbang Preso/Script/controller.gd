@@ -4,9 +4,9 @@ signal turn_started(player_id: int)
 
 const MAX_PLAYERS := 4
 const ATTEMPTS_PER_PLAYER := 3
+const TURN_DURATION_SECONDS := 20.0
 # Throw frames 0-4 include the arm; frames 5-9 contain only the flying slipper.
 const FIRST_RELEASED_THROW_FRAME := 5
-const ROUND_RESULTS_SCENE := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
 const GAME_FONT: Font = preload("res://assets/Fonts/UpheavalPro.ttf")
 const PLAYER_COLORS: Array[Color] = [Color("8cdb64"), Color("fbc052"), Color("f08dc6"), Color("70c8f0")]
 const PLAYER_ANIMATION_PATHS: Array[String] = [
@@ -37,17 +37,19 @@ const KEY_PRESS_HOLD := 0.12
 @export var score_label: Label
 @export var instruction_label: Label
 @export var attempt_label: Label
+@export var timer_label: Label
 @export var key_indicator: TextureRect
 @export var key_label: Label
 @export var turn_end_overlay: ColorRect
+@export var turn_end_title: Label
 @export var turn_end_detail: Label
 
 @export_range(1, 4) var total_players: int = 4
 @export_range(0.0, 10.0) var result_delay: float = 2.0
 @export_range(0.0, 10.0) var turn_end_delay: float = 2.0
 
-@export var direction_speed: float = 1.2
-@export var power_speed: float = 1.0
+@export var direction_speed: float = 3.0
+@export var power_speed: float = 2.5
 @export var speed_increase_per_turn: float = 0.0   # 0 = same for everyone
 
 @export var thrower: AnimatedSprite2D
@@ -70,6 +72,9 @@ var _intro_overlay: CanvasLayer
 var _intro_tween: Tween
 var _key_press_time_left := 0.0
 var _key_indicator_down := false
+var _time_left := TURN_DURATION_SECONDS
+var _turn_timed_out := false
+var _completed_attempts := 0
 
 
 func _ready() -> void:
@@ -89,6 +94,10 @@ func start_turn() -> void:
 	_clear_round_intro()
 	state = State.INTRO
 	current_attempt = 1
+	_time_left = TURN_DURATION_SECONDS
+	_turn_timed_out = false
+	_completed_attempts = 0
+	_update_timer()
 	turn_label.text = "PLAYER %d'S TURN  /  %d" % [current_player, total_players]
 	turn_label.add_theme_color_override("font_color", PLAYER_COLORS[current_player - 1])
 	if turn_end_overlay != null:
@@ -160,6 +169,20 @@ func _process(delta: float) -> void:
 	_key_press_time_left = maxf(0.0, _key_press_time_left - delta)
 	var down := _key_press_time_left > 0.0 or (_key_indicator_down and Input.is_physical_key_pressed(KEY_SPACE))
 	_set_key_indicator(down)
+	if state not in [State.DIRECTION, State.POWER, State.RESULT] or _turn_timed_out:
+		return
+	_time_left = maxf(0.0, _time_left - delta)
+	_update_timer()
+	if _time_left <= 0.0:
+		_turn_timed_out = true
+		_finish_player_turn()
+
+
+func _update_timer() -> void:
+	if timer_label == null:
+		return
+	var total_seconds := ceili(_time_left)
+	timer_label.text = "%02d : %02d" % [int(total_seconds / 60.0), total_seconds % 60]
 
 
 func _reset_key_indicator() -> void:
@@ -200,10 +223,14 @@ func finish_turn() -> void:
 	var miss_penalty := 10
 	scores[current_player - 1] += points if hit else -miss_penalty
 	scores[current_player - 1] = maxi(scores[current_player - 1], 0)
+	_completed_attempts = current_attempt
 	result_label.text = ("HIT! +%d" % points) if hit else ("MISS -%d" % miss_penalty)
 	_update_scores()
 	if instruction_label != null:
 		instruction_label.text = ""
+	if _turn_timed_out:
+		_finish_player_turn()
+		return
 
 	await get_tree().create_timer(maxf(result_delay, 0.0), false).timeout
 	if turn_id != _turn_id:
@@ -218,20 +245,33 @@ func finish_turn() -> void:
 
 
 func _finish_player_turn() -> void:
-	if state != State.RESULT or current_attempt != ATTEMPTS_PER_PLAYER:
+	if state not in [State.DIRECTION, State.POWER, State.RESULT]:
+		return
+	if not _turn_timed_out and _completed_attempts != ATTEMPTS_PER_PLAYER:
+		return
+	# A throw released before time ran out still finishes and scores once.
+	if state == State.RESULT and _completed_attempts < current_attempt:
 		return
 	state = State.TURN_END
+	_turn_id += 1
+	direction_gauge.lock()
+	power_gauge.lock()
 	_reset_key_indicator()
 	result_label.text = ""
+	if instruction_label != null:
+		instruction_label.text = ""
+	var title := "TIME'S UP!" if _turn_timed_out else "TURN COMPLETE!"
+	if turn_end_title != null:
+		turn_end_title.text = title
 	var turn_id := _turn_id
-	var detail := "PLAYER %d: %d POINTS IN %d THROWS" % [current_player, scores[current_player - 1], ATTEMPTS_PER_PLAYER]
+	var detail := "PLAYER %d: %d POINTS IN %d %s" % [current_player, scores[current_player - 1], _completed_attempts, "THROW" if _completed_attempts == 1 else "THROWS"]
 	detail += "\nNEXT: PLAYER %d" % (current_player + 1) if current_player < total_players else "\nFINAL RESULTS..."
 	if turn_end_detail != null:
 		turn_end_detail.text = detail
 	if turn_end_overlay != null:
 		turn_end_overlay.show()
 	else:
-		result_label.text = "TURN COMPLETE!\n" + detail
+		result_label.text = title + "\n" + detail
 	await get_tree().create_timer(maxf(turn_end_delay, 0.0), false).timeout
 	if turn_id != _turn_id:
 		return
@@ -265,11 +305,12 @@ func show_final() -> void:
 		result_label.text = "TIE: %s" % " & ".join(winners)
 	var scheduled := _is_scheduled_game()
 	if instruction_label != null:
-		instruction_label.text = "OPENING GAME LEADERBOARD..." if scheduled else "Press SPACE to play again"
+		var results := "OPENING OVERALL RESULTS..." if GameSchedule.is_last_game() else "OPENING GAME LEADERBOARD..."
+		instruction_label.text = results if scheduled else "Press SPACE to play again"
 	if scheduled:
 		set_process_input(false)
 		ScoreKeeper.add_round_scores(scores, &"tumbang_preso")
-		await SceneFader.change_scene(ROUND_RESULTS_SCENE)
+		await GameSchedule.show_results()
 
 
 func _is_scheduled_game() -> bool:

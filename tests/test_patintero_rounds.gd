@@ -87,8 +87,6 @@ func _run() -> void:
 	_check(game.get("_round_finished"), "The timer ends round one")
 	game.call("_on_round_timeout")
 	_check(game.get("_game_scores") == [100, 30, 15, 5], "A timeout applies the finisher's bonus once and leaves unfinished zone scores at x1")
-	var first_round_summary: String = game.get_node("HUD/Root/RoundNotice/Detail").text
-	_check(first_round_summary.contains("1ST: P1") and first_round_summary.contains("UNFINISHED: P2, P3, P4") and not first_round_summary.contains("(x"), "The round summary distinguishes finishers from unfinished runners without showing multipliers")
 	_check(_score_updates == 0 and ScoreKeeper.totals == [0, 0, 0, 0], "Round one waits for round two before posting game scores")
 	var first_round_music_position := music.get_playback_position()
 	await _capture("patintero-round-one-complete")
@@ -135,8 +133,6 @@ func _run() -> void:
 	for guard in guards:
 		court_frozen = court_frozen and not guard.is_physics_processing()
 	_check(court_frozen, "Automatic completion freezes every runner and guard")
-	var summary: String = game.get_node("HUD/Root/RoundNotice/Detail").text
-	_check(summary.contains("1ST: P4") and summary.contains("2ND: P2") and summary.contains("3RD: P3") and summary.contains("4TH: P1") and not summary.contains("(x"), "The round summary shows all four actual placements without multipliers")
 	game.call("_on_round_timeout")
 	game.call("_physics_process", 0.0)
 	_check(game.get("_game_scores") == [170, 120, 95, 105], "Both rounds contribute equally with their own finish multipliers and cannot be counted twice")

@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://buc0eax23ummt" path="res://assets/Character Select/P3.png" id="6_p3"]
 [ext_resource type="Texture2D" uid="uid://b3g78q2rpoxxn" path="res://assets/Character Select/P4.png" id="7_p4"]
 [ext_resource type="Texture2D" uid="uid://duq00iyayv7gi" path="res://assets/Character Select/frontviewgreen.png" id="8_green"]
-[ext_resource type="Texture2D" uid="uid://lbc0h7xe3fop" path="res://assets/Character Select/frontvieworange.png" id="11_orange"]
+[ext_resource type="Texture2D" uid="uid://bpddkehmg2b8q" path="res://assets/orange p2 revised/frontvieworange.png" id="11_orange"]
 [ext_resource type="Texture2D" uid="uid://byfa7hnpyaw0g" path="res://assets/Character Select/frontviewblue.png" id="12_blue"]
 [ext_resource type="Texture2D" uid="uid://dju5pnhdwniw5" path="res://assets/Character Select/frontviewpurple.png" id="13_purple"]
 [ext_resource type="Texture2D" uid="uid://dfkltaaimqow3" path="res://assets/Character Select/PRESS THE KEY TO GET READY.png" id="9_prompt"]

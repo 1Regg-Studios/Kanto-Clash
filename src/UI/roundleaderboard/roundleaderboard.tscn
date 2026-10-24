@@ -8,6 +8,10 @@
 [ext_resource type="Texture2D" uid="uid://csxosdwnannap" path="res://assets/Round LeaderBoard/PLAYER 2.png" id="6_ythmh"]
 [ext_resource type="Texture2D" uid="uid://ctq2crlv0e80j" path="res://assets/Round LeaderBoard/PLAYER 3.png" id="7_o3qcs"]
 [ext_resource type="Texture2D" uid="uid://cfx3tl03vgu26" path="res://assets/Round LeaderBoard/PLAYER 4.png" id="8_a0wfw"]
+[ext_resource type="Texture2D" uid="uid://duq00iyayv7gi" path="res://assets/Character Select/frontviewgreen.png" id="9_green"]
+[ext_resource type="Texture2D" uid="uid://bpddkehmg2b8q" path="res://assets/orange p2 revised/frontvieworange.png" id="10_orange"]
+[ext_resource type="Texture2D" uid="uid://dju5pnhdwniw5" path="res://assets/Character Select/frontviewpurple.png" id="11_purple"]
+[ext_resource type="Texture2D" uid="uid://byfa7hnpyaw0g" path="res://assets/Character Select/frontviewblue.png" id="12_cyan"]
 
 [node name="Leaderboard" type="Control" unique_id=1735244505]
 layout_mode = 3
@@ -56,16 +60,28 @@ stretch_mode = 5
 anchors_preset = 0
 offset_left = 62.0
 offset_top = 125.0
-offset_right = 744.0
-offset_bottom = 195.0
+offset_right = 820.0
+offset_bottom = 221.0
 mouse_filter = 2
+
+[node name="Character" type="TextureRect" parent="Board/Row1"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -16.0
+offset_right = 83.0
+offset_bottom = 96.0
+mouse_filter = 2
+texture = ExtResource("9_green")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PlayerLabel" type="TextureRect" parent="Board/Row1" unique_id=1683297099]
 texture_filter = 1
 layout_mode = 0
-offset_top = 14.0
-offset_right = 376.0
-offset_bottom = 56.0
+offset_left = 80.0
+offset_top = 27.0
+offset_right = 430.0
+offset_bottom = 69.0
 mouse_filter = 2
 texture = ExtResource("4_hwep7")
 expand_mode = 1
@@ -73,14 +89,19 @@ stretch_mode = 5
 
 [node name="Score" type="Label" parent="Board/Row1" unique_id=345007653]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 13
+anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_left = -278.0
+offset_top = 6.0
+offset_bottom = 6.0
+grow_horizontal = 0
 grow_vertical = 2
+mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_tyrjg")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 84
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -89,16 +110,28 @@ vertical_alignment = 1
 anchors_preset = 0
 offset_left = 62.0
 offset_top = 236.0
-offset_right = 744.0
-offset_bottom = 306.0
+offset_right = 820.0
+offset_bottom = 332.0
 mouse_filter = 2
+
+[node name="Character" type="TextureRect" parent="Board/Row2"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -16.0
+offset_right = 80.0
+offset_bottom = 96.0
+mouse_filter = 2
+texture = ExtResource("10_orange")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PlayerLabel" type="TextureRect" parent="Board/Row2" unique_id=553225047]
 texture_filter = 1
 layout_mode = 0
-offset_top = 14.0
-offset_right = 376.0
-offset_bottom = 56.0
+offset_left = 80.0
+offset_top = 27.0
+offset_right = 430.0
+offset_bottom = 69.0
 mouse_filter = 2
 texture = ExtResource("6_ythmh")
 expand_mode = 1
@@ -106,14 +139,19 @@ stretch_mode = 5
 
 [node name="Score" type="Label" parent="Board/Row2" unique_id=621269132]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 13
+anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_left = -278.0
+offset_top = 6.0
+offset_bottom = 6.0
+grow_horizontal = 0
 grow_vertical = 2
+mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_tyrjg")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 84
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -122,16 +160,28 @@ vertical_alignment = 1
 anchors_preset = 0
 offset_left = 62.0
 offset_top = 347.0
-offset_right = 744.0
-offset_bottom = 417.0
+offset_right = 820.0
+offset_bottom = 443.0
 mouse_filter = 2
+
+[node name="Character" type="TextureRect" parent="Board/Row3"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -16.0
+offset_right = 80.0
+offset_bottom = 96.0
+mouse_filter = 2
+texture = ExtResource("11_purple")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PlayerLabel" type="TextureRect" parent="Board/Row3" unique_id=1131314076]
 texture_filter = 1
 layout_mode = 0
-offset_top = 14.0
-offset_right = 376.0
-offset_bottom = 56.0
+offset_left = 80.0
+offset_top = 27.0
+offset_right = 430.0
+offset_bottom = 69.0
 mouse_filter = 2
 texture = ExtResource("7_o3qcs")
 expand_mode = 1
@@ -139,14 +189,19 @@ stretch_mode = 5
 
 [node name="Score" type="Label" parent="Board/Row3" unique_id=1696536789]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 13
+anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_left = -278.0
+offset_top = 6.0
+offset_bottom = 6.0
+grow_horizontal = 0
 grow_vertical = 2
+mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_tyrjg")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 84
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -155,16 +210,28 @@ vertical_alignment = 1
 anchors_preset = 0
 offset_left = 62.0
 offset_top = 458.0
-offset_right = 744.0
-offset_bottom = 528.0
+offset_right = 820.0
+offset_bottom = 554.0
 mouse_filter = 2
+
+[node name="Character" type="TextureRect" parent="Board/Row4"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -16.0
+offset_right = 80.0
+offset_bottom = 96.0
+mouse_filter = 2
+texture = ExtResource("12_cyan")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PlayerLabel" type="TextureRect" parent="Board/Row4" unique_id=1885126560]
 texture_filter = 1
 layout_mode = 0
-offset_top = 14.0
-offset_right = 376.0
-offset_bottom = 56.0
+offset_left = 80.0
+offset_top = 27.0
+offset_right = 430.0
+offset_bottom = 69.0
 mouse_filter = 2
 texture = ExtResource("8_a0wfw")
 expand_mode = 1
@@ -172,14 +239,19 @@ stretch_mode = 5
 
 [node name="Score" type="Label" parent="Board/Row4" unique_id=1761875890]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 13
+anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_left = -278.0
+offset_top = 6.0
+offset_bottom = 6.0
+grow_horizontal = 0
 grow_vertical = 2
+mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_tyrjg")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 84
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1

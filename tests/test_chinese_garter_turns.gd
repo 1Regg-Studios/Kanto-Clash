@@ -58,7 +58,7 @@ func _run() -> void:
 		await get_tree().physics_frame
 		var sprite: AnimatedSprite2D = player.get_node("AnimatedSprite2D")
 		var frame := sprite.sprite_frames.get_frame_texture(&"default", 0) as AtlasTexture
-		_check(frame.atlas.resource_path.ends_with("p%d.png" % (player_index + 1)), "P%d's actual sprite atlas changes with their turn" % (player_index + 1))
+		_check(frame.atlas == player.PLAYER_SPRITE_SHEETS[player_index], "P%d's actual sprite atlas changes with their turn" % (player_index + 1))
 		_check(game.get_node("HUD/PlayerIndicator/Indicator").texture == game.INDICATORS_IDLE[player_index], "The press indicator follows P%d" % (player_index + 1))
 		_send_key(KEY_A)
 		_check(gauge.get("score") == 0, "Other keys cannot trigger the shared SPACE timing control")
@@ -168,6 +168,8 @@ func _test_restart_isolation() -> void:
 
 func _test_tutorial() -> void:
 	var tutorial := get_tree().current_scene
+	# Inspect a complete demo handoff independently of the tutorial countdown.
+	tutorial.set_process(false)
 	var preview: Node2D = tutorial.get_node("Composition/GamePreview/SubViewport/ChineseGarter")
 	_check(tutorial.get_node("Composition/AssignedKey").text == "SPACE" and tutorial.get_node("Composition/TurnOrder").text == "P1 > P2 > P3 > P4", "The tutorial explains SPACE and the exact player order")
 	_check(preview.get_world_2d() != get_viewport().find_world_2d() and preview.get_node("PauseMenu").process_mode == Node.PROCESS_MODE_DISABLED, "The tutorial demo has an isolated world and inactive pause menu")
@@ -184,8 +186,12 @@ func _test_tutorial() -> void:
 	await get_tree().process_frame
 	_check(get_tree().current_scene == tutorial, "Held-key repeats cannot dismiss the tutorial")
 	_send_key(KEY_SPACE)
+	await get_tree().process_frame
+	_check(get_tree().current_scene == tutorial and not SceneFader.get("_busy"), "A fresh key press cannot skip the countdown")
+	tutorial.set_process(true)
 	while get_tree().current_scene == tutorial or SceneFader.get("_busy"):
 		await get_tree().process_frame
+	_check(get_tree().current_scene.scene_file_path == GAME, "The tutorial countdown automatically opens Chinese Garter")
 
 
 func _test_pause(game: Node, handoff: bool) -> void:

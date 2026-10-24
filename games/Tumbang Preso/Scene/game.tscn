@@ -1,20 +1,20 @@
 [gd_scene format=3 uid="uid://n7tm3bbuvu2u"]
 
-[ext_resource type="Script" path="res://games/Tumbang Preso/Script/game.gd" id="1_layout"]
-[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Tumbang Preso BG.png" id="8_bg"]
-[ext_resource type="PackedScene" path="res://games/Tumbang Preso/Scene/gauge direction.tscn" id="2_w51g1"]
-[ext_resource type="PackedScene" path="res://games/Tumbang Preso/Scene/powergauge.tscn" id="3_4jv7b"]
-[ext_resource type="PackedScene" path="res://games/Tumbang Preso/Scene/hand.tscn" id="4_03iqk"]
-[ext_resource type="PackedScene" path="res://games/Tumbang Preso/Scene/can.tscn" id="5_ihreq"]
-[ext_resource type="PackedScene" path="res://games/Tumbang Preso/Scene/controller.tscn" id="6_h8jt7"]
-[ext_resource type="Script" path="res://games/Tumbang Preso/Script/controller.gd" id="7_sagxc"]
-[ext_resource type="FontFile" path="res://assets/Fonts/UpheavalPro.ttf" id="9_font"]
+[ext_resource type="Script" uid="uid://bo2c7t4l67ubu" path="res://games/Tumbang Preso/Script/game.gd" id="1_layout"]
+[ext_resource type="PackedScene" uid="uid://crk6j1e8uxlrg" path="res://games/Tumbang Preso/Scene/gauge direction.tscn" id="2_w51g1"]
+[ext_resource type="PackedScene" uid="uid://b0khrj5q1av2h" path="res://games/Tumbang Preso/Scene/powergauge.tscn" id="3_4jv7b"]
+[ext_resource type="PackedScene" uid="uid://bgh4vcicpncbt" path="res://games/Tumbang Preso/Scene/hand.tscn" id="4_03iqk"]
+[ext_resource type="PackedScene" uid="uid://dlgy8g0bxuwys" path="res://games/Tumbang Preso/Scene/can.tscn" id="5_ihreq"]
+[ext_resource type="PackedScene" uid="uid://b0y6tqcqsjyo6" path="res://games/Tumbang Preso/Scene/controller.tscn" id="6_h8jt7"]
+[ext_resource type="Script" uid="uid://bp7mirpdcs1do" path="res://games/Tumbang Preso/Script/controller.gd" id="7_sagxc"]
+[ext_resource type="Texture2D" uid="uid://b7blg5codj5mm" path="res://games/Tumbang Preso/assets/Tumbang Preso BG.png" id="8_bg"]
+[ext_resource type="FontFile" uid="uid://vc8p13pqqln6" path="res://assets/Fonts/UpheavalPro.ttf" id="9_font"]
 [ext_resource type="PackedScene" path="res://src/UI/pause/pause_menu.tscn" id="10_pause"]
-[ext_resource type="Texture2D" path="res://games/Tumbang Preso/assets/Score.png" id="11_score"]
-[ext_resource type="Texture2D" path="res://games/Patintero/UI/frame.png" id="12_frame"]
-[ext_resource type="Texture2D" path="res://games/Tug Of war/assets/UI/Player Press Indicator/Not Pressed/P1.png" id="13_key"]
+[ext_resource type="Texture2D" uid="uid://d1b63tvgkgw0f" path="res://games/Tumbang Preso/assets/Score.png" id="11_score"]
+[ext_resource type="Texture2D" uid="uid://d2ueori3lff3n" path="res://games/Patintero/UI/frame.png" id="12_frame"]
+[ext_resource type="Texture2D" uid="uid://8x1jybgyouk3" path="res://games/Tug Of war/assets/UI/Player Press Indicator/Not Pressed/P1.png" id="13_key"]
+[ext_resource type="Texture2D" uid="uid://cfbxgjkb80kvv" path="res://games/Chinese Garter/assets/Ui/TIME.png" id="14_time"]
 
-; Share the gold outer frame without Patintero's center divider.
 [sub_resource type="AtlasTexture" id="AtlasTexture_frame_left"]
 atlas = ExtResource("12_frame")
 region = Rect2(0, 0, 960, 1080)
@@ -26,7 +26,7 @@ region = Rect2(1000, 0, 920, 1080)
 [node name="Node2D" type="Node2D" unique_id=447043128]
 script = ExtResource("1_layout")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=75841680]
 position = Vector2(576, 324)
 
 [node name="TumbangPresoBg" type="Sprite2D" parent="." unique_id=149803324]
@@ -48,7 +48,7 @@ scale = Vector2(0.52, 0.52)
 position = Vector2(385, 104)
 scale = Vector2(0.32843697, 0.3495719)
 
-[node name="Controller" parent="." unique_id=1081483483 node_paths=PackedStringArray("direction_gauge", "power_gauge", "can", "turn_label", "result_label", "score_label", "instruction_label", "attempt_label", "key_indicator", "key_label", "turn_end_overlay", "turn_end_detail", "thrower", "released_hand") instance=ExtResource("6_h8jt7")]
+[node name="Controller" parent="." unique_id=1081483483 node_paths=PackedStringArray("direction_gauge", "power_gauge", "can", "turn_label", "result_label", "score_label", "instruction_label", "attempt_label", "timer_label", "key_indicator", "key_label", "turn_end_overlay", "turn_end_title", "turn_end_detail", "thrower", "released_hand") instance=ExtResource("6_h8jt7")]
 position = Vector2(1001, 440)
 script = ExtResource("7_sagxc")
 direction_gauge = NodePath("../DirectionGuage")
@@ -59,9 +59,11 @@ result_label = NodePath("../CanvasLayer/ResultLabel")
 score_label = NodePath("../CanvasLayer/ScoreLabel")
 instruction_label = NodePath("../CanvasLayer/InstructionLabel")
 attempt_label = NodePath("../CanvasLayer/AttemptLabel")
+timer_label = NodePath("../CanvasLayer/Timer/Label")
 key_indicator = NodePath("../CanvasLayer/PlayerIndicator/Indicator")
 key_label = NodePath("../CanvasLayer/PlayerIndicator/Key")
 turn_end_overlay = NodePath("../TurnEndOverlay/Dimmer")
+turn_end_title = NodePath("../TurnEndOverlay/Dimmer/Title")
 turn_end_detail = NodePath("../TurnEndOverlay/Dimmer/Detail")
 thrower = NodePath("../CharacterBody2D/AnimatedSprite2D")
 released_hand = NodePath("../CharacterBody2D/AnimatedSprite2D/ReleasedHand")
@@ -69,39 +71,41 @@ released_hand = NodePath("../CharacterBody2D/AnimatedSprite2D/ReleasedHand")
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2063178503]
 layer = 10
 
-[node name="Letterbox" type="Control" parent="CanvasLayer"]
+[node name="Letterbox" type="Control" parent="CanvasLayer" unique_id=132492017]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 1152.0
 offset_bottom = 648.0
 mouse_filter = 2
 
-[node name="Left" type="ColorRect" parent="CanvasLayer/Letterbox"]
+[node name="Left" type="ColorRect" parent="CanvasLayer/Letterbox" unique_id=9897681]
 layout_mode = 0
 mouse_filter = 2
 color = Color(0.04, 0.03, 0.02, 1)
 
-[node name="Right" type="ColorRect" parent="CanvasLayer/Letterbox"]
+[node name="Right" type="ColorRect" parent="CanvasLayer/Letterbox" unique_id=1227637736]
 layout_mode = 0
 mouse_filter = 2
 color = Color(0.04, 0.03, 0.02, 1)
 
-[node name="Top" type="ColorRect" parent="CanvasLayer/Letterbox"]
+[node name="Top" type="ColorRect" parent="CanvasLayer/Letterbox" unique_id=482660171]
 layout_mode = 0
 mouse_filter = 2
 color = Color(0.04, 0.03, 0.02, 1)
 
-[node name="Bottom" type="ColorRect" parent="CanvasLayer/Letterbox"]
+[node name="Bottom" type="ColorRect" parent="CanvasLayer/Letterbox" unique_id=1591557329]
 layout_mode = 0
 mouse_filter = 2
 color = Color(0.04, 0.03, 0.02, 1)
 
-[node name="FrameLeft" type="TextureRect" parent="CanvasLayer"]
+[node name="FrameLeft" type="TextureRect" parent="CanvasLayer" unique_id=28890727]
 offset_right = 576.0
 offset_bottom = 648.0
 mouse_filter = 2
 texture = SubResource("AtlasTexture_frame_left")
 expand_mode = 1
 
-[node name="FrameRight" type="TextureRect" parent="CanvasLayer"]
+[node name="FrameRight" type="TextureRect" parent="CanvasLayer" unique_id=13713528]
 offset_left = 576.0
 offset_right = 1152.0
 offset_bottom = 648.0
@@ -109,7 +113,7 @@ mouse_filter = 2
 texture = SubResource("AtlasTexture_frame_right")
 expand_mode = 1
 
-[node name="ScorePanel" type="TextureRect" parent="CanvasLayer"]
+[node name="ScorePanel" type="TextureRect" parent="CanvasLayer" unique_id=429952050]
 offset_left = 868.0
 offset_top = 75.0
 offset_right = 1053.12
@@ -119,11 +123,10 @@ texture = ExtResource("11_score")
 expand_mode = 1
 
 [node name="TurnLabel" type="Label" parent="CanvasLayer" unique_id=12645251]
-offset_left = 350.0
-offset_top = 44.0
-offset_right = 802.0
-offset_bottom = 82.0
-mouse_filter = 2
+offset_left = 380.0
+offset_top = 71.0
+offset_right = 780.0
+offset_bottom = 109.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
@@ -133,12 +136,11 @@ text = "PLAYER 1'S TURN  /  4"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AttemptLabel" type="Label" parent="CanvasLayer"]
-offset_left = 400.0
-offset_top = 86.0
-offset_right = 752.0
-offset_bottom = 114.0
-mouse_filter = 2
+[node name="AttemptLabel" type="Label" parent="CanvasLayer" unique_id=967873556]
+offset_left = 380.0
+offset_top = 109.0
+offset_right = 780.0
+offset_bottom = 137.0
 theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -148,12 +150,50 @@ text = "ATTEMPT 1 / 3"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Timer" type="Control" parent="CanvasLayer" unique_id=2088468901]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 0
+offset_left = 489.0
+offset_top = 14.4
+offset_right = 663.0
+offset_bottom = 69.0
+mouse_filter = 2
+
+[node name="Box" type="TextureRect" parent="CanvasLayer/Timer" unique_id=2074557393]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("14_time")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/Timer" unique_id=1562036080]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.2
+offset_top = 1.2
+offset_right = -7.2
+offset_bottom = -1.2
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 30
+text = "00 : 20"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="ResultLabel" type="Label" parent="CanvasLayer" unique_id=1283055882]
 offset_left = 226.0
 offset_top = 254.0
 offset_right = 926.0
 offset_bottom = 394.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
@@ -167,7 +207,6 @@ offset_left = 880.0
 offset_top = 113.0
 offset_right = 1041.0
 offset_bottom = 174.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("9_font")
 theme_override_font_sizes/font_size = 46
@@ -175,12 +214,11 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="InstructionLabel" type="Label" parent="CanvasLayer"]
+[node name="InstructionLabel" type="Label" parent="CanvasLayer" unique_id=1140107678]
 offset_left = 350.0
 offset_top = 576.0
 offset_right = 1030.0
 offset_bottom = 608.0
-mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("9_font")
@@ -188,22 +226,21 @@ theme_override_font_sizes/font_size = 22
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PlayerIndicator" type="Node2D" parent="CanvasLayer"]
+[node name="PlayerIndicator" type="Node2D" parent="CanvasLayer" unique_id=283963091]
 position = Vector2(900, 220)
 
-[node name="Indicator" type="TextureRect" parent="CanvasLayer/PlayerIndicator"]
+[node name="Indicator" type="TextureRect" parent="CanvasLayer/PlayerIndicator" unique_id=747118020]
 offset_right = 121.6
 offset_bottom = 102.4
 mouse_filter = 2
 texture = ExtResource("13_key")
 expand_mode = 1
 
-[node name="Key" type="Label" parent="CanvasLayer/PlayerIndicator"]
+[node name="Key" type="Label" parent="CanvasLayer/PlayerIndicator" unique_id=886542689]
 offset_left = 23.0
 offset_top = 69.6
 offset_right = 99.0
 offset_bottom = 91.6
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
@@ -222,10 +259,10 @@ scale = Vector2(1.4598532, 1.38638)
 position = Vector2(948.72565, 396.71664)
 scale = Vector2(0.47498316, 0.55148804)
 
-[node name="TurnEndOverlay" type="CanvasLayer" parent="."]
+[node name="TurnEndOverlay" type="CanvasLayer" parent="." unique_id=648737398]
 layer = 30
 
-[node name="Dimmer" type="ColorRect" parent="TurnEndOverlay"]
+[node name="Dimmer" type="ColorRect" parent="TurnEndOverlay" unique_id=297235012]
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -235,7 +272,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.68)
 
-[node name="Title" type="Label" parent="TurnEndOverlay/Dimmer"]
+[node name="Title" type="Label" parent="TurnEndOverlay/Dimmer" unique_id=549822653]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -243,7 +280,6 @@ anchor_bottom = 1.0
 offset_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.984, 0.753, 0.322, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
@@ -253,7 +289,7 @@ text = "TURN COMPLETE!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Detail" type="Label" parent="TurnEndOverlay/Dimmer"]
+[node name="Detail" type="Label" parent="TurnEndOverlay/Dimmer" unique_id=535248449]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -266,7 +302,6 @@ offset_right = 800.0
 offset_bottom = 210.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("9_font")
@@ -274,6 +309,6 @@ theme_override_font_sizes/font_size = 44
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PauseMenu" parent="." instance=ExtResource("10_pause")]
+[node name="PauseMenu" parent="." unique_id=1868385878 instance=ExtResource("10_pause")]
 
 [editable path="CharacterBody2D"]

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://src/UI/ldscrn/ldscrn.tscn" id="1_loading"]
+
+[node name="LoadingScreen" instance=ExtResource("1_loading")]
+next_scene_path = "res://src/UI/main/mainmenu.tscn"

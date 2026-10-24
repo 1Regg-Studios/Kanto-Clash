@@ -3,6 +3,8 @@ extends Node
 signal roster_ready(picked: Array[String], skipped: String)
 
 const ROUNDS := 4
+const ROUND_RESULTS_SCENE := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
+const OVERALL_RESULTS_SCENE := "res://src/UI/overallleaderboard/overall_leaderboard.tscn"
 
 const GAMES: Array[Dictionary] = [
 	{
@@ -208,6 +210,18 @@ func next_game_id() -> String:
 	if current_game_index < 0 or current_game_index + 1 >= picked.size():
 		return ""
 	return picked[current_game_index + 1]
+
+
+func is_last_game() -> bool:
+	return current_game_index >= 0 and current_game_index == picked.size() - 1
+
+
+func show_results() -> void:
+	var destination := ROUND_RESULTS_SCENE
+	if is_last_game():
+		advance_game()
+		destination = OVERALL_RESULTS_SCENE
+	await SceneFader.change_scene(destination)
 
 
 func advance_game() -> bool:

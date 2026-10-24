@@ -50,6 +50,8 @@ const PULL_EFFECT_FRAMES := 5
 const PULL_EFFECT_ANIMATION_FPS := 12.0
 const SMOKE_FRAMES := 3
 const SMOKE_ANIMATION_FPS := 12.0
+const SMOKE_SCALE := 0.625
+const SMOKE_FOOT_ANCHOR := Vector2(0.0, 14.0)
 const REST_FRAME := 1
 const INDICATOR_SCALE := 1.12
 const INDICATOR_BOTTOM := 954.0
@@ -59,7 +61,6 @@ const PULL_SMOOTHING := 14.0
 const TEAM_ONE_COLOR := Color("00d18f")
 const TEAM_TWO_COLOR := Color("008ee0")
 const DRAW_COLOR := Color(1.0, 1.0, 1.0)
-const ROUND_RESULTS_SCENE := "res://src/UI/roundleaderboard/roundleaderboard.tscn"
 const PULL_SOUND := preload("res://assets/Sfx/oxidvideos-rope-amp-leather-tension-449628.mp3")
 const PULL_SOUND_PITCH_MIN := 0.92
 const PULL_SOUND_PITCH_MAX := 1.08
@@ -180,6 +181,8 @@ func _build_pullers() -> void:
 	for player in PLAYER_COUNT:
 		var frames := SpriteFrames.new()
 		frames.remove_animation(&"default")
+		# Loop the idle rope-holding artwork. Key presses play the separate
+		# one-shot pull_effect animation before returning to this loop.
 		_add_puller_animation(frames, &"pull", PULLER_TEXTURES[player], SPRITE_FRAMES, PULL_ANIMATION_FPS, true)
 		_add_puller_animation(frames, &"pull_effect", PULL_EFFECT_TEXTURES[player], PULL_EFFECT_FRAMES, PULL_EFFECT_ANIMATION_FPS, false)
 
@@ -217,8 +220,10 @@ func _add_puller_animation(frames: SpriteFrames, animation: StringName, texture:
 func _align_puller_grip(player: int) -> void:
 	# Frame zero holds its hands one source pixel higher. Keep every grip on
 	# the same continuous rope rather than moving or stretching rope sections.
+	# Revised P2 also uses that higher pose at the end of both animations.
 	var puller := _pullers[player]
-	puller.offset.y = 1.0 if puller.frame == 0 else 0.0
+	var high_grip := puller.frame == 0 or (player == 1 and puller.frame >= SPRITE_FRAMES - 1)
+	puller.offset.y = 1.0 if high_grip else 0.0
 
 
 func _setup_pull_smoke() -> void:
@@ -231,11 +236,13 @@ func _setup_pull_smoke() -> void:
 		smoke.sprite_frames = frames
 		smoke.animation = &"smoke"
 		smoke.flip_h = puller.flip_h
+		smoke.scale = Vector2.ONE * SMOKE_SCALE
+		smoke.position = SMOKE_FOOT_ANCHOR * (1.0 - SMOKE_SCALE)
 		smoke.z_index = 1
 		smoke.hide()
 		smoke.animation_finished.connect(smoke.hide)
-		# The sheet uses the same 32px canvas as the puller, aligning the dust
-		# with its feet while inheriting the character's scale and movement.
+		# Shrink around the feet, keeping the dust grounded as the player and
+		# arena move or scale together.
 		puller.add_child(smoke)
 		_pull_smoke.append(smoke)
 
@@ -345,7 +352,7 @@ func _show_results() -> void:
 	if GameSchedule.advance_tug_round():
 		await SceneFader.change_scene("res://games/Tug Of war/tug_ofwar.tscn")
 	else:
-		await SceneFader.change_scene(ROUND_RESULTS_SCENE)
+		await GameSchedule.show_results()
 
 
 func _show_round_intro() -> void:

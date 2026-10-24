@@ -2,7 +2,12 @@ extends Control
 
 const READY_SCENE := "res://src/UI/rdyplyr/rdyplyr.tscn"
 const OPTIONS_SCENE := preload("res://src/UI/options/options.tscn")
+const LOGO_ZOOM := 1.03
+const LOGO_ZOOM_TIME := 2.0
+const LOGO_FLOAT_DISTANCE := 10.0
+const LOGO_FLOAT_TIME := 2.6
 
+@onready var _logo: TextureRect = $Logo
 @onready var _start: TextureButton = $START
 @onready var _options: TextureButton = $OPTIONS
 @onready var _quit: TextureButton = $QUIT
@@ -15,8 +20,24 @@ var _options_screen: Node = null
 func _ready() -> void:
 	AudioManager.stop_game_music()
 	AudioManager.start_menu_music()
+	_animate_logo()
 	for button in [_start, _options, _quit]:
 		button.pressed.connect(AudioManager.play_click)
+
+
+func _animate_logo() -> void:
+	_logo.pivot_offset = _logo.size * 0.5
+	var zoom := create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	zoom.tween_property(_logo, "scale", Vector2.ONE * LOGO_ZOOM, LOGO_ZOOM_TIME)
+	zoom.tween_property(_logo, "scale", Vector2.ONE, LOGO_ZOOM_TIME)
+
+	var home_top := _logo.offset_top
+	var home_bottom := _logo.offset_bottom
+	var float_tween := create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	float_tween.tween_property(_logo, "offset_top", home_top - LOGO_FLOAT_DISTANCE, LOGO_FLOAT_TIME)
+	float_tween.parallel().tween_property(_logo, "offset_bottom", home_bottom - LOGO_FLOAT_DISTANCE, LOGO_FLOAT_TIME)
+	float_tween.tween_property(_logo, "offset_top", home_top, LOGO_FLOAT_TIME)
+	float_tween.parallel().tween_property(_logo, "offset_bottom", home_bottom, LOGO_FLOAT_TIME)
 
 
 func _on_start_pressed() -> void:
